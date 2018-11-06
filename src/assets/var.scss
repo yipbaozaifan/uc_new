@@ -1,0 +1,13 @@
+$rem-unit: 3 * 36;
+
+$fontMY-W3: 'Flexo-Thin','MYingHeiPRC-W3', 'Source Han Sans',Helvetica, Tahoma, Arial, 'Hiragino Sans GB', "Microsoft YaHei", SimSun, Heiti, sans-serif;
+
+$fontMY-W5: 'Flexo-Medium','MYingHeiPRC-W5', 'Source Han Sans',Helvetica, Tahoma, Arial, 'Hiragino Sans GB', "Microsoft YaHei", SimSun, Heiti, sans-serif;
+
+@function px2vw($px, $base: 360 * 2) {
+  @return ($px / $base) * 100vw;
+}
+
+@function px2vh($px, $base: 567 * 2) {
+  @return ($px / $base) * 100vh;
+}

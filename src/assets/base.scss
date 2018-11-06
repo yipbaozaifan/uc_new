@@ -1,0 +1,75 @@
+html,body {
+    height: 100%;
+    width: 100%;
+    min-width: 1000px;
+}
+#app {
+    width: 100%;
+    overflow: hidden;
+}
+.title {
+    margin: 0px auto;
+    height: 35px;
+    margin-top: 55px;
+    margin-bottom: 60px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 26px;
+    color: #010101;
+}
+.content-form {
+    margin-top: 60px;
+    .section {
+        width: 100%;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        .link {
+            margin-left: 20px;
+            width: 118px;
+        }
+    }
+}
+.btn-next {
+    width: 290px;
+    margin: 100px auto;
+    margin-bottom: 30px;
+}
+.link {
+    display: inline-block;
+    vertical-align: middle;
+    color: #387AFF;
+}
+.content-btn {
+    text-align: center;
+    margin-bottom: 151px;
+}
+.mask {
+    width: 100%;
+    height: 100%;
+    z-index: 101;
+    background-color: #000000;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.modal-tips {
+    opacity: 0.4;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #000000;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 19px;
+    width: 317px;
+    margin: 0 auto;
+}
+.modal-btn-container {
+    width: 100%;
+    margin-top: 50px;
+    .modal-btn {
+        width: 140px;
+        margin: 0 auto;
+    }
+}
