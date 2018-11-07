@@ -69,6 +69,7 @@ export default {
       choosenName:[],
       account: '',
       leftCount: 10,
+      leftMatch: 5,
       message:"",
       showModal: false,
       hasSubmit: false,
@@ -76,6 +77,9 @@ export default {
   },
   methods: {
     closeModal() {
+        if (this.leftMatch <= 0) {
+            location.href = "/uc/system/webjsp/contact/toFailContact?account=" + this.account;
+        }
         this.showModal = false;
     },
     handleSubmit() {
@@ -88,24 +92,32 @@ export default {
             this.showModal = true;
             return;
         }
+
+        if (this.leftMatch <= 0) {
+            this.message = "你今天的匹配次数已用完";
+            this.showModal = true;
+            return
+        }
+
         let choosenContact = '';
         for (let i=0; i<this.choosenName.length; i++) {
             choosenContact += this.contactList[this.choosenName[i]]+',';
         }
         this.hasSubmit = true;
-        console.log(choosenContact);
         Axios.post('/uc/system/webjsp/forgetpwd/isValidUserContact', {
             account: this.account,
             contactNames: choosenContact.slice(0, -1),
         }).then((res) => {
             if (res.data.code === "403010") {
-                location.href = "/uc/system/webjsp/forgetpwd/toFailContact?account=" + this.account;
+                location.href = "/uc/system/webjsp/contact/toFailContact?account=" + this.account;
             }
             if (res.data.code === "200") {
                 if (res.data.value.result) {
+                    this.leftMatch = res.data.value.leftCount;
                     location.href = '/uc/system/webjsp/forgetpwd/toResetPwd?account=' + this.account;
                 } else {
-                    this.message = res.data.message;
+                    this.message = res.data.value.tips;
+                    this.leftMatch = res.data.value.leftCount;
                     this.showModal = true;
                     this.hasSubmit = false;
                 }

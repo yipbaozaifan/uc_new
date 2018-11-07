@@ -8,7 +8,8 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.accountHolder" :type="'email'" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedMail" ref="mailInput" @changeinp="handleChange" ></mzinput>
                 </div>
-                <a class="link"></a>
+                <a class="link" :href="toPhone" v-if="hasPhone=='y'">使用手机验证</a>
+                <a class="link" v-else></a>
             </div>
             <!--<div class="section" v-show="!phoneInput">
                 <div class="bar bar-tips">
@@ -92,6 +93,8 @@ export default {
       showSend: false,
       showTips: false,
       wrong: false,
+      toPhone: '',
+      hasPhone: '',
     }
   },
   methods: {
@@ -244,7 +247,12 @@ export default {
   },
   mounted() {
       this.account = getParams('account');
-      this.lang = getParams('lang') || 'zh_CN'; 
+      this.lang = getParams('lang') || 'zh_CN';
+      this.hasPhone = getParams('hasPhone') || 'n';
+      if (this.hasPhone == 'y') {
+          this.toPhone = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y`;
+      }
+      
   }
 }
 </script>

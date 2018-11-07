@@ -8,7 +8,8 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.accountHolder" :type="'account'" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedPhone" ref="phoneInput" @changeinp="handleChange" :maxlen="11"></mzinput>
                 </div>
-                <a class="link"></a>
+                <a class="link" :href="toMail" v-if="hasEmail == 'y'">通过邮箱验证</a>
+                <a class="link" v-else></a>
             </div>
             <!--<div class="section" v-show="!phoneInput">
                 <div class="bar bar-tips">
@@ -79,7 +80,9 @@ export default {
       kapkey: '',
       canSubmit: false,
       message: '',
-      wrong: false
+      wrong: false,
+      toMail: '',
+      hasEmail: '',
     }
   },
   methods: {
@@ -106,7 +109,7 @@ export default {
                 } else {
                     return axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
                         account: this.account,
-                        hasEmail: 'n',
+                        hasEmail: hasEmail,
                         phone: phone,
                         vcode: this.varCode,
                         vCodeTypeValue: 9
@@ -217,6 +220,11 @@ export default {
       //this.$refs.varinput.changeState('get');
       this.account = getParams('account');
       this.lang = getParams('lang') || 'zh_CN';
+      this.hasEmail = getParams('hasEmail') || 'n';
+      if (this.hasEmail == 'y') {
+          this.toMail = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toMail?account=${this.account}&lang=${this.lang}&hasPhone=y`;
+      }
+      
   }
 }
 </script>
