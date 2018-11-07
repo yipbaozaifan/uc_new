@@ -80,6 +80,7 @@ export default {
   },
   methods: {
     next() {
+        const reg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
         if (this.hasSubmit) { // 防止重复提交
             return;
         }
@@ -87,8 +88,12 @@ export default {
         if (this.wrong) {
             return;
         }
-
-        if (this.resetPwd === "" || this.resetPwd.length > 16 || this.resetPwd.length < 8) {
+        if (this.resetPwd == this.account) {
+            this.$refs.reset.showInputTips('密码不能与账号相同');
+            this.wrong = true;
+            return;
+        }
+        if (this.resetPwd === "" || this.resetPwd.length > 16 || this.resetPwd.length < 8 || !reg.test(this.resetPwd)) {
             this.$refs.reset.showInputTips('密码应为8~16个字符，区分大小写,至少包含两种类型');
             this.wrong = true;
             return;
@@ -104,7 +109,7 @@ export default {
             this.message = "两次输入的密码不一致";
             this.showModal = true;
             return;
-        } 
+        }
         let kk = cryPP.generateMix();
         let resetPwd = cryPP.excutePP(this.resetPwd, kk);
         let repeatPwd = cryPP.excutePP(this.varResetPwd, kk);

@@ -143,7 +143,7 @@ export default {
               this.leftCount = res.data.value.leftCount;
           } else {
               if (res.data.code === "403010") {
-                  location.href = "/uc/system/webjsp/forgetpwd/toFailContact?account=" + this.account;
+                  location.href = "/uc/system/webjsp/contact/toFailContact?account=" + this.account;
               } else {
                   this.message = res.data.message;
                   this.showModal = true; 
