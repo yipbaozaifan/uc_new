@@ -8,7 +8,7 @@
         }">
             <span class="country-code" v-show="showCode" @click="showSelectCycode">
                 <span class="country-code-selected">+{{countryCode.code}}</span>
-                <i class="arrow-down"></i>
+                <i class="arrow-down">&#xe629;</i>
             </span>
             <input :type="inptype || defaultType" :placeholder="placeholder" :class="[
                 type,
@@ -48,7 +48,7 @@
 
 <script>
 export default {
-    props: ['label','placeholder', 'type', 'code', 'inptype', 'maxlen'],
+    props: ['label','placeholder', 'type', 'code', 'inptype', 'maxlen', 'lang'],
     data() {
         return {
             countryCode: {
@@ -1346,11 +1346,11 @@ export default {
             this.countryCode = this.countryCodeList[gindex].cycodes[index];
             this.changeCycode = false;
         },
-        changeState() {
+        changeState(time) {
             if (this.phoneCodeState === 'get' || this.phoneCodeState === 'again') {
                 // 请求接口获取验证码改变状态为wait
                 this.phoneCodeState = 'wait';
-                this.waitTime = 60;
+                this.waitTime = time || 60;
                 //设置计时器
                 this.count();
             } else {
@@ -1381,11 +1381,12 @@ export default {
                     that.getState = '重新获取('+that.waitTime+')';
                     that.waitTime--;
                 } else {
+                    that.$emit('resend')
                     that.phoneCodeState = 'again';
                     that.getState = '重新获取';
                     clearInterval(timer);
                 } 
-            }, 1000)
+            }, 1000) 
         },
         toggleShowPwd() {
             this.unShow = !this.unShow;
@@ -1399,7 +1400,7 @@ export default {
     },
     mounted() {
         if (this.type === 'password') {
-            this.defaultType = 'password'
+            this.defaultType = 'password';
         }
     }
 }
@@ -1413,6 +1414,14 @@ export default {
   url('./assets/iconfont.woff') format('woff'),
   url('./assets/iconfont.ttf') format('truetype'),
   url('./assets/iconfont.svg#iconfont') format('svg');
+}
+@font-face {
+  font-family: 'arrow';  /* project id 893534 */
+  src: url('//at.alicdn.com/t/font_893534_1shjj12oufd.eot');
+  src: url('//at.alicdn.com/t/font_893534_1shjj12oufd.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_893534_1shjj12oufd.woff') format('woff'),
+  url('//at.alicdn.com/t/font_893534_1shjj12oufd.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_893534_1shjj12oufd.svg#iconfont') format('svg');
 }
 .iconfont{
   font-family:"iconfont" !important;
@@ -1503,6 +1512,11 @@ export default {
                 color: gray;
             }
             .arrow-down {
+                font-family:"arrow" !important;
+                font-size:16px;font-style:normal;
+                -webkit-font-smoothing: antialiased;
+                -webkit-text-stroke-width: 0.2px;
+                -moz-osx-font-smoothing: grayscale;
                 display: inline-block;
                 width: 14px;
                 height: 8px;

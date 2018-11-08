@@ -8,7 +8,7 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.accountHolder" :type="'email'" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedMail" ref="mailInput" @changeinp="handleChange" ></mzinput>
                 </div>
-                <a class="link" :href="toPhone" v-if="hasPhone=='y'">使用手机验证</a>
+                <a class="link" v-if="hasPhone=='y'" @click="changeWay">使用手机验证</a>
                 <a class="link" v-else></a>
             </div>
             <!--<div class="section" v-show="!phoneInput">
@@ -19,7 +19,7 @@
             </div>-->
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" :maxlen="6" v-model="varCode"></mzinput>
+                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" :maxlen="6" v-model="varCode" @resend="handleResend"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -95,6 +95,7 @@ export default {
       wrong: false,
       toPhone: '',
       hasPhone: '',
+      sent: false,
     }
   },
   methods: {
@@ -188,6 +189,16 @@ export default {
             });
         }, 100);
     },
+    changeWay() {
+        if(this.inputedMail) {
+            localStorage.setItem('mail', this.inputedMail);
+        }
+        if (this.sent) {
+            localStorage.setItem('mailLeftSec', this.$refs.varinput.waitTime);
+            localStorage.setItem('mailSent', this.sent);
+        }
+        //location.href = this.toPhone;
+    },
     handleChange() {
         if (this.wrong) {
             this.wrong = false;
@@ -203,6 +214,9 @@ export default {
         this.showModal = false;
         this.showSend = false;
         this.showTips = false;
+    },
+    handleResend() {
+        this.sent = false;
     },
     handleSend() {
         //this.$refs.varinput.changeState('get');
@@ -237,6 +251,7 @@ export default {
                 this.$refs.varinput.changeState();
                 this.showModal = true;
                 this.showSend = true;
+                this.sent = true;
             }
         }, (err) => {
             console.log(err);
@@ -249,8 +264,26 @@ export default {
       this.account = getParams('account');
       this.lang = getParams('lang') || 'zh_CN';
       this.hasPhone = getParams('hasPhone') || 'n';
+
+      if (getParams('fromPhone')) {
+            this.sent = localStorage.getItem('mailSent') || false;
+            if (this.sent) {
+                this.$refs.varinput.allowSend();
+                localStorage.removeItem('mailSent');
+                this.$refs.varinput.changeState(localStorage.getItem('mailLeftSec'));
+                localStorage.removeItem('mailLeftSec');
+            }
+
+            if (localStorage.getItem('mail')) {
+                this.inputedMail = localStorage.getItem('mail') || '';
+                this.$refs.mailInput.inputValue = localStorage.getItem('mail') || '';
+                localStorage.removeItem('mail');
+            }
+      }
+      
+
       if (this.hasPhone == 'y') {
-          this.toPhone = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y`;
+          this.toPhone = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y&fromMail=y`;
       }
       
   }

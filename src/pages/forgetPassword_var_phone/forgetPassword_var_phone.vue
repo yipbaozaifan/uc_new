@@ -6,9 +6,9 @@
         <div class="content content-form">
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.accountHolder" :type="'account'" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedPhone" ref="phoneInput" @changeinp="handleChange" :maxlen="11"></mzinput>
+                    <mzinput :placeholder="useLang.accountHolder" type="account" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedPhone" ref="phoneInput" @changeinp="handleChange" :maxlen="11"></mzinput>
                 </div>
-                <a class="link" :href="toMail" v-if="hasEmail == 'y'">通过邮箱验证</a>
+                <a class="link" v-if="hasEmail == 'y'" @click="changeWay">通过邮箱验证</a>
                 <a class="link" v-else></a>
             </div>
             <!--<div class="section" v-show="!phoneInput">
@@ -19,7 +19,7 @@
             </div>-->
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" v-model="varCode" :maxlen="6"></mzinput>
+                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" v-model="varCode" :maxlen="6" @resend="handleResend"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -83,6 +83,7 @@ export default {
       wrong: false,
       toMail: '',
       hasEmail: '',
+      sent: false,
     }
   },
   methods: {
@@ -109,7 +110,7 @@ export default {
                 } else {
                     return axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
                         account: this.account,
-                        hasEmail: hasEmail,
+                        hasEmail: this.hasEmail,
                         phone: phone,
                         vcode: this.varCode,
                         vCodeTypeValue: 9
@@ -162,8 +163,18 @@ export default {
             })
         }, 100);
     },
+    changeWay() {
+        if(this.inputedPhone) {
+            localStorage.setItem('cycode', this.$refs.phoneInput.countryCode.code);
+            localStorage.setItem('phone', this.inputedPhone);
+        }
+        if (this.sent) {
+            localStorage.setItem('leftSec', this.$refs.varinput.waitTime);
+            localStorage.setItem('sent', this.sent);
+        }
+        location.href = this.toMail;
+    },
     handleChange(varPhone) {
-        console.log(varPhone);
         if (this.wrong) {
             this.wrong = false;
             if (varPhone) {
@@ -201,6 +212,7 @@ export default {
         }).then((res) => {
             if (res.data.code === "200") {
                 this.$refs.varinput.changeState();
+                this.sent = true;
             } else {
                 this.message = res.data.message;
                 this.showModal = true;
@@ -212,6 +224,9 @@ export default {
         });
         //this.$refs.varinput.changeState();
     },
+    handleResend() {
+        this.sent = false;
+    },
     closeCycodeList() {
         this.$refs.phoneInput.changeCycode = false;
     }
@@ -221,8 +236,33 @@ export default {
       this.account = getParams('account');
       this.lang = getParams('lang') || 'zh_CN';
       this.hasEmail = getParams('hasEmail') || 'n';
+
+      if (getParams('fromMail')) {
+            this.sent = localStorage.getItem('sent') || false;
+            if (this.sent) {
+                this.$refs.varinput.allowSend();
+                localStorage.removeItem('sent');
+                this.$refs.varinput.changeState(localStorage.getItem('leftSec'));
+                localStorage.removeItem('leftSec');
+            }
+            
+            if (localStorage.getItem('cycode')) {
+                this.$refs.phoneInput.countryCode.code = localStorage.getItem('cycode');
+                localStorage.removeItem('cycode');
+            }
+
+            if (localStorage.getItem('phone')) {
+                this.inputedPhone = localStorage.getItem('phone') || '';
+                this.$refs.phoneInput.inputValue = localStorage.getItem('phone') || '';
+                localStorage.removeItem('phone');
+                if (/^\d{6,}/.test(this.$refs.phoneInput.inputValue) && !/\D+/.test(this.$refs.phoneInput.inputValue)) {
+                    this.$refs.phoneInput.showCode = true;
+                }
+            }
+      } 
+      
       if (this.hasEmail == 'y') {
-          this.toMail = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toMail?account=${this.account}&lang=${this.lang}&hasPhone=y`;
+          this.toMail = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toMail?account=${this.account}&lang=${this.lang}&hasPhone=y&fromPhone=y`;
       }
       
   }

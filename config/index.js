@@ -15,7 +15,7 @@ module.exports = {
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
       },
-      '/uc/system/vcode/sendCgiSmsVCode': {
+      '/uc/system/vcode/action/sendSmsVCode': {
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
       },
