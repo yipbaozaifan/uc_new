@@ -239,8 +239,8 @@ export default {
 
       if (getParams('fromMail')) {
             this.sent = localStorage.getItem('sent') || false;
+            this.$refs.varinput.allowSend();
             if (this.sent) {
-                this.$refs.varinput.allowSend();
                 localStorage.removeItem('sent');
                 this.$refs.varinput.changeState(localStorage.getItem('leftSec'));
                 localStorage.removeItem('leftSec');

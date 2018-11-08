@@ -266,9 +266,9 @@ export default {
       this.hasPhone = getParams('hasPhone') || 'n';
 
       if (getParams('fromPhone')) {
+            this.$refs.varinput.allowSend();
             this.sent = localStorage.getItem('mailSent') || false;
             if (this.sent) {
-                this.$refs.varinput.allowSend();
                 localStorage.removeItem('mailSent');
                 this.$refs.varinput.changeState(localStorage.getItem('mailLeftSec'));
                 localStorage.removeItem('mailLeftSec');

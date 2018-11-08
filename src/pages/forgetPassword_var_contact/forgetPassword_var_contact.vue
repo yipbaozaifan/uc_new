@@ -28,7 +28,7 @@
             <div class="modal-main" >
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
-                    <div class="modal-btn">
+                    <div class="modal-btn" v-show="!overTime">
                         <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
@@ -65,7 +65,7 @@ export default {
     return {
       languageObject: forgetPwd_var_contact,
       steps: forgetPwdStep,
-      contactList: [],
+      contactList: ['23','12','32','12','323','333','222','111'],
       choosenName:[],
       account: '',
       leftCount: 10,
@@ -73,6 +73,7 @@ export default {
       message:"",
       showModal: false,
       hasSubmit: false,
+      overTime: false,
     }
   },
   methods: {
@@ -122,6 +123,14 @@ export default {
                     this.hasSubmit = false;
                 }
             } else {
+                if (!res.data) {
+                    this.message = '该页面已超时';
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = 'https://i.flyme.cn/uc/system/webjsp/forgetpwd/';
+                    }, 1500)
+                }
                 this.message = res.data.message;
                 this.showModal = true;
                 this.hasSubmit = false;
