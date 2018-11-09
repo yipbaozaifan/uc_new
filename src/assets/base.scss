@@ -66,6 +66,10 @@ html,body {
     line-height: 19px;
     width: 317px;
     margin: 0 auto;
+    &.modal-tips-ot {
+        margin-top: 40px;
+        font-size: 16px;
+    }
 }
 .modal-btn-container {
     width: 100%;

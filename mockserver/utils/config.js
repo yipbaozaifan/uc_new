@@ -9,8 +9,8 @@ module.exports = {
       name: 'isMyPhone'
     },
     {
-      url: '/uc/system/vcode/sendCgiSmsVCode',
-      name: 'sendCgiSmsVCode'
+      url: '/uc/system/vcode/action/sendSmsVCode',
+      name: 'sendSmsVCode'
     },
     {
       url: '/uc/system/webjsp/forgetpwd/isValidSmsVCode',

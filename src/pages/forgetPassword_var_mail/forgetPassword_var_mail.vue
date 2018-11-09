@@ -197,7 +197,7 @@ export default {
             localStorage.setItem('mailLeftSec', this.$refs.varinput.waitTime);
             localStorage.setItem('mailSent', this.sent);
         }
-        //location.href = this.toPhone;
+        location.href = this.toPhone;
     },
     handleChange() {
         if (this.wrong) {

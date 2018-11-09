@@ -12,7 +12,8 @@
                     <span class="contact-item" v-for="(item,index) in contactList" :key="index" @click="choosen(index)" :class="{'choosen': choosenName.indexOf(index) > -1}">{{item}}</span>
                 </div>
                 <div class="container replace-container">
-                    <a @click="replaceList" class="replace">{{useLang.changeList+leftCount}}</a>
+                    <a @click="replaceList" class="replace" v-show="leftCount > 0">{{useLang.changeList+' ('+leftCount+'次)'}}</a>
+                    <a class="replace forbid" v-show="leftCount <= 0">{{useLang.changeList+' (0)'}}</a>
                 </div>
             </div>
         </div>
@@ -25,13 +26,16 @@
         <div class="mask" v-show="showModal">
         </div>
         <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
-            <div class="modal-main" >
+            <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
-                    <div class="modal-btn" v-show="!overTime">
+                    <div class="modal-btn">
                         <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
+            </div>
+            <div class="modal-main" v-show="overTime">
+                <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -65,10 +69,10 @@ export default {
     return {
       languageObject: forgetPwd_var_contact,
       steps: forgetPwdStep,
-      contactList: ['23','12','32','12','323','333','222','111'],
+      contactList: [],
       choosenName:[],
       account: '',
-      leftCount: 10,
+      leftCount: 0,
       leftMatch: 5,
       message:"",
       showModal: false,
@@ -124,12 +128,11 @@ export default {
                 }
             } else {
                 if (!res.data) {
-                    this.message = '该页面已超时';
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = 'https://i.flyme.cn/uc/system/webjsp/forgetpwd/';
-                    }, 1500)
+                        location.href = 'https://i.flyme.cn/forgetpwd';
+                    }, 2000)
                 }
                 this.message = res.data.message;
                 this.showModal = true;
@@ -203,6 +206,9 @@ export default {
                     float: right;
                     margin-right: 22px;
                     color: #387aff;
+                    &.forbid {
+                        color: #cccccc;
+                    }
                 }
             }
             
