@@ -25,13 +25,16 @@
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
         <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
-            <div class="modal-main" >
+            <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
                         <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
+            </div>
+            <div class="modal-main" v-show="overTime">
+                <p class="modal-tips modal-tips-ot">此页面已失效</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -76,6 +79,7 @@ export default {
       hasSubmit: false,
       languageObject: forgetPwd_reset,
       steps: forgetPwdStep,
+      overTime: false,
     }
   },
   methods: {
@@ -124,6 +128,14 @@ export default {
                 'CryKK-Mix': kk,
             }
         }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             const result = getData(res.data);
             if (result == null) {
                 this.message = res.data.message;

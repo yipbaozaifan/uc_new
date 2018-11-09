@@ -19,7 +19,7 @@
         </div>
         <div class="content content-btn">
             <div class="btn-next" @click="handleSubmit">
-                <btn :type="'blue'" :text="useLang.btn"></btn>
+                <btn :type="choosenName.length == 3?'blue':'gray'" :text="useLang.btn"></btn>
             </div>
             <a href="https://i.flyme.cn/appeal" class="link" target="_Blank">{{useLang.complaintLink}}</a>
         </div> 
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已超时</p>
+                <p class="modal-tips modal-tips-ot">此页面已失效</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -93,8 +93,8 @@ export default {
             return
         }
         if (this.choosenName.length<3) {
-            this.message = "请你选择三个与你有关联的联系人";
-            this.showModal = true;
+            //this.message = "请你选择三个与你有关联的联系人";
+            //this.showModal = true;
             return;
         }
 

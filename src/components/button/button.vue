@@ -35,4 +35,9 @@ export default {
   background-color: #fff;
   color: #387AFF;
 }
+.gray {
+  background-color: #cccccc;
+  color: #fff;
+  border-color: #cccccc;
+}
 </style>
