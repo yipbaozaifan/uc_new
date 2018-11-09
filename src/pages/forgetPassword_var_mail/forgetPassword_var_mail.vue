@@ -30,7 +30,7 @@
             </div>
             <a href="https://i.flyme.cn/appeal" class="link" target="_Blank">{{useLang.complaintLink}}</a>
         </div>
-        <div class="mask" v-show="showModal" @click="closeModal">
+        <div class="mask" v-show="showModal" >
         </div>
         <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="showSend">
@@ -43,7 +43,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-main" v-show="showTips">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
@@ -51,6 +50,9 @@
                         <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
+            </div>
+            <div class="modal-main" v-show="overTime">
+                <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -96,6 +98,7 @@ export default {
       toPhone: '',
       hasPhone: '',
       sent: false,
+      overTime: false,
     }
   },
   methods: {
@@ -140,6 +143,14 @@ export default {
                 return Promise.reject(res.data.message);
             }
         }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000)
+                return;
+            }
             const result = getData(res.data);
             if (result == null) {
                 this.canSubmit = true;
@@ -153,6 +164,7 @@ export default {
         }, (err) => {
             console.log(err);
         }).catch((err) => {
+            console.log(err);
             this.canSubmit = true;
             this.message = '网络错误，请稍后再试';
             this.showModal = true;
@@ -185,6 +197,7 @@ export default {
                 }
             }, (err) => {
                 this.message = '网络错误，请重试';
+                this.showTips = true;
                 this.showModal = true;
             });
         }, 100);
@@ -279,9 +292,11 @@ export default {
                 this.$refs.mailInput.inputValue = localStorage.getItem('mail') || '';
                 localStorage.removeItem('mail');
             }
+      } else {
+          localStorage.removeItem('mailSent');
+          localStorage.removeItem('mail');
+          localStorage.removeItem('mailLeftSec');
       }
-      
-
       if (this.hasPhone == 'y') {
           this.toPhone = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y&fromMail=y`;
       }

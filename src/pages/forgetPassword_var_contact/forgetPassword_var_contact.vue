@@ -133,6 +133,7 @@ export default {
                     setTimeout(() => {
                         location.href = 'https://i.flyme.cn/forgetpwd';
                     }, 2000)
+                    return;
                 }
                 this.message = res.data.message;
                 this.showModal = true;

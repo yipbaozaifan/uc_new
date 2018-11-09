@@ -118,6 +118,14 @@ export default {
                 answer1: this.answer[0],
                 answer2: this.answer[1],
             }).then((res) => {
+                if(!res.data) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = 'https://i.flyme.cn/forgetpwd';
+                    }, 2000);
+                    return;
+                }
                 const result = getData(res.data)
                 if (result == null) {
                     this.canSubmit = true;

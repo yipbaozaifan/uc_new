@@ -33,13 +33,16 @@
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
         <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
-            <div class="modal-main">
+            <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
                         <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
                     </div>
                 </div>
+            </div>
+            <div class="modal-main" v-show="overTime">
+                <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -84,6 +87,7 @@ export default {
       toMail: '',
       hasEmail: '',
       sent: false,
+      overTime: false,
     }
   },
   methods: {
@@ -122,6 +126,14 @@ export default {
                 return Promise.reject('server error');
             }
         }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000)
+                return;
+            }
             if (res.data.code !== "200") {
                 this.message = res.data.message;
                 this.showModal = true;
@@ -259,7 +271,12 @@ export default {
                     this.$refs.phoneInput.showCode = true;
                 }
             }
-      } 
+      } else {
+          localStorage.removeItem('sent');
+          localStorage.removeItem('phone');
+          localStorage.removeItem('leftSec');
+          localStorage.removeItem('cycode');
+      }
       
       if (this.hasEmail == 'y') {
           this.toMail = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toMail?account=${this.account}&lang=${this.lang}&hasPhone=y&fromPhone=y`;

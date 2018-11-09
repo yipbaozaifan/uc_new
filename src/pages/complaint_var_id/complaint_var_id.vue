@@ -71,13 +71,16 @@
         <div class="mask" v-show="showModal">
         </div>
         <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
-            <div class="modal-main" >
+            <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
                         <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
                     </div>
                 </div>
+            </div>
+            <div class="modal-main" v-show="overTime">
+                <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
         </mz-modal>
         <mzfooter ></mzfooter>
@@ -132,6 +135,7 @@ export default {
       ],
       hasUpload: false,
       choosenPic: '',
+      overTime: false
     }
   },
   methods: {
