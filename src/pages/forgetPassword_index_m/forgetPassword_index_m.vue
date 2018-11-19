@@ -1,20 +1,19 @@
 <template>
     <div id="app">
-        <mzheader :link="headerLink"></mzheader>
+        <div class="steps-warp">
+            <mzprogress :steps="useStep" :actived="1" size="48" line-length="128"></mzprogress>
+        </div>
         <h1 class="title">{{useLang.title}}</h1>
-        <mzprogress :steps="useStep" :actived="1" size="126"></mzprogress>
         <div class="content content-form">
             <div class="section">
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.accountHolder" :type="'account'" :label="useLang.accountLabel" v-model="account" ref="accountInput"></mzinput>
                 </div>
-                <a class="link"></a>
             </div>
             <div class="section">
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.varCodeHolder" :type="'imgCode'" :label="useLang.varCodeLabel" v-model="varCode" ref="kapkeyInput" :maxlen="6"></mzinput>
                 </div>
-                <a class="link"></a>
             </div>
         </div>
         <div class="content content-btn">
@@ -35,16 +34,13 @@
                 </div>
             </div>
         </mz-modal>
-        <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
     </div>
 </template>
 
 <script>
-import mzheader from '../../components/header/header.vue';
-import mzprogress from '../../components/progress/progress.vue';
-import btn from '../../components/button/button.vue';
-import mzinput from '../../components/input/input.vue';
-import mzfooter from '../../components/footer/footer.vue';
+import mzprogress from '../../components/progress/progress_m.vue';
+import btn from '../../components/button/button_m.vue';
+import mzinput from '../../components/input/input_m.vue';
 import axios from 'axios';
 import mzModal from '../../components/mzModal/mzModal.vue';
 import { getParams } from '../../assets/utils.js';
@@ -54,12 +50,10 @@ import { forgetPwd_index, forgetPwdStep } from '../../assets/lang.js';
 export default {
   name: 'app',
   components: {
-    mzheader,
     mzprogress,
     btn,
     mzinput,
     mzModal,
-    mzfooter
   },
   mixins:[globalMethods],
   data() {
@@ -124,7 +118,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '../../assets/base.scss';
+    @import '../../assets/base_m.scss';
     .title {
         text-align: center;
         width: auto;
@@ -132,12 +126,11 @@ export default {
     .content-form {
         .section {
             .bar-input {
-                width: 433px;
-                display: inline-block;
-                vertical-align: middle;
-            }
-            .link {
-                width: 110px;
+                width: 100%;
+                height: px2vw(156);
+                padding: 0 px2vw(48);
+                padding-top: px2vw(72);
+                box-sizing: border-box;
             }
         }
     }

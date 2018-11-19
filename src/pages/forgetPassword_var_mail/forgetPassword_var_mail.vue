@@ -120,6 +120,14 @@ export default {
         }
         this.canSubmit = false;
         this.varEmail().then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             if (res.data.code === "200") {
                 if (!res.data.value) {
                     this.$refs.mailInput.showInputTips('你输入的不是预设邮箱');
@@ -151,14 +159,17 @@ export default {
                 }, 2000)
                 return;
             }
-            const result = getData(res.data);
-            if (result == null) {
+            //const result = getData(res.data);
+            if (res.data.code != "200") {
+                if (res.data.code == "19999") {
+                    this.$refs.varinput.showInputTips(res.data.message);
+                } else {
+                    this.message = res.data.message;
+                    this.showModal = true;
+                    this.showTips = true;
+                }
                 this.canSubmit = true;
-                this.message = res.data.message;
-                this.showModal = true;
-                this.showTips = true;
-            }
-            if (result) {
+            } else {
                 location.href = res.data.value.url;
             }
         }, (err) => {
@@ -182,6 +193,14 @@ export default {
                 return;
             }
             this.varEmail().then((res) => {
+                if(!res.data) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = 'https://i.flyme.cn/forgetpwd';
+                    }, 2000);
+                    return;
+                }
                 if (res.data.code === "200") {
                     if (!res.data.value) {
                         this.$refs.mailInput.showInputTips('输入邮箱与绑定的邮箱不一致');
@@ -237,6 +256,14 @@ export default {
             return;
         }
         this.varEmail().then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             if (res.data.code === "200") {
                 if (!res.data.value) {
                     this.$refs.mailInput.showInputTips('你输入的不是预设邮箱');
@@ -256,6 +283,14 @@ export default {
                 return Promise.reject(res.data.message);
             }
         }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             if (res.data.code !== "200") {
                 this.message = res.data.message;
                 this.showModal = true;
@@ -279,15 +314,14 @@ export default {
       this.hasPhone = getParams('hasPhone') || 'n';
 
       if (getParams('fromPhone')) {
-            this.$refs.varinput.allowSend();
             this.sent = localStorage.getItem('mailSent') || false;
-            if (this.sent) {
-                localStorage.removeItem('mailSent');
-                this.$refs.varinput.changeState(localStorage.getItem('mailLeftSec'));
-                localStorage.removeItem('mailLeftSec');
-            }
-
             if (localStorage.getItem('mail')) {
+                this.$refs.varinput.allowSend();
+                if (this.sent) {
+                    localStorage.removeItem('mailSent');
+                    this.$refs.varinput.changeState(localStorage.getItem('mailLeftSec'));
+                    localStorage.removeItem('mailLeftSec');
+                }
                 this.inputedMail = localStorage.getItem('mail') || '';
                 this.$refs.mailInput.inputValue = localStorage.getItem('mail') || '';
                 localStorage.removeItem('mail');
@@ -296,11 +330,14 @@ export default {
           localStorage.removeItem('mailSent');
           localStorage.removeItem('mail');
           localStorage.removeItem('mailLeftSec');
+          localStorage.removeItem('sent');
+          localStorage.removeItem('phone');
+          localStorage.removeItem('leftSec');
+          localStorage.removeItem('cycode');
       }
       if (this.hasPhone == 'y') {
           this.toPhone = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y&fromMail=y`;
       }
-      
   }
 }
 </script>

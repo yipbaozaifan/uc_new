@@ -2,7 +2,6 @@
     <div class="input" :class="{
             'showtips': showTips
         }">
-        <span class="label-input">{{label}}</span>
         <div class="input-bar" :class="{
             'error-tips': showTips
         }">
@@ -48,7 +47,7 @@
 
 <script>
 export default {
-    props: ['label','placeholder', 'type', 'code', 'inptype', 'maxlen', 'lang'],
+    props: ['placeholder', 'type', 'code', 'inptype', 'maxlen', 'lang'],
     data() {
         return {
             countryCode: {
@@ -1434,33 +1433,28 @@ export default {
     &.showtips {
         margin-bottom: 10px;
     }
+    height: 100%;
     width: 100%;
     font-size: 0;
     position: relative;
-    .label-input {
-        text-align: right;
-        display: inline-block;
-        width: 143px;
-        font-size: 16px;
-        vertical-align: middle;
-    }
     .input-bar {
         text-align: left;
-        width: 290px;
+        width: 100%;
+        box-sizing: border-box;
         margin: 0 auto;
         font-size: 0;
         position: relative;
         display: inline-block;
-        padding: 0 10px;
-        height: 36px;
-        border: 1px solid #cccccc;
+        height: 100%;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         outline: none;
         color: #474747;
-        border-radius: 3px;
         box-sizing: border-box;
         vertical-align: middle;
+        padding-bottom: 9px;
         &.error-tips {
-            border: 1px solid #DE3131;
+            border-bottom: 1px solid #DE3131;
         }
         .tips {
             font-size: 12px;
@@ -1470,17 +1464,20 @@ export default {
         }
         &::before {
             content: '';
-            height: 34px;
+            height: 30px;
             vertical-align: middle;
             display: inline-block;
         }
         input{
             display: inline-block;
-            font-size: 14px;
-            height: 20px;
-            line-height: 20px;
+            font-size: 16px;
+            height: 100%;
+            line-height: 100%;
             vertical-align: middle;
             width: 100%;
+            &::placeholder {
+                color: rgba(0, 0, 0, 0.3);
+            }
             &.account {
                 &.showcode {
                     width: 70%;
@@ -1501,15 +1498,18 @@ export default {
             display: inline-block;
             vertical-align: middle;
             width: 60px;
+            height: 100%;
             cursor: pointer;
             border-right: 1px solid #ddd;
             .country-code-selected {
-                height: 35px;
-                line-height: 35px;
+                height: 12px;
+                line-height: 12px;
                 display: inline-block;
-                font-size: 14px;
+                font-size: 12px;
                 width: 60%;
                 color: gray;
+                text-align: center;
+                vertical-align: middle;
             }
             .arrow-down {
                 font-family:"arrow" !important;
@@ -1519,7 +1519,8 @@ export default {
                 -moz-osx-font-smoothing: grayscale;
                 display: inline-block;
                 width: 14px;
-                height: 8px;
+                height: 16px;
+                vertical-align: middle;
             }
         }
         .cycode-container {
@@ -1606,10 +1607,10 @@ export default {
         }
         .imgkey-container {
             width: 76px;
-            height: 100%;
             vertical-align: middle;
             display: inline-block;
             margin-left: 10px;
+            float: right;
             &::before {
                 content: '';
                 display: inline-block;

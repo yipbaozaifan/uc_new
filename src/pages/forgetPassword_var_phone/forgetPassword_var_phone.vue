@@ -106,6 +106,14 @@ export default {
             return;
         }
         this.varPhone().then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             if (res.data.code === "200") {
                 if (!res.data.value) {
                     this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
@@ -135,8 +143,12 @@ export default {
                 return;
             }
             if (res.data.code !== "200") {
-                this.message = res.data.message;
-                this.showModal = true;
+                if (res.data.code == "200000") {
+                    this.$refs.varinput.showInputTips(res.data.message);
+                } else {
+                    this.message = res.data.message;
+                    this.showModal = true;
+                }
             } else {
                 location.href = res.data.value.url;
             }
@@ -159,6 +171,14 @@ export default {
                 return;
             }
             this.varPhone().then((res) => {
+                if(!res.data) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = 'https://i.flyme.cn/forgetpwd';
+                    }, 2000);
+                    return;
+                }
                 if (res.data.code === "200") {
                     if (!res.data.value) {
                         this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
@@ -208,6 +228,14 @@ export default {
             account: this.account
         }
         this.varPhone().then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             if (res.data.code === "200") {
                 if (!res.data.value) {
                     this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
@@ -222,6 +250,14 @@ export default {
                 return Promise.reject(res.data.message);
             }   
         }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
             if (res.data.code === "200") {
                 this.$refs.varinput.changeState();
                 this.sent = true;
@@ -251,24 +287,25 @@ export default {
 
       if (getParams('fromMail')) {
             this.sent = localStorage.getItem('sent') || false;
-            this.$refs.varinput.allowSend();
-            if (this.sent) {
-                localStorage.removeItem('sent');
-                this.$refs.varinput.changeState(localStorage.getItem('leftSec'));
-                localStorage.removeItem('leftSec');
-            }
-            
-            if (localStorage.getItem('cycode')) {
-                this.$refs.phoneInput.countryCode.code = localStorage.getItem('cycode');
-                localStorage.removeItem('cycode');
-            }
-
             if (localStorage.getItem('phone')) {
+                this.$refs.varinput.allowSend();
                 this.inputedPhone = localStorage.getItem('phone') || '';
                 this.$refs.phoneInput.inputValue = localStorage.getItem('phone') || '';
                 localStorage.removeItem('phone');
+                
                 if (/^\d{6,}/.test(this.$refs.phoneInput.inputValue) && !/\D+/.test(this.$refs.phoneInput.inputValue)) {
                     this.$refs.phoneInput.showCode = true;
+                }
+
+                if (localStorage.getItem('cycode')) {
+                    this.$refs.phoneInput.countryCode.code = localStorage.getItem('cycode');
+                    localStorage.removeItem('cycode');
+                }
+
+                if (this.sent) {
+                    localStorage.removeItem('sent');
+                    this.$refs.varinput.changeState(localStorage.getItem('leftSec'));
+                    localStorage.removeItem('leftSec');
                 }
             }
       } else {
@@ -276,6 +313,9 @@ export default {
           localStorage.removeItem('phone');
           localStorage.removeItem('leftSec');
           localStorage.removeItem('cycode');
+          localStorage.removeItem('mailSent');
+          localStorage.removeItem('mail');
+          localStorage.removeItem('mailLeftSec');
       }
       
       if (this.hasEmail == 'y') {

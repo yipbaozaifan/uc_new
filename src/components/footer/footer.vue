@@ -85,7 +85,7 @@ export default {
             this.show = false;
         },
         openOnline() {
-            window.open('http://live-i.meizu.com/live800/chatClient/chatbox.jsp?companyID=8957&configID=4&enterurl=&pagereferrer=&info=&k=1',
+            window.open('http://url.meizu.com/ols_Fyun',
     			'_blank','height=575,width=1150,fullscreen=3,top=200,left=200,status=yes,toolbar=no,menubar=no,resizable=no,scrollbars=no,location=no,titlebar=no,fullscreen=no');
         },
         showLangMenu() {

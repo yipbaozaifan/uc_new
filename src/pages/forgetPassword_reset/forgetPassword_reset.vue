@@ -97,21 +97,24 @@ export default {
             this.wrong = true;
             return;
         }
-        if (this.resetPwd === "" || this.resetPwd.length > 16 || this.resetPwd.length < 8 || !reg.test(this.resetPwd)) {
-            this.$refs.reset.showInputTips('密码应为8~16个字符，区分大小写,至少包含两种类型');
+        if (this.resetPwd === "" || this.resetPwd.length > 16 || this.resetPwd.length < 8) {
+            this.$refs.reset.showInputTips('密码应为8~16个字符，区分大小写');
+        }
+        if (!reg.test(this.resetPwd)) {
+            this.$refs.reset.showInputTips('密码至少包含数字、字母和符号两种类型');
             this.wrong = true;
             return;
         }
 
-        if (this.varResetPwd === "" || this.varResetPwd.length > 16 || this.varResetPwd.length < 8) {
+        if (this.varResetPwd === "") {
             this.$refs.repeat.showInputTips('请重新输入密码');
             this.wrong = true;
             return;
         }
 
         if (this.resetPwd !== this.varResetPwd) {
-            this.message = "两次输入的密码不一致";
-            this.showModal = true;
+            this.$refs.repeat.showInputTips('两次输入密码不一致');
+            this.wrong = true;
             return;
         }
         let kk = cryPP.generateMix();
@@ -171,7 +174,15 @@ export default {
       this.account = getParams('account');
       this.lang = getParams('lang') || 'zh_CN';
       Axios.post('/security/resubmit/token/get').then((res) => {
-          this.tokenKey = res.data.value;
+        if(!res.data) {
+            this.showModal = true;
+            this.overTime = true;
+            setTimeout(() => {
+                location.href = 'https://i.flyme.cn/forgetpwd';
+            }, 2000);
+            return;
+        }
+        this.tokenKey = res.data.value;
       }).catch((err) => {
           this.showModal = true;
           this.message = "网络错误"

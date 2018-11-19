@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const url = {
     ucLogin: 'https://login.flyme.cn/sso?appuri=https%3A%2F%2Fopen.flyme.cn%2Flogin&useruri=https%3A%2F%2Fopen.flyme.cn&sid=&service=open&autodirct=true',
 }

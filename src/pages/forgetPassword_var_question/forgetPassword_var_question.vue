@@ -128,9 +128,11 @@ export default {
                 }
                 const result = getData(res.data)
                 if (result == null) {
+                    this.$refs.answers[0].showInputTips(res.data.message);
+                    this.$refs.answers[1].showInputTips(res.data.message);
                     this.canSubmit = true;
-                    this.showModal = true;
-                    this.message = res.data.message;
+                    //this.showModal = true;
+                    //this.message = res.data.message;
                 }
                 if(result){
                     location.href = res.data.value.url; 
@@ -161,6 +163,14 @@ export default {
     	  this.toUrl = '/uc/system/webjsp/forgetpwd/toMail';
       }
       this.getQuestionList().then((res) => {
+          if(!res.data) {
+            this.showModal = true;
+            this.overTime = true;
+            setTimeout(() => {
+                location.href = 'https://i.flyme.cn/forgetpwd';
+            }, 2000);
+            return;
+          }
           if (res.data.value === null) {
               return Promise.reject('no question')
           }

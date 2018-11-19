@@ -3,87 +3,118 @@
         <mzheader></mzheader>
         <h1 class="title">账号申诉</h1>
         <mzprogress :steps="steps" :actived="3" size="96" line-length="600"></mzprogress>
-        <div class="main" v-show="nowStep === 1">
+        <div class="main step1" v-show="nowStep === 1">
             <div class="tips-bar">
                 <p class="complaint-text">为了账号安全，请尽量多提供账号使用资料以帮助我们判断你是号码主人，而非盗号者</p>
                 <p class="complaint-text">即使你对某些答案不确定，也可提供你认为正确的答案</p>
             </div>
             <div class="content content-form">
                 <div class="section">
-                    <div class="bar bar-input">
-                        <mzinput placeholder="请输入曾经用过的昵称" label="曾用昵称：" v-model="nicknames[0]" ref="nicknameInput"></mzinput>
-                        <a class="addInputBtn"></a>
-                        <a class="reduceInputBtn"></a>
+                    <span class="label-input">曾用昵称：</span>
+                    <div class="content input-content">
+                        <div class="bar bar-input" v-for="(item, index) in nicknames" :key="index" :class="{
+                            'last-input': index == (nicknames.length-1),
+                        }">
+                            <div class="outer-input">
+                                <input type="text" placeholder="请输入曾用昵称" v-model="nicknames[index]" :disabled="forgotNickname">
+                            </div>
+                            <div class="operations">
+                                <span class="op add" @click="handleAdd('nickname')" v-show="nicknames[index]">+</span>
+                                <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">-</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="forgoten-content">
                         <mz-checkbox
                         v-model="forgotNickname"
-                        :label="'忘记昵称:'"
+                        :label="'忘记昵称'"
+                        @change="handleForgot('nickname')"
                         ></mz-checkbox>
                     </div>
                 </div>
                 <div class="section">
-                    <div class="bar bar-input">
-                        <mzinput placeholder="请输入曾经用过的邮箱" label="曾用邮箱：" v-model="emails[0]" ref="idInput"></mzinput>
-                        <a class="reduceInputBtn"></a>
-                        <a class="addInputBtn"></a>
+                    <span class="label-input">曾用邮箱：</span>
+                    <div class="content input-content">
+                        <div class="bar bar-input" v-for="(item, index) in emails" :key="index" :class="{
+                            'last-input': index == (emails.length-1),
+                        }">
+                            <div class="outer-input">
+                                <input type="text" placeholder="请输入曾用邮箱" v-model="emails[index]" :disabled="forgotMail">
+                            </div>
+                            <div class="operations">
+                                <span class="op add" @click="handleAdd('email')" v-show="emails[index]">+</span>
+                                <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">-</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="forgoten-content">
                         <mz-checkbox
                         v-model="forgotMail"
-                        :label="'忘记邮箱:'"
+                        :label="'忘记邮箱'"
+                        @change="handleForgot('email')"
                         ></mz-checkbox>
                     </div>
                 </div>
                 <div class="section">
-                    <div class="bar bar-input">
-                        <mzinput placeholder="请输入曾经用过的邮箱" label="曾用手机：" v-model="phones[0]" ref="idInput"></mzinput>
-                        <a class="reduceInputBtn"></a>
-                        <a class="addInputBtn"></a>
+                    <span class="label-input">曾用手机：</span>
+                    <div class="content input-content">
+                        <div class="bar bar-input" v-for="(item, index) in phones" :key="index" :class="{
+                            'last-input': index == (phones.length-1),
+                        }">
+                            <div class="outer-input">
+                                <input type="text" placeholder="请输入曾用手机" v-model="phones[index]" :disabled="forgotPhone">
+                            </div>
+                            <div class="operations">
+                                <span class="op add" @click="handleAdd('phones')" v-show="phones[index]">+</span>
+                                <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">-</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="forgoten-content">
-                        <mz-checkbox
-                        v-model="forgotPhone"
-                        :label="'忘记手机:'"
+                        <mz-checkbox v-model="forgotPhone" :label="'忘记手机'" @change="handleForgot('phones')"
                         ></mz-checkbox>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="main" v-show="nowStep === 2">
+        <div class="main step2" v-show="nowStep === 2">
             <div class="content content-form used-phone-data">
-                <div class="section">
-                    <div class="bar bar-input">
-                        <mzinput placeholder="请输入登陆过该手机的手机型号" label="手机型号：" v-model="nicknames[0]" ref="phoneTypeInput"></mzinput>
-                        <a class="addInputBtn"></a>
-                        <a class="reduceInputBtn"></a>
+                <div class="group" v-for="(item, index) in usedPhoneType" :key="index">
+                    <div class="section">
+                        <div class="bar bar-input">
+                            <mzinput placeholder="请输入登陆过该手机的手机型号" label="手机型号：" v-model="item.phoneType" ref="phoneTypeInput"></mzinput>
+                            <a class="addInputBtn"></a>
+                            <a class="reduceInputBtn"></a>
+                        </div>
+                        <div class="phone-type-tips" v-show="index == 0">
+                            <p>可在“设置>关于手机”中，或手机保修书、包装盒上查看。如 MEIZU 16</p>
+                        </div>
+                        <div class="forgoten-content">
+                            <mz-checkbox v-model="forgotNickname" :label="'未曾登陆过手机'"
+                            ></mz-checkbox>
+                        </div>
                     </div>
-                    <div class="phone-type-tips">
-                        <p>可在“设置>关于手机”中，或手机保修书、包装盒上查看。如 MEIZU 16</p>
+                    <div class="section">
+                        <div class="bar bar-input">
+                            <mzinput placeholder="请输入登陆过该手机的序列号" label="手机序列号：" v-model="item.phoneId" ref="phoneIdInput"></mzinput>
+                            <a class="reduceInputBtn"></a>
+                            <a class="addInputBtn"></a>
+                        </div>
+                        <div class="forgoten-content">
+                            <mz-checkbox
+                            v-model="forgotPhone"
+                            :label="'找不到序列号'"
+                            ></mz-checkbox>
+                        </div>
                     </div>
-                    <div class="forgoten-content">
-                        <mz-checkbox
-                        v-model="forgotNickname"
-                        :label="'未曾登陆过手机'"
-                        ></mz-checkbox>
-                    </div>
-                </div>
-                <div class="section">
-                    <div class="bar bar-input">
-                        <mzinput placeholder="请输入登陆过该手机的序列号" label="手机序列号：" v-model="phones[0]" ref="phoneIdInput"></mzinput>
-                        <a class="reduceInputBtn"></a>
-                        <a class="addInputBtn"></a>
-                    </div>
-                    <div class="forgoten-content">
-                        <mz-checkbox
-                        v-model="forgotPhone"
-                        :label="'找不到序列号'"
-                        ></mz-checkbox>
+                    <div class="operation">
+                        <span class="op add" @click="handleAdd('phoneType')" v-show="item.phoneType || item.phoneId">+</span>
+                        <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">-</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="main" v-show="nowStep === 3">
+        <div class="main step3" v-show="nowStep === 3">
             <div class="content content-form">
                 <div class="section">
                     <span class="select-label">账号注册时间：</span>
@@ -118,14 +149,23 @@
                     </div>
                 </div>
                 <div class="section">
-                    <div class="bar bar-input">
-                        <span class="select-label">曾用密码：</span>
+                    <span class="select-label">曾用密码：</span>
+                    <div class="content input-content">
+                        <div class="bar bar-input" v-for="(item, index) in usedPassword" :key="index">
+                            <div class="outer-input">
+                                <input type="text" placeholder="请输入曾用密码" v-model="usedPassword[index]">
+                            </div>
+                            <div class="operations">
+                                <span class="op add" @click="addUsedPwd" v-show="usedPassword[index]">+</span>
+                                <span class="op sub" @click="subUsedPwd(index)" v-show="index > 0">-</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="content content-btn">
-            <span class="btn-back">
+            <span class="btn-back" v-show="nowStep != 1">
                 <btn :type="'white'" :text="'上一步'" @clicked="back(nowStep)"></btn>
             </span>
             <span class="btn-next">
@@ -186,17 +226,19 @@ export default {
           name: '重置密码',
         },
       ],
-      nowStep: 3,
+      nowStep: 2,
       account: '',
       nicknames: [''],
       emails: [''],
       phones: [''],
+      usedPassword: [''],
       showModal: false,
       message: '',
-      showValue: '请选择证件类型',
-      choosenType: '请选择证件类型',
-      idCardTypes: [
-
+      usedPhoneType:[
+          {
+              phoneType: '',
+              phoneId: '',
+          }
       ],
       forgotNickname: false,
       forgotMail: false,
@@ -212,12 +254,14 @@ export default {
   methods: {
     back(steps) {
         if (steps > 1) {
-            steps -- ;
+            this.nowStep -- ;
         }
     },
     next(steps) {
         if (steps < 3) {
-            steps ++ ;
+            this.nowStep ++ ;
+        } else {
+            // 提交表单
         }
     },
     closeModal() {
@@ -230,6 +274,78 @@ export default {
     reload() {
         
     },
+    addUsedPwd() {
+        this.usedPassword.push('');
+    },
+    subUsedPwd(index) {
+        this.usedPassword.splice(index,1);
+    },
+    handleAdd(type) {
+        switch(type) {
+            case 'nickname': {
+                this.nicknames.push('');
+                break;
+            }
+            case 'email': {
+                this.emails.push('');
+                break;
+            }
+            case 'phones': {
+                this.phones.push('');
+                break;
+            }
+            case 'phoneType': {
+                this.usedPhoneType.push({
+                    phoneType: '',
+                    phoneId: ''
+                });
+                break;
+            }
+        }
+    },
+    handleSub(index, type) {
+        switch(type) {
+            case 'nickname': {
+                this.nicknames.splice(index,1);
+                break;
+            }
+            case 'email': {
+                this.emails.splice(index,1);
+                break;
+            }
+            case 'phones': {
+                this.phones.splice(index,1);
+                break;
+            }
+            case 'phoneType': {
+                this.usedPhoneType.splice(index,1);
+                break;
+            }
+        }
+    },
+    handleForgot(type) {
+        console.log(type);
+        switch(type) {
+            case 'nickname': {
+                this.nicknames=[''];
+                break;
+            }
+            case 'email': {
+                this.emails=[''];
+                break;
+            }
+            case 'phones': {
+                this.phones=[''];
+                break;
+            }
+            case 'phoneType': {
+                break;
+            }
+            case 'phoneId': {
+                break;
+            }
+        }
+    }
   },
   mounted() {
       this.account = getParams('account');
@@ -256,17 +372,67 @@ export default {
                     line-height: 24px;
                 }
             }
+            &.step1 {
+                .content-form {
+                    margin-top: 40px;
+                }
+            }
             .content-form {
-                margin-top: 40px;
                 &.used-phone-data {
                     margin-top: 100px;
+                    .operation {
+                        float: right;
+                    }
                 }
                 .section {
                     width: 100%;
                     text-align: left;
+                    .select-label, .label-input {
+                        display: inline-block;
+                        width: 190px;
+                        text-align: right;
+                    }
                     .select-content {
                         width: 140px;
                         display: inline-block;
+                    }
+                    .input-content {
+                        display: inline-block;
+                        width: auto;
+                        .bar-input {
+                            margin-bottom: 20px;
+                            &.last-input {
+                                margin-bottom: 0;
+                            }
+                            .outer-input {
+                                width: 256px;
+                                border: 1px solid rgba(0,0,0,0.15);
+                                border-radius: 5px;
+                                display: inline-block;
+                                padding: 9px 14px;
+                                height: 20px;
+                                vertical-align: middle;
+                                input {
+                                    font-size:14px;
+                                    line-height: 20px;
+                                    height: 20px;
+                                    display: inline-block;
+                                }
+                            }
+                            .operations {
+                                display: inline-block;
+                                margin-left: 10px;
+                                vertical-align: middle;
+                                .op {
+                                    display: inline-block;
+                                    width: 26px;
+                                    height: 26px;
+                                    &.add {
+                                        margin-right: 6px;
+                                    }
+                                }
+                            }
+                        }
                     }
                     .date-picker {
                         width: 292px;
@@ -286,64 +452,10 @@ export default {
                         }
                     }
                     .forgoten-content {
-                        margin-left: 185px;
+                        margin-left: 195px;
                         font-size: 14px;
                         opacity: 0.4;
                         margin-top: 8px;
-                    }
-                    .bar-input {
-                        width: 576px;
-                        margin: 0 auto;
-                    }
-                    .upload-pic {
-                        .upload-label {
-                            display: inline-block;
-                            vertical-align: top;
-                        }
-                        .upload-bar {
-                            display: inline-block;
-                            .re-upload {
-                                display: inline-block;
-                                margin-top: 8px;
-                                color: #387AFF;
-                                font-size: 16px;
-                                cursor: pointer;
-                            }
-                            .upload-btn {
-                                display: block;
-                                vertical-align: top;
-                                width: 132px;
-                                height: 132px;
-                                background: #FFFFFF;
-                                border: 1px solid rgba(0,0,0,0.15);
-                                border-radius: 4px;
-                                position: relative;
-                                cursor: pointer;
-                                .upload-portrait {
-                                    display: inline-block;
-                                    height: 34px;
-                                    width: 2px;
-                                    background: #D8D8D8;
-                                    border-radius: 8px;
-                                    position: absolute;
-                                    left: 65px;
-                                    top: 49px;
-                                }
-                                .upload-crosswise {
-                                    display: inline-block;
-                                    height: 2px;
-                                    width: 34px;
-                                    background: #D8D8D8;
-                                    border-radius: 8px;
-                                    position: absolute;
-                                    left: 49px;
-                                    top: 65px;
-                                }
-                            }
-                        }
-                        .upload-original {
-                            display: none;
-                        }
                     }
                 }
             }
@@ -375,7 +487,7 @@ export default {
             }
         }
         .content-btn {
-            margin-top: 99px;
+            margin-top: 80px;
             .btn-back,.btn-next {
                 display: inline-block;
                 width: 140px;

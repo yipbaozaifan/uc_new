@@ -72,7 +72,7 @@ export default {
       contactList: [],
       choosenName:[],
       account: '',
-      leftCount: 0,
+      leftCount: 10,
       leftMatch: 5,
       message:"",
       showModal: false,
@@ -163,6 +163,14 @@ export default {
         // 清空已选，重新获取
         this.choosenName = [];
         this.getContactList().then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = 'https://i.flyme.cn/forgetpwd';
+                }, 2000);
+                return;
+            }
           if (res.data.code === "200") {
               this.contactList = res.data.value.contacts;
               this.leftCount = res.data.value.leftCount;

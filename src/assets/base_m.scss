@@ -1,0 +1,90 @@
+@function px2vw($px, $base: 360 * 3) {
+    @return ($px / $base) * 100vw;
+}
+  
+@function px2vh($px, $base: 567 * 3) {
+    @return ($px / $base) * 100vh;
+}
+
+html,body {
+    height: 100%;
+    width: 100%;
+}
+#app {
+    width: 100%;
+    overflow: hidden;
+}
+.title {
+    margin: 0px auto;
+    height: px2vw(63);
+    margin-top: px2vw(126);
+    margin-bottom: px2vw(60);
+    overflow: hidden;
+    text-align: center;
+    font-size: px2vw(54);
+    line-height: px2vw(63);
+    color: #010101;
+}
+.steps-warp {
+    margin-top: px2vw(90);
+}
+.content-form {
+    .section {
+        width: 100%;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: px2vw(39);
+        .link {
+            margin-left: 20px;
+            width: 118px;
+            text-align: left;
+            cursor: pointer;
+        }
+    }
+}
+.btn-next {
+    width: 240px;
+    margin: px2vw(650) auto;
+    margin-bottom: px2vw(64);
+}
+.link {
+    display: inline-block;
+    vertical-align: middle;
+    color: #387AFF;
+}
+.content-btn { 
+    text-align: center;
+}
+.mask {
+    width: 100%;
+    height: 100%;
+    z-index: 101;
+    background-color: #000000;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.modal-tips {
+    opacity: 0.4;
+    font-family: MicrosoftYaHei;
+    font-size: 14px;
+    color: #000000;
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 19px;
+    width: 317px;
+    margin: 0 auto;
+    &.modal-tips-ot {
+        margin-top: 40px;
+        font-size: 16px;
+    }
+}
+.modal-btn-container {
+    width: 100%;
+    margin-top: 50px;
+    .modal-btn {
+        width: 140px;
+        margin: 0 auto;
+    }
+}

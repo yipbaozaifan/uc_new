@@ -107,16 +107,22 @@ export default {
                         location.href = '/uc/system/webjsp/forgetpwd/toResetPwd?account=' + this.account;
                     } else {
                         // 显示提示
-                        this.message = res.data.value.tips;
-                        this.showModal = true;
+                        //this.message = res.data.value.tips;
+                        //this.showModal = true;
+                        this.$refs.idInput.showInputTips(res.data.value.tips);
                         this.canSubmit = true;
                     }
                 } else {
                     if ( res.data.code === "500" ) {
                         this.message = res.data.message;
                         this.showModal = true;
+                        this.canSubmit = true;
                     }
                 }
+            }, (err) => {
+                this.message = '网络错误，请重试';
+                this.showModal = true;
+                this.canSubmit = true;
             })
         }
     },
