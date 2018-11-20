@@ -1464,7 +1464,7 @@ export default {
         }
         &::before {
             content: '';
-            height: 30px;
+            height: 100%;
             vertical-align: middle;
             display: inline-block;
         }
@@ -1473,7 +1473,6 @@ export default {
             font-size: 16px;
             height: 100%;
             line-height: 100%;
-            vertical-align: middle;
             width: 100%;
             &::placeholder {
                 color: rgba(0, 0, 0, 0.3);
@@ -1499,8 +1498,10 @@ export default {
             vertical-align: middle;
             width: 60px;
             height: 100%;
+            line-height: 100%;
             cursor: pointer;
             border-right: 1px solid #ddd;
+            margin-bottom:9px;
             .country-code-selected {
                 height: 12px;
                 line-height: 12px;
@@ -1520,6 +1521,7 @@ export default {
                 display: inline-block;
                 width: 14px;
                 height: 16px;
+                line-height: 16px;
                 vertical-align: middle;
             }
         }
@@ -1589,8 +1591,6 @@ export default {
             }
             .state {
                 display: inline-block;
-                height: 36px;
-                line-height: 36px;
                 width: 85px;
                 font-size: 14px;
                 vertical-align: middle;

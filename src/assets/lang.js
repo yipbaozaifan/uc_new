@@ -105,10 +105,12 @@ export const forgetPwd_var_id = {
         title: '修改登录密码',
         accountLabel: '身份证号：',
         accountHolder: '请输入实名认证过的身份证号码',
+        accountHolder_m: '请输入证件号码',
         btn: '下一步',
         modalBtn: '确定',
         modalTitle: '提示',
         complaintLink: '账号申诉',
+        idTips: '请输入实名认证过的身份证号码',
         headerLink: 'https://www.meizu.com/',
     },
     EN: {
@@ -125,7 +127,9 @@ export const forgetPwd_var_id = {
 export const forgetPwd_var_contact = {
     CH: {
         title: '修改登录密码',
+        title_m: '联系人验证',
         contactTips: '账号安全等级低，继续重置密码需要进行联系人信息验证，请你选择三个与你有关联的联系人',
+        contactTips_m: '请从下方联系人中找出你通讯录中的3个联系人',
         btn: '下一步',
         modalBtn: '确定',
         modalTitle: '提示',

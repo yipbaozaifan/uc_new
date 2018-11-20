@@ -86,7 +86,7 @@ export default {
     margin-top: 6px;
     float: right;
     &.actived-step {
-      border-top: 10px solid #387AFF;
+      border-top: 5px solid #387AFF;
     }
   }
 }
