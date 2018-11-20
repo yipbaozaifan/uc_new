@@ -39,7 +39,7 @@
                 <p class="modal-tips">（30分钟内有效）</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <a @click="closeModal">{{useLang.modalBtn}}</a>
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <a @click="closeModal">{{useLang.modalBtn}}</a>
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
 import mzprogress from '../../components/progress/progress_m.vue';
 import btn from '../../components/button/button_m.vue';
 import mzinput from '../../components/input/input_m.vue';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import axios from 'axios';
 import { getData, getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';

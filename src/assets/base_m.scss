@@ -65,15 +65,19 @@ html,body {
     top: 0;
     left: 0;
 }
+.modal-main {
+    padding: px2vw(72) 0;
+    box-sizing: border-box;
+}
 .modal-tips {
     opacity: 0.4;
     font-family: MicrosoftYaHei;
-    font-size: 14px;
+    font-size: 16px;
     color: #000000;
     letter-spacing: 0;
     text-align: center;
     line-height: 19px;
-    width: 317px;
+    width: 100%;
     margin: 0 auto;
     &.modal-tips-ot {
         margin-top: 40px;
@@ -82,9 +86,14 @@ html,body {
 }
 .modal-btn-container {
     width: 100%;
-    margin-top: 50px;
+    margin-top: px2vw(72);
     .modal-btn {
-        width: 140px;
+        width: 100%;
+        font-size: 16px;
         margin: 0 auto;
+        text-align: center;
+        a {
+           color: #3F8EF1; 
+        }
     }
 }

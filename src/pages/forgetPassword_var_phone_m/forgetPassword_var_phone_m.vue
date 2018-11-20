@@ -38,7 +38,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <a @click="closeModal">{{useLang.modalBtn}}</a>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@ import mzprogress from '../../components/progress/progress_m.vue';
 import btn from '../../components/button/button_m.vue';
 import mzinput from '../../components/input/input_m.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getData, getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
 import { forgetPwd_var_phone, forgetPwdStep } from '../../assets/lang.js';

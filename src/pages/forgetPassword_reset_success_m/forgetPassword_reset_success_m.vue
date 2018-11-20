@@ -1,15 +1,15 @@
 <template>
     <div id="app">
         <div class="steps-warp">
-            <mzprogress :steps="useStep" :actived="2" size="48" line-length="128"></mzprogress>
+            <mzprogress :steps="useStep" :actived="3" size="48" line-length="128"></mzprogress>
         </div>
         <h1 class="title">{{useLang.title}}</h1>
         <div class="content content-form">
             <div class="section">
-                <div class="fail-container">
-                    <img src="./assets/fail.png" alt="">
-                    <p class="fail-title">{{useLang.failTitle}}</p>
-                    <p class="fail-text">{{useLang.failText}}</p>
+                <div class="success-container">
+                    <img src="./assets/success.png" alt="">
+                    <p class="success-title">{{useLang.successTitle}}</p>
+                    <p class="success-text">{{count}}秒后自动返回登录界面</p>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@ import btn from '../../components/button/button_m.vue';
 import Axios from 'axios';
 import { getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_fail_contact, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_reset_success, forgetPwdStep } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -38,38 +38,50 @@ export default {
   mixins:[globalMethods],
   data() {
     return {
-      languageObject: forgetPwd_fail_contact,
+      languageObject: forgetPwd_reset_success,
       steps: forgetPwdStep,
-      account: ''
+      account: '',
+      count: 5,
+      backUrl: '',
     }
   },
   methods: {
     next() {
-        console.log('complaint');
-        location.href = 'https://i.flyme.cn/appeal';
+        this.goLogin()
+    },
+    goLogin() {
+        location.href = decodeURIComponent(this.backUrl) || 'https://i.flyme.cn';
     },
   },
   mounted() {
       this.account = getParams('account');
       this.lang = getParams('lang') || 'zh_CN';
+      this.backUrl = getParams('backUrl') || 'https://i.flyme.cn';
+      let counter = setInterval(() => {
+          this.count--;
+          if (this.count <= 0) {
+              clearInterval(counter);
+              this.goLogin();
+          }
+      }, 1000)
   }
 }
 </script>
-
+   
 <style lang="scss">
-    @import '../../assets/base_m.scss';
+     @import '../../assets/base_m.scss';
     .content-form {
         .section {
             width: 100%;
             text-align: center;
             margin: 0 auto;
             margin-bottom: 20px;
-            .fail-container {
+            .success-container {
                 text-align: center;
                 img {
                     width: 70%;
                 }
-                .fail-title {
+                .success-title {
                     font-family: MicrosoftYaHei;
                     font-size: 18px;
                     color: #000000;
@@ -77,13 +89,12 @@ export default {
                     margin-bottom: 6px;
                     letter-spacing: 0;
                 }
-                .fail-text {
+                .success-text {
                     opacity: 0.4;
                     font-family: MicrosoftYaHei;
                     font-size: 12px;
                     color: #000000;
                     letter-spacing: 0;
-                    padding: 0 px2vw(48);
                 }
             }
         }

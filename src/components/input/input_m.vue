@@ -1440,7 +1440,6 @@ export default {
     .input-bar {
         text-align: left;
         width: 100%;
-        box-sizing: border-box;
         margin: 0 auto;
         font-size: 0;
         position: relative;
@@ -1450,9 +1449,7 @@ export default {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         outline: none;
         color: #474747;
-        box-sizing: border-box;
         vertical-align: middle;
-        padding-bottom: 9px;
         &.error-tips {
             border-bottom: 1px solid #DE3131;
         }
@@ -1497,8 +1494,8 @@ export default {
             display: inline-block;
             vertical-align: middle;
             width: 60px;
-            height: 100%;
-            line-height: 100%;
+            height: 16px;
+            line-height: 16px;
             cursor: pointer;
             border-right: 1px solid #ddd;
             margin-bottom:9px;
@@ -1633,17 +1630,17 @@ export default {
             }
         }
         .show-pwd-container {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 100%;
             vertical-align: middle;
             display: inline-block;
             float: right;
             cursor: pointer;
             .iconfont {
                 display: inline-block;
-                height: 30px;
+                height: 100%;
                 font-size: 26px;
-                line-height: 30px;
+                line-height: 100%;
             }
         }
     }

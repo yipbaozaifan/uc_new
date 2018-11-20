@@ -29,7 +29,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <a @click="closeModal">{{useLang.modalBtn}}</a>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@ import mzprogress from '../../components/progress/progress_m.vue';
 import btn from '../../components/button/button_m.vue';
 import mzinput from '../../components/input/input_m.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
 import { forgetPwd_index, forgetPwdStep } from '../../assets/lang.js';
@@ -132,25 +132,6 @@ export default {
                 padding-top: px2vw(72);
                 box-sizing: border-box;
             }
-        }
-    }
-    .modal-tips {
-        opacity: 0.4;
-        font-family: MicrosoftYaHei;
-        font-size: 14px;
-        color: #000000;
-        letter-spacing: 0;
-        text-align: center;
-        line-height: 19px;
-        width: 317px;
-        margin: 0 auto;
-    }
-    .modal-btn-container {
-        width: 100%;
-        margin-top: 50px;
-        .modal-btn {
-            width: 140px;
-            margin: 0 auto;
         }
     }
 </style>
