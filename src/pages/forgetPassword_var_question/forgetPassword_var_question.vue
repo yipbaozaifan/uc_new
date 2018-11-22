@@ -19,12 +19,6 @@
                     <a class="link"></a>
                 </div>
             </div>
-            <!--<div class="section" v-show="!phoneInput">
-                <div class="bar bar-tips">
-                    <p class="text-tips">验证码已发送至 +{{inputedPhone}}</p>
-                    <a class="change-phone" @click="handleChange">更改验证手机</a>
-                </div>
-            </div>-->
         </div>
         <div class="content content-btn">
             <div class="btn-next">
@@ -34,17 +28,17 @@
         </div>
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
-        <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <btn :type="'blue'" :text="useModal.okBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -61,7 +55,7 @@ import Axios from 'axios';
 import { getData, getParams } from '../../assets/utils.js';
 import mzfooter from '../../components/footer/footer.vue';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_var_question, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_question, forgetPwdStep, modalLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -86,6 +80,7 @@ export default {
       showModal: false,
       message: '',
       overTime: false,
+      modalLangObject: modalLang,
     }
   },
   methods: {
@@ -106,7 +101,7 @@ export default {
         }
         if (emptyIndex.length>0) {
             emptyIndex.forEach((item)=>{
-                this.$refs.answers[item].showInputTips('请输入密保答案');
+                this.$refs.answers[item].showInputTips(this.useLang.answerHolder);
             })
             return
         } else {
@@ -137,6 +132,11 @@ export default {
                 if(result){
                     location.href = res.data.value.url; 
                 }
+            }, (err) => {
+                this.canSubmit = true;
+                this.message = this.useLang.errorTips;
+                this.showModal = true;
+                this.showTips = true;
             });
         }
     },
@@ -148,7 +148,7 @@ export default {
     handleBlur(index) {
         // 检测是有有空答案
         if (answer[index] === "") {
-            this.$refs.answer[index].showInputTips('请输入密保答案');
+            this.$refs.answer[index].showInputTips(this.useLang.answerHolder);
         }
     },
   },
@@ -180,7 +180,7 @@ export default {
           }
       }, (err) => {
           this.showModal = true;
-          this.message = '网络错误，请稍后重试';
+          this.message = this.useLang.errorTips;
       }).catch((err) => {
           this.showModal = true;
           this.message = err;

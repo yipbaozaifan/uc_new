@@ -10,6 +10,26 @@ const globalMethods = {
                 return this.languageObject.EN;
             }
         },
+        useModal() {
+            if (!this.modalLangObject) {
+                return null;
+            }
+            if (this.lang === 'zh_CN') {
+                return this.modalLangObject.CH;
+            } else {
+                return this.modalLangObject.EN;
+            }
+        },
+        useInput() {
+            if (!this.inputLangObject) {
+                return null;
+            }
+            if (this.lang === 'zh_CN') {
+                return this.inputLangObject.CH;
+            } else {
+                return this.inputLangObject.EN;
+            }
+        },
         useStep() {
             if (this.lang === 'zh_CN') {
                 return this.steps.CH;

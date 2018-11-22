@@ -30,3 +30,4 @@ export function getParams(paramName) {
     }
     return paramValue == "" && (paramValue = null), paramValue 
 }
+

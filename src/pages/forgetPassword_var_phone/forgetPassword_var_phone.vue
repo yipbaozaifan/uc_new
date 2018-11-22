@@ -8,7 +8,7 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.accountHolder" type="account" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedPhone" ref="phoneInput" @changeinp="handleChange" :maxlen="11"></mzinput>
                 </div>
-                <a class="link" v-if="hasEmail == 'y'" @click="changeWay">通过邮箱验证</a>
+                <a class="link" v-if="hasEmail == 'y'" @click="changeWay">{{useLang.exchange}}</a>
                 <a class="link" v-else></a>
             </div>
             <!--<div class="section" v-show="!phoneInput">
@@ -19,7 +19,7 @@
             </div>-->
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" v-model="varCode" :maxlen="6" @resend="handleResend"></mzinput>
+                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" v-model="varCode" :maxlen="6" @resend="handleResend" :get-state="useInput.getState" :resend="useInput.resend"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -32,17 +32,17 @@
         </div>
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
-        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <btn :type="'blue'" :text="useModal.okBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -59,7 +59,7 @@ import mzModal from '../../components/mzModal/mzModal.vue';
 import { getData, getParams } from '../../assets/utils.js';
 import mzfooter from '../../components/footer/footer.vue';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_var_phone, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_phone, forgetPwdStep, modalLang, inputLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -88,6 +88,8 @@ export default {
       hasEmail: '',
       sent: false,
       overTime: false,
+      modalLangObject: modalLang,
+      inputLangObject: inputLang,
     }
   },
   methods: {
@@ -98,11 +100,11 @@ export default {
             return;
         }
         if (this.inputedPhone === "") {
-            this.$refs.phoneInput.showInputTips('请输入正确的手机号');
+            this.$refs.phoneInput.showInputTips(this.useLang.phoneEmpty);
             return;
         }
         if (this.varCode === "") {
-            this.$refs.varinput.showInputTips('请输入验证码');
+            this.$refs.varinput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
         this.varPhone().then((res) => {
@@ -116,9 +118,9 @@ export default {
             }
             if (res.data.code === "200") {
                 if (!res.data.value) {
-                    this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
+                    this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
                     this.wrong = true;
-                    return Promise.reject('输入手机号与绑定手机号不一致');
+                    return Promise.reject(this.useLang.wrongPhone);
                 } else {
                     return axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
                         account: this.account,
@@ -155,7 +157,7 @@ export default {
         }, (err) => {
             console.log(err);
         }).catch((err) => {
-            this.message = "网络错误，请稍后再试";
+            this.message = this.useLang.errorTips;
             this.showModal = true;
         });
     },
@@ -181,7 +183,7 @@ export default {
                 }
                 if (res.data.code === "200") {
                     if (!res.data.value) {
-                        this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
+                        this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
                         this.wrong = true;
                     } else {
                         this.$refs.varinput.allowSend();
@@ -238,7 +240,7 @@ export default {
             }
             if (res.data.code === "200") {
                 if (!res.data.value) {
-                    this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
+                    this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
                     this.wrong = true;
                 } else {
                     return axios.post('/uc/system/vcode/action/sendSmsVCode', data)

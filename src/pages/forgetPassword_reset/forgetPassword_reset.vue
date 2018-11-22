@@ -12,7 +12,7 @@
             </div>
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.repeatHolder" :type="'password'" :label="useLang.repeatLabel" v-model="varResetPwd" @finished="handleBlur(varResetPwd, 'repeat')" ref="repeat" @changeinp="handleChange"></mzinput>
+                    <mzinput :placeholder="useLang.repeatHolder" :type="'password'" :label="useLang.repeatLabel" v-model="varResetPwd" ref="repeat" @changeinp="handleChange"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -52,7 +52,7 @@ import inputVue from '../../components/input/input.vue';
 import { getData, getParams } from '../../assets/utils.js';
 import mzfooter from '../../components/footer/footer.vue';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_reset, forgetPwdStep } from '../../assets/lang.js'; 
+import { forgetPwd_reset, forgetPwdStep, modalLang } from '../../assets/lang.js'; 
 
 export default {
   name: 'app',
@@ -80,6 +80,7 @@ export default {
       languageObject: forgetPwd_reset,
       steps: forgetPwdStep,
       overTime: false,
+      modalLangObject: modalLang,
     }
   },
   methods: {
@@ -93,27 +94,29 @@ export default {
             return;
         }
         if (this.resetPwd == this.account) {
-            this.$refs.reset.showInputTips('密码不能与账号相同');
+            this.$refs.reset.showInputTips(this.useLang.sameError);
             this.wrong = true;
             return;
         }
         if (this.resetPwd === "" || this.resetPwd.length > 16 || this.resetPwd.length < 8) {
-            this.$refs.reset.showInputTips('密码应为8~16个字符，区分大小写');
+            this.$refs.reset.showInputTips(this.useLang.lengthError);
+            this.wrong = true;
+            return;
         }
         if (!reg.test(this.resetPwd)) {
-            this.$refs.reset.showInputTips('密码至少包含数字、字母和符号两种类型');
+            this.$refs.reset.showInputTips(this.useLang.typeError);
             this.wrong = true;
             return;
         }
 
         if (this.varResetPwd === "") {
-            this.$refs.repeat.showInputTips('请重新输入密码');
+            this.$refs.repeat.showInputTips(this.useLang.noRepeat);
             this.wrong = true;
             return;
         }
 
         if (this.resetPwd !== this.varResetPwd) {
-            this.$refs.repeat.showInputTips('两次输入密码不一致');
+            this.$refs.repeat.showInputTips(this.useLang.notEquals);
             this.wrong = true;
             return;
         }
@@ -153,9 +156,16 @@ export default {
         })
     },
     handleBlur(pwd, target) {
+        const reg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
         if (pwd === "" || pwd.length > 16 || pwd.length < 8) {
-            this.$refs[target].showInputTips('密码应为8~16个字符，区分大小写,至少包含两种类型');
+            this.$refs[target].showInputTips(this.useLang.lengthError);
             this.wrong = true;
+            return;
+        }
+        if (!reg.test(pwd)) {
+            this.$refs[target].showInputTips(this.useLang.typeError);
+            this.wrong = true;
+            return;
         }
     },
     closeModal() {
@@ -185,7 +195,7 @@ export default {
         this.tokenKey = res.data.value;
       }).catch((err) => {
           this.showModal = true;
-          this.message = "网络错误"
+          this.message = this.useLang.errorTips;
       })
   }
 }

@@ -12,7 +12,7 @@
             </div>
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.varCodeHolder" :type="'imgCode'" :label="useLang.varCodeLabel" v-model="varCode" ref="kapkeyInput" :maxlen="6"></mzinput>
+                    <mzinput :placeholder="useLang.varCodeHolder" :type="'imgCode'" :label="useLang.varCodeLabel" v-model="varCode" ref="kapkeyInput" :maxlen="6" :title="useInput.title"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -25,12 +25,12 @@
         </div>
         <div class="mask" v-show="showModal">
         </div>
-        <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" >
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <btn :type="'blue'" :text="useModal.okBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@ import axios from 'axios';
 import mzModal from '../../components/mzModal/mzModal.vue';
 import { getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_index, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_index, forgetPwdStep, inputLang, modalLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -70,6 +70,8 @@ export default {
       message: '',
       languageObject: forgetPwd_index,
       steps: forgetPwdStep,
+      modalLangObject: modalLang,
+      inputLangObject: inputLang,
     }
   },
   methods: {
@@ -81,12 +83,12 @@ export default {
             account = this.account;
         }
         if (account === '') {
-            this.$refs.accountInput.showInputTips('请输入账号');
+            this.$refs.accountInput.showInputTips(this.useLang.AccountEmptyTips);
             return;
         }
         if (account )
         if (this.varCode === '') {
-            this.$refs.kapkeyInput.showInputTips('请填写验证码');
+            this.$refs.kapkeyInput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
         let data = {
@@ -107,7 +109,7 @@ export default {
             }
         }, (err) => {
             this.showModal = true;
-            this.message = "网络错误，请重试";
+            this.message = useLang.errorTips;
             this.$refs.kapkeyInput.getImageKey();
         })
     },

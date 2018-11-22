@@ -1,9 +1,9 @@
 <template>
     <div id="app">
         <div class="steps-warp">
-            <mzprogress :steps="useStep" :actived="1" size="48" line-length="128"></mzprogress>
+            <mzprogress :steps="useStep" :actived="1" size="58" line-length="128"></mzprogress>
         </div>
-        <h1 class="title">{{useLang.title}}</h1>
+        <h1 class="title">{{useLang.title_m}}</h1>
         <div class="content content-form">
             <div class="section">
                 <div class="bar bar-input">
@@ -24,12 +24,12 @@
         </div>
         <div class="mask" v-show="showModal">
         </div>
-        <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" >
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <a @click="closeModal">{{useLang.modalBtn}}</a>
+                        <a @click="closeModal">{{useModal.okBtn}}</a>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@ import axios from 'axios';
 import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_index, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_index, forgetPwdStep, modalLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -64,6 +64,7 @@ export default {
       message: '',
       languageObject: forgetPwd_index,
       steps: forgetPwdStep,
+      modalLangObject: modalLang,
     }
   },
   methods: {
@@ -75,12 +76,12 @@ export default {
             account = this.account;
         }
         if (account === '') {
-            this.$refs.accountInput.showInputTips('请输入账号');
+            this.$refs.accountInput.showInputTips(this.useLang.AccountEmptyTips);
             return;
         }
         if (account )
         if (this.varCode === '') {
-            this.$refs.kapkeyInput.showInputTips('请填写验证码');
+            this.$refs.kapkeyInput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
         let data = {
@@ -101,7 +102,7 @@ export default {
             }
         }, (err) => {
             this.showModal = true;
-            this.message = "网络错误，请重试";
+            this.message = useLang.errorTips;
             this.$refs.kapkeyInput.getImageKey();
         })
     },
@@ -133,5 +134,8 @@ export default {
                 box-sizing: border-box;
             }
         }
+    }
+    .btn-next {
+        margin-top: px2vw(548);
     }
 </style>

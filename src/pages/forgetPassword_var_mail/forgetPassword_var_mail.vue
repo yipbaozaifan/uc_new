@@ -8,7 +8,7 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="useLang.accountHolder" :type="'email'" :label="useLang.accountLabel" @finished="handleBlur" v-model="inputedMail" ref="mailInput" @changeinp="handleChange" ></mzinput>
                 </div>
-                <a class="link" v-if="hasPhone=='y'" @click="changeWay">使用手机验证</a>
+                <a class="link" v-if="hasPhone=='y'" @click="changeWay">{{useLang.exchange}}</a>
                 <a class="link" v-else></a>
             </div>
             <!--<div class="section" v-show="!phoneInput">
@@ -19,7 +19,7 @@
             </div>-->
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" :maxlen="6" v-model="varCode" @resend="handleResend"></mzinput>
+                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" :maxlen="6" v-model="varCode" @resend="handleResend" :get-state="useInput.getState" :resend="useInput.resend"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -32,14 +32,14 @@
         </div>
         <div class="mask" v-show="showModal" >
         </div>
-        <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="showSend">
-                <p class="modal-tips">验证码已发往邮箱 {{inputedMail}}</p>
-                <p class="modal-tips">请前往查看并将验证码填写在输入框</p>
-                <p class="modal-tips">（30分钟内有效）</p>
+                <p class="modal-tips">{{useLang.sendTips[0] + inputedMail}}</p>
+                <p class="modal-tips">{{useLang.sendTips[1]}}</p>
+                <p class="modal-tips">{{useLang.sendTips[2]}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <btn :type="'blue'" :text="useModal.okBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
             </div>
@@ -47,12 +47,12 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="useLang.modalBtn" @clicked="closeModal"></btn>
+                        <btn :type="'blue'" :text="useModal.okBtn" @clicked="closeModal"></btn>
                     </div>
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -69,7 +69,7 @@ import axios from 'axios';
 import { getData, getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
 import mzfooter from '../../components/footer/footer.vue';
-import { forgetPwd_var_mail, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_mail, forgetPwdStep, modalLang, inputLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -99,6 +99,8 @@ export default {
       hasPhone: '',
       sent: false,
       overTime: false,
+      modalLangObject: modalLang,
+      inputLangObject: inputLang,
     }
   },
   methods: {
@@ -111,11 +113,11 @@ export default {
             return
         }
         if (this.inputedMail === "" || !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.inputedMail)) {
-            this.$refs.mailInput.showInputTips('请输入正确的邮箱');
+            this.$refs.mailInput.showInputTips(this.useLang.mailEmpty);
             return;
         }
         if (this.varCode === "") {
-            this.$refs.varinput.showInputTips('请输入验证码');
+            this.$refs.varinput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
         this.canSubmit = false;
@@ -130,7 +132,7 @@ export default {
             }
             if (res.data.code === "200") {
                 if (!res.data.value) {
-                    this.$refs.mailInput.showInputTips('你输入的不是预设邮箱');
+                    this.$refs.mailInput.showInputTips(this.useLang.wrongEmail);
                     this.wrong = true;
                     this.canSubmit = true;
                     return Promise.reject(res.data.message);
@@ -175,9 +177,8 @@ export default {
         }, (err) => {
             console.log(err);
         }).catch((err) => {
-            console.log(err);
             this.canSubmit = true;
-            this.message = '网络错误，请稍后再试';
+            this.message = this.useLang.errorTips;
             this.showModal = true;
             this.showTips = true;
         })
@@ -189,7 +190,7 @@ export default {
                 return;
             }
             if (this.inputedMail === "" || !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.inputedMail)) {
-                this.$refs.mailInput.showInputTips('请输入正确的邮箱');
+                this.$refs.mailInput.showInputTips(this.useLang.mailEmpty);
                 return;
             }
             this.varEmail().then((res) => {
@@ -203,7 +204,7 @@ export default {
                 }
                 if (res.data.code === "200") {
                     if (!res.data.value) {
-                        this.$refs.mailInput.showInputTips('输入邮箱与绑定的邮箱不一致');
+                        this.$refs.mailInput.showInputTips(this.useLang.wrongEmail);
                         this.wrong = true;
                     } else {
                         this.$refs.varinput.allowSend();
@@ -215,7 +216,7 @@ export default {
                     this.showTips = true;
                 }
             }, (err) => {
-                this.message = '网络错误，请重试';
+                this.message = this.useLang.errorTips;
                 this.showTips = true;
                 this.showModal = true;
             });
@@ -266,7 +267,7 @@ export default {
             }
             if (res.data.code === "200") {
                 if (!res.data.value) {
-                    this.$refs.mailInput.showInputTips('你输入的不是预设邮箱');
+                    this.$refs.mailInput.showInputTips(this.useLang.wrongEmail);
                     this.wrong = true;
                     return Promise.reject(res.data.message);
                 } else {

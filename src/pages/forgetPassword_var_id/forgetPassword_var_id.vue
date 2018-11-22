@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
         <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
@@ -46,7 +46,7 @@ import Axios from 'axios';
 import mzfooter from '../../components/footer/footer.vue';
 import { getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_var_id, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_id, forgetPwdStep, modalLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -70,6 +70,7 @@ export default {
       showModal: false,
       wrong: false,
       overTime: false,
+      modalLangObject: modalLang,
     }
   },
   methods: {
@@ -85,7 +86,7 @@ export default {
         }
         // 提交验证码
         if (!this.varID(this.cardNumber)) {
-            this.$refs.idInput.showInputTips('请输入合法的身份证号码');
+            this.$refs.idInput.showInputTips(this.useLang.errorIdNum);
             this.wrong = true;
             return;
         } else {
@@ -120,7 +121,7 @@ export default {
                     }
                 }
             }, (err) => {
-                this.message = '网络错误，请重试';
+                this.message = this.useLang.errorTips;
                 this.showModal = true;
                 this.canSubmit = true;
             })
@@ -128,7 +129,7 @@ export default {
     },
     handleBlur() {
         if (!this.varID(this.cardNumber)) {
-            this.$refs.idInput.showInputTips('请输入合法的身份证号码');
+            this.$refs.idInput.showInputTips(this.useLang.errorIdNum);
             this.wrong = true;
         } 
     },

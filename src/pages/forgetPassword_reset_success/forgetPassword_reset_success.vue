@@ -8,7 +8,7 @@
                 <div class="success-container">
                     <img src="./assets/success.png" alt="">
                     <p class="success-title">{{useLang.successTitle}}</p>
-                    <p class="success-text">{{count}}秒后自动返回登录界面</p>
+                    <p class="success-text">{{count+" "+text}}</p>
                 </div>
             </div>
         </div>

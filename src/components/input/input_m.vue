@@ -15,11 +15,11 @@
             ]" @keyup="handleKeyUp" @input="$emit('input', $event.target.value)" @blur="emitBlur($event)" v-model="inputValue" :maxlength="maxlen">
             <span class="imgkey-container" v-if="type === 'imgCode'">
                 <span class="hr"></span>
-                <img :src="imgkey" alt="验证码" class="img img-key" title="点击可刷新验证码" @click="getImageKey">
+                <img :src="imgkey" alt="验证码" class="img img-key" :title="title" @click="getImageKey">
             </span>
             <span class="getcode-container" v-if="type === 'phoneCode'">
                 <span class="hr"></span>
-                <span class="state" :class="[phoneCodeState, {'invalid': invalid}]" @click="handleSend">{{getState}}</span>
+                <span class="state" :class="[phoneCodeState, {'invalid': invalid}]" @click="handleSend">{{resendState?resendText:getState}}</span>
             </span>
             <span class="show-pwd-container" v-if="type === 'password'">
                 <i class="iconfont" @click="toggleShowPwd" v-show="unShow">&#xeed2;</i>
@@ -47,7 +47,25 @@
 
 <script>
 export default {
-    props: ['placeholder', 'type', 'code', 'inptype', 'maxlen', 'lang'],
+    props: {
+        placeholder: String,
+        type: String,
+        inptype: String,
+        maxlen: [String, Number],
+        code: String,
+        getState: {
+            type: String,
+            default: '获取验证码',
+        },
+        resend: {
+            type: String,
+            default: '重新发送',
+        },
+        title: {
+            type: String,
+            default: '点击可刷新验证码',
+        }
+    },
     data() {
         return {
             countryCode: {
@@ -1287,11 +1305,12 @@ export default {
             ],
             showCode: false,
             inputValue: '',
+            resendText: '',
+            resendState: false,
             changeCycode: false,
             imgkey: '',
             showTips: false,
             tips: '',
-            getState: '获取验证码',
             waitTime: 60,
             phoneCodeState: 'get', // get or again ro wait
             invalid: true,
@@ -1373,16 +1392,17 @@ export default {
         },
         count() {
             const that = this;
-            that.getState = '重新获取('+that.waitTime+')';
+            this.resendState = true;
+            that.resendText = this.resend +'('+that.waitTime+')';
             that.waitTime--;
             let timer = setInterval(function() {
                 if (that.waitTime > 0) {
-                    that.getState = '重新获取('+that.waitTime+')';
+                    that.resendText = that.resend +'('+that.waitTime+')';
                     that.waitTime--;
                 } else {
                     that.$emit('resend')
                     that.phoneCodeState = 'again';
-                    that.getState = '重新获取';
+                    that.resendText = that.resend +'('+that.waitTime+')';
                     clearInterval(timer);
                 } 
             }, 1000) 
@@ -1456,7 +1476,6 @@ export default {
         .tips {
             font-size: 12px;
             color: #DE3131;
-            margin-top: 10px;
             text-align: left;
         }
         &::before {

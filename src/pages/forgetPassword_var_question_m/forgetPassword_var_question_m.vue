@@ -3,7 +3,7 @@
         <div class="steps-warp">
             <mzprogress :steps="useStep" :actived="2" size="48" line-length="128"></mzprogress>
         </div>
-        <h1 class="title">{{useLang.title}}</h1>
+        <h1 class="title">{{useLang.title_m}}</h1>
         <div class="content content-form">
             <div v-for="(item, index) in question" :key="index">
                 <div class="section section-question">
@@ -18,12 +18,6 @@
                     </div>
                 </div>
             </div>
-            <!--<div class="section" v-show="!phoneInput">
-                <div class="bar bar-tips">
-                    <p class="text-tips">验证码已发送至 +{{inputedPhone}}</p>
-                    <a class="change-phone" @click="handleChange">更改验证手机</a>
-                </div>
-            </div>-->
         </div>
         <div class="content content-btn">
             <div class="btn-next">
@@ -33,17 +27,17 @@
         </div>
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
-        <mz-modal :title="useLang.modalTitle" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <a @click="closeModal">{{useLang.modalBtn}}</a>
+                        <a @click="closeModal">{{useModal.okBtn}}</a>
                     </div>
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
     </div>
@@ -57,7 +51,7 @@ import mzModal from '../../components/mzModal/mzModal_m.vue';
 import Axios from 'axios';
 import { getData, getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_var_question, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_question, forgetPwdStep, modalLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -80,6 +74,7 @@ export default {
       showModal: false,
       message: '',
       overTime: false,
+      modalLangObject: modalLang,
     }
   },
   methods: {
@@ -100,7 +95,7 @@ export default {
         }
         if (emptyIndex.length>0) {
             emptyIndex.forEach((item)=>{
-                this.$refs.answers[item].showInputTips('请输入密保答案');
+                this.$refs.answers[item].showInputTips(this.useLang.answerHolder);
             })
             return
         } else {
@@ -131,6 +126,11 @@ export default {
                 if(result){
                     location.href = res.data.value.url; 
                 }
+            }, (err) => {
+                this.canSubmit = true;
+                this.message = this.useLang.errorTips;
+                this.showModal = true;
+                this.showTips = true;
             });
         }
     },
@@ -142,7 +142,7 @@ export default {
     handleBlur(index) {
         // 检测是有有空答案
         if (answer[index] === "") {
-            this.$refs.answer[index].showInputTips('请输入密保答案');
+            this.$refs.answer[index].showInputTips(this.useLang.answerHolder);
         }
     },
   },
@@ -174,7 +174,7 @@ export default {
           }
       }, (err) => {
           this.showModal = true;
-          this.message = '网络错误，请稍后重试';
+          this.message = this.useLang.errorTips;
       }).catch((err) => {
           this.showModal = true;
           this.message = err;

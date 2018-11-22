@@ -13,7 +13,7 @@
                     <span class="contact-item" v-for="(item,index) in contactList" :key="index" @click="choosen(index)" :class="{'choosen': choosenName.indexOf(index) > -1}">{{item}}</span>
                 </div>
                 <div class="container replace-container">
-                    <a @click="replaceList" class="replace" v-show="leftCount > 0">{{useLang.changeList+' ('+leftCount+'次)'}}</a>
+                    <a @click="replaceList" class="replace" v-show="leftCount > 0">{{useLang.changeList+' ('+leftCount + useLang.times}}</a>
                     <a class="replace forbid" v-show="leftCount <= 0">{{useLang.changeList+' (0)'}}</a>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
     </div>
@@ -50,7 +50,7 @@ import mzModal from '../../components/mzModal/mzModal_m.vue';
 import Axios from 'axios';
 import { getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_var_contact, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_contact, forgetPwdStep, modalLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -74,6 +74,7 @@ export default {
       showModal: false,
       hasSubmit: false,
       overTime: false,
+      modalLangObject: modalLang,
     }
   },
   methods: {
@@ -95,7 +96,7 @@ export default {
         }
 
         if (this.leftMatch <= 0) {
-            this.message = "你今天的匹配次数已用完";
+            this.message = this.useLang.noChances;
             this.showModal = true;
             return
         }
@@ -179,7 +180,7 @@ export default {
               }
           }
       }, (err) => {
-          this.message = "网络错误，请稍后重试"
+          this.message = this.useLang.errorTips;
           this.showModal = true;
       });
     },

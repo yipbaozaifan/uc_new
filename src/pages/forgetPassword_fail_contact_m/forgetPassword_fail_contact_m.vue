@@ -3,7 +3,7 @@
         <div class="steps-warp">
             <mzprogress :steps="useStep" :actived="2" size="48" line-length="128"></mzprogress>
         </div>
-        <h1 class="title">{{useLang.title}}</h1>
+        <h1 class="title"></h1>
         <div class="content content-form">
             <div class="section">
                 <div class="fail-container">

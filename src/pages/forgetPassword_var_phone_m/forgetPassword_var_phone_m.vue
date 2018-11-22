@@ -1,9 +1,9 @@
 <template>
     <div id="app">
         <div class="steps-warp">
-            <mzprogress :steps="useStep" :actived="2" size="48" line-length="128"></mzprogress>
+            <mzprogress :steps="useStep" :actived="2" size="58" line-length="128"></mzprogress>
         </div>
-        <h1 class="title">{{useLang.title}}</h1>
+        <h1 class="title">{{useLang.title_m}}</h1>
         <div class="content content-form">
             <div class="section">
                 <div class="bar bar-input">
@@ -18,10 +18,10 @@
             </div>-->
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" v-model="varCode" :maxlen="6" @resend="handleResend"></mzinput>
+                    <mzinput :placeholder="useLang.varCodeHolder" :type="'phoneCode'" :label="useLang.varCodeLabel" ref="varinput" @send="handleSend" v-model="varCode" :maxlen="6" @resend="handleResend" :get-state="useInput.getState" :resend="useInput.resend"></mzinput>
                 </div>
             </div>
-            <a class="link" v-if="hasEmail == 'y'" @click="changeWay">通过邮箱验证</a>
+            <a class="link" v-if="hasEmail == 'y'" @click="changeWay">{{useLang.exchange}}</a>
             <a class="link" v-else></a>
         </div>
         
@@ -33,17 +33,17 @@
         </div>
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
-        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
+        <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="!overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <a @click="closeModal">{{useLang.modalBtn}}</a>
+                        <a @click="closeModal">{{useModal.okBtn}}</a>
                     </div>
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
-                <p class="modal-tips modal-tips-ot">此页面已失效</p>
+                <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
     </div>
@@ -57,7 +57,7 @@ import axios from 'axios';
 import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getData, getParams } from '../../assets/utils.js';
 import globalMethods from '../../assets/mixin.js';
-import { forgetPwd_var_phone, forgetPwdStep } from '../../assets/lang.js';
+import { forgetPwd_var_phone, forgetPwdStep, modalLang, inputLang } from '../../assets/lang.js';
 
 export default {
   name: 'app',
@@ -84,6 +84,8 @@ export default {
       hasEmail: '',
       sent: false,
       overTime: false,
+      modalLangObject: modalLang,
+      inputLangObject: inputLang,
     }
   },
   methods: {
@@ -94,11 +96,11 @@ export default {
             return;
         }
         if (this.inputedPhone === "") {
-            this.$refs.phoneInput.showInputTips('请输入正确的手机号');
+            this.$refs.phoneInput.showInputTips(this.useLang.phoneEmpty);
             return;
         }
         if (this.varCode === "") {
-            this.$refs.varinput.showInputTips('请输入验证码');
+            this.$refs.varinput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
         this.varPhone().then((res) => {
