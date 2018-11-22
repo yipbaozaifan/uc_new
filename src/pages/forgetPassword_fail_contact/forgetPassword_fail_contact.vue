@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="content content-btn">
+        <div class="content content-btn" v-if="lang!=='en_US'">
             <div class="btn-next">
                 <btn :type="'blue'" :text="useLang.btn" @clicked="next"></btn>
             </div>

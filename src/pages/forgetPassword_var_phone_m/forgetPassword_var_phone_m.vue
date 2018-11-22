@@ -29,7 +29,7 @@
             <div class="btn-next">
                 <btn :type="'blue'" :text="useLang.btn" @clicked="submit"></btn>
             </div>
-            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank">{{useLang.complaintLink}}</a>
+            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank" v-if="lang!=='en_US'">{{useLang.complaintLink}}</a>
         </div>
         <div class="mask" v-show="showModal" @click="closeModal">
         </div>
@@ -108,7 +108,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd';
+                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                 }, 2000);
                 return;
             }
@@ -136,7 +136,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd';
+                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                 }, 2000)
                 return;
             }
@@ -173,7 +173,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = 'https://i.flyme.cn/forgetpwd';
+                        location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                     }, 2000);
                     return;
                 }
@@ -230,7 +230,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd';
+                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                 }, 2000);
                 return;
             }
@@ -252,7 +252,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd';
+                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                 }, 2000);
                 return;
             }

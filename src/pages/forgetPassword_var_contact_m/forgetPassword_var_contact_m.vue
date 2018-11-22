@@ -22,7 +22,7 @@
             <div class="btn-next" @click="handleSubmit">
                 <btn :type="choosenName.length == 3?'blue':'gray'" :text="useLang.btn"></btn>
             </div>
-            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank">{{useLang.complaintLink}}</a>
+            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank" v-if="lang!=='en_US'">{{useLang.complaintLink}}</a>
         </div> 
         <div class="mask" v-show="showModal">
         </div>
@@ -128,7 +128,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = 'https://i.flyme.cn/forgetpwd';
+                        location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                     }, 2000)
                     return;
                 }

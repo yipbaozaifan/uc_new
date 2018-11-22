@@ -20,7 +20,7 @@ export default {
     top:50%;
     left: 50%;
     width: 420px;
-    height: 250px;
+    min-height: 250px;
     margin-top:-125px;
     margin-left:-210px;
     background-color: #ffffff;

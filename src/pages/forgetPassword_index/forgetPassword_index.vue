@@ -21,7 +21,7 @@
             <div class="btn-next">
                 <btn :type="'blue'" :text="useLang.btn" @clicked="next"></btn>
             </div>
-            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank">{{useLang.complaintLink}}</a>
+            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank" v-if="lang!=='en_US'">{{useLang.complaintLink}}</a>
         </div>
         <div class="mask" v-show="showModal">
         </div>

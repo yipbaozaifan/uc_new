@@ -8,7 +8,7 @@
                 <div class="success-container">
                     <img src="./assets/success.png" alt="">
                     <p class="success-title">{{useLang.successTitle}}</p>
-                    <p class="success-text">{{count+" "+text}}</p>
+                    <p class="success-text">{{count+" "+useLang.text}}</p>
                 </div>
             </div>
         </div>

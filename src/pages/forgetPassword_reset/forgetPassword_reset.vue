@@ -138,7 +138,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd';
+                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
                 }, 2000);
                 return;
             }
@@ -188,7 +188,7 @@ export default {
             this.showModal = true;
             this.overTime = true;
             setTimeout(() => {
-                location.href = 'https://i.flyme.cn/forgetpwd';
+                location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
             }, 2000);
             return;
         }

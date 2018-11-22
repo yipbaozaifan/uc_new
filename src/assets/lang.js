@@ -94,7 +94,7 @@ export const forgetPwd_var_mail = {
         title: 'Retrieve password',
         title_m: 'Email Verification',
         accountLabel: 'Email：',
-        accountHolder: 'Phone Email',
+        accountHolder: 'Enter Email',
         varCodeLabel: 'Verification code：',
         varCodeHolder: 'Enter verification code',
         btn: 'Next step',
@@ -197,7 +197,7 @@ export const forgetPwd_var_contact = {
         times: ')',
         errorTips: 'Network Error',
         noChances: 'You have run out of chances today',
-        headerLink: 'https://www.meizu.com/',
+        headerLink: 'https://www.meizu.com/en',
     }
 }
 export const forgetPwd_fail_contact = {
@@ -211,9 +211,8 @@ export const forgetPwd_fail_contact = {
     EN: {
         title: 'Retrieve password',
         failTitle: 'Validation fails',
-        failText: "今日已无法进行联系人验证，你可以通过账号申诉来重置密码",
         btn: 'Complaint',
-        headerLink: 'https://www.meizu.com/',
+        headerLink: 'https://www.meizu.com/en',
     }
 }
 export const forgetPwd_reset = {
@@ -244,12 +243,12 @@ export const forgetPwd_reset = {
         modalBtn: 'OK',
         modalTitle: 'Tips',
         notEquals: 'The two passwords do not match',
-        lengthError: '密码应为8~16个字符，区分大小写',
-        typeError: '密码至少包含数字、字母和符号两种类型',
+        lengthError: 'Password must contain 8 to 16 characters and is case-sensitive.',
+        typeError: 'Password must contain at least two of the following: digits, letters, and symbols.',
         sameError: 'The password cannot be the same as the account',
         noRepeat: 'Please enter the password again',
         errorTips: 'Network Error',
-        headerLink: 'https://www.meizu.com/',
+        headerLink: 'https://www.meizu.com/en',
     }
 }
 export const forgetPwd_reset_success = {
@@ -265,7 +264,7 @@ export const forgetPwd_reset_success = {
         successTitle: 'reset Password successfully',
         btn: 'Login',
         text: 'return to the Login Page',
-        headerLink: 'https://www.meizu.com/',
+        headerLink: 'https://www.meizu.com/en',
     }
 }
 export const forgetPwdStep = {
