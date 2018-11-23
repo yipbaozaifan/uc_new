@@ -85,7 +85,7 @@ export const forgetPwd_var_mail = {
         headerLink: 'https://www.meizu.com/',
         exchange: '使用手机验证',
         mailEmpty: '请输入正确的邮箱',
-        wrongPhone: '输入邮箱与绑定邮箱不一致',
+        wrongEmail: '输入邮箱与绑定邮箱不一致',
         CodeEmptyTips: '请填写验证码',
         errorTips: '网络错误，请重试',
         sendTips: ['验证码已发往邮箱', '请前往查看并将验证码填写在输入框', '（30分钟内有效）']

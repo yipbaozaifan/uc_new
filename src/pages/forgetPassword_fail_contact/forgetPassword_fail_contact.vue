@@ -49,13 +49,12 @@ export default {
   },
   methods: {
     next() {
-        console.log('complaint');
         location.href = 'https://i.flyme.cn/appeal';
     },
   },
   mounted() {
       this.account = getParams('account');
-      this.lang = getParams('lang') || 'zh_CN';
+      this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
   }
 }
 </script>

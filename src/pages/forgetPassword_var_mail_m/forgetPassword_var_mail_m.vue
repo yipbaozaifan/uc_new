@@ -56,7 +56,6 @@
                 <p class="modal-tips modal-tips-ot">{{useModal.timeout}}</p>
             </div>
         </mz-modal>
-        <mzfooter :now-lang="nowLang" :lang-menu-item="langMenuItem" @translate="translate"></mzfooter>
     </div>
 </template>
 
@@ -309,7 +308,7 @@ export default {
   },
   mounted() {
       this.account = getParams('account');
-      this.lang = getParams('lang') || 'zh_CN';
+      this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
       this.hasPhone = getParams('hasPhone') || 'n';
 
       if (getParams('fromPhone')) {

@@ -113,7 +113,7 @@ export default {
   },
   mounted() {
       this.$refs.kapkeyInput.getImageKey();
-      this.lang = getParams('lang') || 'zh_CN';
+      this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
   }
 }
 </script>

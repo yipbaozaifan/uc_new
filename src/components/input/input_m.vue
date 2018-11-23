@@ -1402,7 +1402,7 @@ export default {
                 } else {
                     that.$emit('resend')
                     that.phoneCodeState = 'again';
-                    that.resendText = that.resend +'('+that.waitTime+')';
+                    that.resendText = that.resend;
                     clearInterval(timer);
                 } 
             }, 1000) 

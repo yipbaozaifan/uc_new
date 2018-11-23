@@ -174,7 +174,7 @@ export default {
   },
   mounted() {
       this.account = getParams('account');
-      this.lang = getParams('lang') || 'zh_CN';
+      this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
       Axios.post('/security/resubmit/token/get').then((res) => {
         if(!res.data) {
             this.showModal = true;

@@ -64,7 +64,7 @@ const globalMethods = {
             const reg = /lang=([^&\s]+)/;
             if (!reg.test(decodeURIComponent(location.href))) {
                 if (this.lang === 'zh_CN') {
-                    location.href = 'https://i.in.flyme.cn/forgetpwd?lang=en_US';
+                    location.href = 'https://i.flyme.cn/forgetpwd?lang=en_US';
                     return;
                 } else {
                     location.href = 'https://i.flyme.cn/forgetpwd?lang=zh_CN';
@@ -79,8 +79,19 @@ const globalMethods = {
                     return;
                 }
             }
-            
-        }
+        },
+        getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1);
+                if (c.indexOf(name) != -1){
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
     }
 }
 

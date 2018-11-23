@@ -55,7 +55,7 @@ export default {
   },
   mounted() {
       this.account = getParams('account');
-      this.lang = getParams('lang') || 'zh_CN';
+      this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
       this.backUrl = getParams('backUrl') || 'https://i.flyme.cn';
       let counter = setInterval(() => {
           this.count--;

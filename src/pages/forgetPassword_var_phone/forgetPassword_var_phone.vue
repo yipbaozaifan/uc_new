@@ -284,7 +284,7 @@ export default {
   mounted() {
       //this.$refs.varinput.changeState('get');
       this.account = getParams('account');
-      this.lang = getParams('lang') || 'zh_CN';
+      this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
       this.hasEmail = getParams('hasEmail') || 'n';
 
       if (getParams('fromMail')) {
