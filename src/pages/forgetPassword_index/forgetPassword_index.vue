@@ -78,9 +78,9 @@ export default {
     next() {
         let account;
         if (this.$refs.accountInput.showCode) {
-            account = '00'+this.$refs.accountInput.countryCode.code+':'+this.account;
+            account = '00'+this.$refs.accountInput.countryCode.code+':'+this.account.trim();
         } else {
-            account = this.account;
+            account = this.account.trim();
         }
         if (account === '') {
             this.$refs.accountInput.showInputTips(this.useLang.AccountEmptyTips);
