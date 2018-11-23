@@ -4,15 +4,15 @@
             <div class="footer-main">
                 <div class="footer-inner-link">
                     <a href="http://www.meizu.com/about.html" target="_blank" title="关于魅族" v-show="nowLang === '简体中文'">关于魅族</a>
-                    <a href="http://www.meizu.com/in/aboutus.html" target="_blank" title="about us" v-show="nowLang === 'English'">About us</a>
+                    <a href="https://www.meizu.com/en/about.html" target="_blank" title="about us" v-show="nowLang === 'English'">About us</a>
 				    <img class="foot-line" src="https://uc-res.mzres.com/resources/common/images/default/space.gif">
                     <a href="http://hr.meizu.com" target="_blank" title="工作机会" v-show="nowLang === '简体中文'">工作机会</a>
                     <img class="foot-line" src="https://uc-res.mzres.com/resources/common/images/default/space.gif" v-show="nowLang === '简体中文'">    
                     <a href="http://www.meizu.com/contact.html" target="_blank" title="联系我们" v-show="nowLang === '简体中文'">联系我们</a>
-                    <a title="Contact us" target="_blank" href="http://www.meizu.com/in/contact.html" v-show="nowLang === 'English'">Contact us</a>
+                    <a title="Contact us" target="_blank" href="https://www.meizu.com/en/contact.html " v-show="nowLang === 'English'">Contact us</a>
                     <img class="foot-line" src="https://uc-res.mzres.com/resources/common/images/default/space.gif">
                     <a href="http://www.meizu.com/legalStatement.html" target="_blank" title="法律声明" v-show="nowLang === '简体中文'">法律声明</a>
-                    <a title="Legal Statment" target="_blank" href="http://www.meizu.com/in/legalstatement.html" v-show="nowLang === 'English'">Legal Statement</a>
+                    <a title="Legal Statment" target="_blank" href="https://www.meizu.com/en/legal.html" v-show="nowLang === 'English'">Legal Statement</a>
                     <img class="foot-line" src="https://uc-res.mzres.com/resources/common/images/default/space.gif">
                     <a href="https://uc-res.mzres.com/resources/uc/wlogin/faq/html/index.html" target="_blank" title="常见问题" v-show="nowLang === '简体中文'">常见问题</a>
                     <img class="foot-line" src="https://uc-res.mzres.com/resources/common/images/default/space.gif" v-show="nowLang === '简体中文'">
