@@ -99,7 +99,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                        location.href = location.host + '/forgetpwd';
                     }, 2000);
                     return;
                 }

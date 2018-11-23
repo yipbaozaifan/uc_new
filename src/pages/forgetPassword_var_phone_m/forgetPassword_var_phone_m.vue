@@ -92,11 +92,17 @@ export default {
     submit() {
         // 提交验证码
         let phone = '00' + this.$refs.phoneInput.countryCode.code + ':' + this.inputedPhone;
+        const phoneReg = /^[0-9]*$/;
         if (this.wrong) {
             return;
         }
         if (this.inputedPhone === "") {
             this.$refs.phoneInput.showInputTips(this.useLang.phoneEmpty);
+            return;
+        }
+        if (!phoneReg.test(this.inputedPhone)) {
+            this.$refs.phoneInput.showInputTips(this.useLang.notNumber);
+            this.wrong = true;
             return;
         }
         if (this.varCode === "") {
@@ -108,7 +114,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -127,8 +133,8 @@ export default {
                     })
                 }
             } else {
-                this.message = res.data.message;
-                this.showModal = true;
+                this.$refs.phoneInput.showInputTips(res.data.message);
+                this.wrong = true;
                 return Promise.reject('server error');
             }
         }).then((res) => {
@@ -136,7 +142,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000)
                 return;
             }
@@ -161,6 +167,7 @@ export default {
         this.showModal = false;
     },
     handleBlur() {
+        const phoneReg = /^[0-9]*$/;
         setTimeout(() => {
             if (this.wrong) {
                 return;
@@ -168,12 +175,17 @@ export default {
             if (this.inputedPhone === '') {
                 return;
             }
+            if (!phoneReg.test(this.inputedPhone)) {
+                this.$refs.phoneInput.showInputTips(this.useLang.notNumber);
+                this.wrong = true;
+                return;
+            }
             this.varPhone().then((res) => {
                 if(!res.data) {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                        location.href = location.host + '/forgetpwd';
                     }, 2000);
                     return;
                 }
@@ -185,8 +197,8 @@ export default {
                         this.$refs.varinput.allowSend();
                     }
                 } else {
-                    this.message = res.data.message;
-                    this.showModal = true;
+                    this.$refs.phoneInput.showInputTips(res.data.message);
+                    this.wrong = true;
                 }
             }, (err) => {
                 console.log(err);
@@ -220,6 +232,12 @@ export default {
     },
     handleSend() {
         // 获取验证码 需要作二次验证
+        const phoneReg = /^[0-9]*$/;
+        if (!phoneReg.test(this.inputedPhone)) {
+            this.$refs.phoneInput.showInputTips(this.useLang.notNumber);
+            this.wrong = true;
+            return;
+        }
         let data = {
             vCodeTypeValue: 9,
             phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.inputedPhone,
@@ -230,7 +248,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -241,10 +259,9 @@ export default {
                 } else {
                     return axios.post('/uc/system/vcode/action/sendSmsVCode', data)
                 }
-                
             } else {
-                this.message = res.data.message;
-                this.showModal = true;
+                this.$refs.phoneInput.showInputTips(res.data.message);
+                this.wrong = true;
                 return Promise.reject(res.data.message);
             }   
         }).then((res) => {
@@ -252,7 +269,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -317,7 +334,7 @@ export default {
       }
       
       if (this.hasEmail == 'y') {
-          this.toMail = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toMail?account=${this.account}&lang=${this.lang}&hasPhone=y&fromPhone=y`;
+          this.toMail = `/uc/system/webjsp/forgetpwd/toMail?account=${this.account}&lang=${this.lang}&hasPhone=y&fromPhone=y`;
       }
       
   }

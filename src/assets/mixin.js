@@ -62,15 +62,23 @@ const globalMethods = {
     methods: {
         translate() {
             const reg = /lang=([^&\s]+)/;
-            if (!reg.test(decodeURIComponent(location.href))) {
+            if (!reg.test(decodeURIComponent(location.href))) { //url没有lang参数情况
                 if (this.lang === 'zh_CN') {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang=en_US';
+                    if (location.search !== "") {
+                        location.href = decodeURIComponent(location.href) + "&lang=en_US";
+                    } else {
+                        location.href = decodeURIComponent(location.href) + "?lang=en_US";
+                    }
                     return;
                 } else {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang=zh_CN';
+                    if (location.search !== "") {
+                        location.href = decodeURIComponent(location.href) + "&lang=zh_CN";
+                    } else {
+                        location.href = decodeURIComponent(location.href) + "?lang=zh_CN";
+                    }
                     return;
                 }
-            } else {
+            } else { //url有lang参数
                 if (this.lang === 'zh_CN') {
                     location.href = decodeURIComponent(location.href).replace(reg, 'lang=en_US');
                     return;

@@ -54,13 +54,13 @@ export default {
         this.goLogin()
     },
     goLogin() {
-        location.href = decodeURIComponent(this.backUrl) || 'https://i.flyme.cn';
+        location.href = decodeURIComponent(this.backUrl) || location.host;
     },
   },
   mounted() {
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
-      this.backUrl = getParams('backUrl') || 'https://i.flyme.cn';
+      this.backUrl = getParams('backUrl') || location.host;
       let counter = setInterval(() => {
           this.count--;
           if (this.count <= 0) {

@@ -127,7 +127,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -158,7 +158,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000)
                 return;
             }
@@ -199,7 +199,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                        location.href = location.host + '/forgetpwd';
                     }, 2000);
                     return;
                 }
@@ -262,7 +262,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -289,7 +289,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = 'https://i.flyme.cn/forgetpwd?lang='+ that.lang;
+                    location.href = location.host + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -338,7 +338,7 @@ export default {
           localStorage.removeItem('cycode');
       }
       if (this.hasPhone == 'y') {
-          this.toPhone = `https://i.flyme.cn/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y&fromMail=y`;
+          this.toPhone = `/uc/system/webjsp/forgetpwd/toPhone?account=${this.account}&lang=${this.lang}&hasEmail=y&fromMail=y`;
       }
   }
 }
