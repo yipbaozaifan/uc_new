@@ -33,7 +33,7 @@
         <div class="mask" v-show="showModal" >
         </div>
         <mz-modal :title="useModal.title" v-show="showModal" @close="closeModal">
-            <div class="modal-main" v-show="showSend">
+            <div class="modal-main" v-show="showSend && !overTime">
                 <p class="modal-tips">{{useLang.sendTips[0]}}</p>
                 <p class="modal-tips">{{inputedMail}}</p>
                 <p class="modal-tips">{{useLang.sendTips[1]}}</p>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-main" v-show="showTips">
+            <div class="modal-main" v-show="showTips && !overTime">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
@@ -127,7 +127,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = location.host + '/forgetpwd';
+                    location.href = location.origin + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -158,7 +158,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = location.host + '/forgetpwd';
+                    location.href = location.origin + '/forgetpwd';
                 }, 2000)
                 return;
             }
@@ -199,7 +199,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.host + '/forgetpwd';
+                        location.href = location.origin + '/forgetpwd';
                     }, 2000);
                     return;
                 }
@@ -262,7 +262,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = location.host + '/forgetpwd';
+                    location.href = location.origin + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -289,7 +289,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = location.host + '/forgetpwd';
+                    location.href = location.origin + '/forgetpwd';
                 }, 2000);
                 return;
             }

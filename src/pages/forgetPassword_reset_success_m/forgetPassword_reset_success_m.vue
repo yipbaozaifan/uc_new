@@ -50,13 +50,13 @@ export default {
         this.goLogin()
     },
     goLogin() {
-        location.href = decodeURIComponent(this.backUrl) || location.host;
+        location.href = decodeURIComponent(this.backUrl) || location.origin;
     },
   },
   mounted() {
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
-      this.backUrl = getParams('backUrl') || location.host;
+      this.backUrl = getParams('backUrl') || location.origin;
       let counter = setInterval(() => {
           this.count--;
           if (this.count <= 0) {

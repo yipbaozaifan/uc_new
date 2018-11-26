@@ -138,7 +138,7 @@ export default {
                 this.showModal = true;
                 this.overTime = true;
                 setTimeout(() => {
-                    location.href = location.host + '/forgetpwd';
+                    location.href = location.origin + '/forgetpwd';
                 }, 2000);
                 return;
             }
@@ -188,7 +188,7 @@ export default {
             this.showModal = true;
             this.overTime = true;
             setTimeout(() => {
-                location.href = location.host + '/forgetpwd';
+                location.href = location.origin + '/forgetpwd';
             }, 2000);
             return;
         }
