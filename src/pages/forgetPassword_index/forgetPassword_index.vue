@@ -145,7 +145,6 @@ export default {
     }
     .modal-tips {
         opacity: 0.4;
-        font-family: MicrosoftYaHei;
         font-size: 14px;
         color: #000000;
         letter-spacing: 0;

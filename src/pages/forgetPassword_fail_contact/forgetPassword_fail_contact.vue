@@ -73,7 +73,6 @@ export default {
                     width: 337px;
                 }
                 .fail-title {
-                    font-family: MicrosoftYaHei;
                     font-size: 20px;
                     color: #000000;
                     margin-top: 21px;
@@ -82,7 +81,6 @@ export default {
                 }
                 .fail-text {
                     opacity: 0.4;
-                    font-family: MicrosoftYaHei;
                     font-size: 14px;
                     color: #000000;
                     letter-spacing: 0;

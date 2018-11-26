@@ -82,7 +82,6 @@ export default {
                     width: 70%;
                 }
                 .success-title {
-                    font-family: MicrosoftYaHei;
                     font-size: 18px;
                     color: #000000;
                     margin-top: 21px;
@@ -91,7 +90,6 @@ export default {
                 }
                 .success-text {
                     opacity: 0.4;
-                    font-family: MicrosoftYaHei;
                     font-size: 12px;
                     color: #000000;
                     letter-spacing: 0;
