@@ -26,9 +26,6 @@
                 <i class="iconfont" @click="toggleShowPwd" v-show="unShow">&#xeed2;</i>
                 <i class="iconfont" @click="toggleShowPwd" v-show="!unShow">&#xeee6;</i>
             </span>
-            <div class="tips tips-input" v-show="showTips">
-                <span>{{tips}}</span>
-            </div>
             <div class="container cycode-container" v-show="changeCycode">
                 <div class="cycode-list">
                     <div class="cycode-group" v-for="(group,gindex) in countryCodeList" :key="gindex">
@@ -42,6 +39,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="tips tips-input" v-show="showTips">
+            <span>{{tips}}</span>
         </div>
     </div>
 </template>
@@ -1462,8 +1462,10 @@ export default {
         text-align: right;
         display: inline-block;
         width: 143px;
+        height: 36px;
+        line-height: 36px;
         font-size: 16px;
-        vertical-align: middle;
+        vertical-align: top;
     }
     .input-bar {
         text-align: left;
@@ -1483,12 +1485,7 @@ export default {
         &.error-tips {
             border: 1px solid #DE3131;
         }
-        .tips {
-            font-size: 12px;
-            color: #DE3131;
-            margin-top: 10px;
-            text-align: left;
-        }
+        
         &::before {
             content: '';
             height: 34px;
@@ -1666,6 +1663,16 @@ export default {
                 line-height: 30px;
             }
         }
+    }
+    .tips {
+        font-size: 12px;
+        color: #DE3131;
+        margin-top: 10px;
+        text-align: left;
+        width: 290px;
+        padding: 0 10px;
+        margin-left: 143px;
+        box-sizing: border-box;
     }
 }
 </style>

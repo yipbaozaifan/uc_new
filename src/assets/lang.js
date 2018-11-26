@@ -50,7 +50,7 @@ export const forgetPwd_var_phone = {
         wrongPhone: '输入手机号与绑定手机号不一致',
         CodeEmptyTips: '请填写验证码',
         errorTips: '网络错误，请重试',
-        notNmuber: '请输入纯数字手机号',
+        notNumber: '请输入纯数字手机号',
     },
     EN: {
         title: 'Retrieve password',
@@ -69,7 +69,7 @@ export const forgetPwd_var_phone = {
         wrongPhone: 'The entered mobile number is not the bound mobile number',
         CodeEmptyTips: 'Please fill in the verification code',
         errorTips: 'Network Error',
-        notNmuber: 'Please enter the correct Phone Number',
+        notNumber: 'Please enter the correct Phone Number',
     }
 }
 export const forgetPwd_var_mail = {
