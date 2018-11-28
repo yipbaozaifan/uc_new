@@ -356,6 +356,11 @@ export default {
                 display: inline-block;  
                 vertical-align: middle;
             }
+            .link {
+                height: 36px;
+                line-height: 36px;
+                vertical-align: top;
+            }
         }
     }
 </style>

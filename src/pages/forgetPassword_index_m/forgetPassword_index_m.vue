@@ -96,7 +96,6 @@ export default {
                     this.$refs.accountInput.showInputTips(res.data.message);
                 }
                 this.$refs.kapkeyInput.getImageKey();
-                this.varCode = "";
             } else {
                 location.href = res.data.value;
             }

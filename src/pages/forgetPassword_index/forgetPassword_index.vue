@@ -86,7 +86,6 @@ export default {
             this.$refs.accountInput.showInputTips(this.useLang.AccountEmptyTips);
             return;
         }
-        if (account )
         if (this.varCode === '') {
             this.$refs.kapkeyInput.showInputTips(this.useLang.CodeEmptyTips);
             return;
@@ -103,7 +102,6 @@ export default {
                     this.$refs.accountInput.showInputTips(res.data.message);
                 }
                 this.$refs.kapkeyInput.getImageKey();
-                this.varCode = "";
             } else {
                 location.href = res.data.value;
             }
