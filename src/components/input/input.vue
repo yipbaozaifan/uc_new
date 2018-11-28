@@ -13,7 +13,7 @@
             <input :type="inptype || defaultType" :placeholder="placeholder" :class="[
                 type,
                 {'showcode': showCode}
-            ]" @keyup="handleKeyUp" @input="$emit('input', $event.target.value)" @blur="emitBlur($event)" v-model="inputValue" :maxlength="maxlen">
+            ]" @keyup="handleKeyUp" @input="$emit('input', $event.target.value)" @blur="emitBlur($event)" v-model="inputValue" :maxlength="maxlen" :disabled="disabled">
             <span class="imgkey-container" v-if="type === 'imgCode'">
                 <span class="hr"></span>
                 <img :src="imgkey" alt="验证码" class="img img-key" :title="title" @click="getImageKey">
@@ -66,6 +66,10 @@ export default {
         title: {
             type: String,
             default: '点击可刷新验证码',
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         }
     },
     data() {
@@ -1452,9 +1456,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 .input {
-    &.showtips {
-        margin-bottom: 10px;
-    }
     width: 100%;
     font-size: 0;
     position: relative;
