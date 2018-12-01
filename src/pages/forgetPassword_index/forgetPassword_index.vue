@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" @click="bodyClick">
         <mzheader :link="headerLink"></mzheader>
         <h1 class="title">{{useLang.title}}</h1>
         <mzprogress :steps="useStep" :actived="1" size="126"></mzprogress>
@@ -115,6 +115,9 @@ export default {
         this.showModal = false;
         this.message = "";
     },
+    bodyClick() {
+        this.$refs.accountInput.changeCycode = false;
+    }
   },
   mounted() {
       this.$refs.kapkeyInput.getImageKey();

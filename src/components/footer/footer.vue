@@ -49,7 +49,7 @@
             <div class="clear"></div>
             <div class="footer-copyright">
                 <div class="copyrightInner">
-                    <span>©2018 Meizu Telecom Equipment Co., Ltd. All rights reserved.</span>
+                    <span>©{{new Date().getFullYear()}} Meizu Telecom Equipment Co., Ltd. All rights reserved.</span>
                     <a href="http://www.miitbeian.gov.cn/" class='linkAGray' target="_blank" v-show="nowLang === '简体中文'">备案号: 粤ICP备13003602号-4</a>
                     <a href="http://www3.res.meizu.com/static/cn/widget/footer/images/icp2_b2dcb54.jpg" class='linkAGray' target="_blank" v-show="nowLang === '简体中文'">经营许可证编号: 粤B2-20130198</a>
                     <a target="_blank" href="http://www2.res.meizu.com/zh_cn/images/common/com_licence.jpg" hidefocus="true" class="linkAGray" v-show="nowLang === '简体中文'">营业执照</a>

@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" @click="bodyClick">
         <mzheader :link="headerLink"></mzheader>
         <h1 class="title">{{useLang.title}}</h1>
         <mzprogress :steps="useStep" :actived="2" size="126"></mzprogress>
@@ -258,6 +258,9 @@ export default {
         this.sent = false;
     },
     closeCycodeList() {
+        this.$refs.phoneInput.changeCycode = false;
+    },
+    bodyClick() {
         this.$refs.phoneInput.changeCycode = false;
     }
   },

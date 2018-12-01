@@ -6,7 +6,7 @@
         <div class="input-bar" :class="{
             'error-tips': showTips
         }">
-            <span class="country-code" v-show="showCode" @click="showSelectCycode">
+            <span class="country-code" v-show="showCode" @click.stop="showSelectCycode">
                 <span class="country-code-selected">+{{countryCode.code}}</span>
                 <i class="arrow-down">&#xe629;</i>
             </span>
