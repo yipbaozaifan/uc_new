@@ -1,6 +1,6 @@
 <template>
     <div id="app" class="complaint_select_type">
-        <mzheader></mzheader>
+        <mzheader link="https://www.meizu.com/"></mzheader>
         <h1 class="title">账号申诉</h1>
         <mzprogress :steps="steps" :actived="2" size="96" line-length="600"></mzprogress>
         <div class="main">
@@ -31,7 +31,13 @@
                         <div class="selection">
                             <span class="select-label">证件类型：</span>
                             <div class="select-content">
-                                <el-select v-model="choosenType" placeholder="请选择证件类型" >
+                                <el-select v-model="choosenType" placeholder="请选择证件类型">
+                                    <el-option
+                                        v-for="item in idCardTypes"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                    </el-option>
                                 </el-select>
                             </div>
                         </div>
@@ -48,7 +54,7 @@
                         <div class="upload-bar">
                             <el-upload
                                 class="upload-btn"
-                                action="https://jsonplaceholder.typicode.com/posts/"
+                                action="https://i.flyme.cn/uc/system/webjsp/resetpwd/uploadIdentifyPhoto"
                                 name="file"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
@@ -124,6 +130,7 @@ export default {
         },
       ],
       account: '',
+      resetId: '',
       name: '',
       idNum: '',
       showModal: false,
@@ -131,36 +138,110 @@ export default {
       showValue: '请选择证件类型',
       choosenType: '',
       idCardTypes: [
-
+          {
+              value: 'id',
+              label: '身份证'
+          },
+          {
+              value: 'hongkong_and_macao_pass',
+              label: '往来内地通行证'
+          },
+          {
+              value: 'taiwan_pass',
+              label: '台胞证'
+          },
+          {
+              value: 'passport',
+              label: '护照'
+          },
       ],
       hasUpload: false,
       choosenPic: '',
+      photoPath: '',
       overTime: false
     }
   },
   methods: {
     next() {
-        
+        const idReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if (this.name == "") {
+            this.$refs.nameInput.showInputTips('请输入真实姓名');
+            return ;
+        }
+        if (this.idCardTypes == "") {
+            this.typeTips = "请选择证件类型";
+            return;
+        }
+        if (this.idNum == "") {
+            this.$refs.idInput.showInputTips('请输入证件号码');
+            return;
+        }
+        if (this.idCardTypes = "id" && !idReg.test(this.idNum)) {
+            this.$refs.idInput.showInputTips('请输入正确的身份证号');
+            return;
+        }
+        const data = {
+            realName: this.name,
+            idType: this.choosenType,
+            idNumber: this.idNum,
+            idPhotoPath: this.photoPath,
+            resetId: this.resetId,
+        }
+        axios.post('/uc/system/webjsp/resetpwd/addIdentifyInfo', data).then((res) => {
+            if (res.data.code == 200) {
+                return location.replace('/complaint/step4?resetId=' + res.value.resetId)
+            } else {
+                if (res.data.message == "非法参数") {
+                    return Promise.reject(0);
+                } else {
+                    this.message = res.data.message || "未知错误，请重试";
+                    this.showModal = true;
+                    return Promise.reject(1);
+                }
+            }
+        }).catch((err) => {
+            if (err == 0) { // 页面超时错误
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/complaint/step1';
+                    }, 2000);
+                }
+            } else if (err == 1) { // 已经处理的错误
+                console.log(err);
+            } else { // 网络错误
+                this.message = "网络错误，请重试";
+                this.showModal = true;
+            }
+        })
     },
     closeModal() {
         this.showModal = false;
         this.message = "";
     },
-    uploadPic() {
-        this.$refs.picupload.click();
-    },
-    reload() {
-        
-    },
     handleAvatarSuccess(res, file) {
         this.choosenPic = URL.createObjectURL(file.raw);
+        this.photoPath = res.value;
     },
-    beforeAvatarUpload() {
-        
+    beforeAvatarUpload(file) {
+        const isPic = /(jpg|jpeg|png|bmp)$/.test(file.type)
+        const isLt10M = file.size / 1024 / 1024 < 10;
+
+        if (!isPic) {
+          this.message = '文件格式不正确';
+          this.showModal = true;
+        }
+        if (!isLt10M) {
+          this.message = '上传头像图片大小不能超过10MB';
+          this.showModal = true;
+        }
+        return isPic && isLt10M;
     }
   },
   mounted() {
       this.account = getParams('account');
+      this.resetId = getParams('resetId');
   }
 }
 </script>
@@ -171,6 +252,9 @@ export default {
         .title {
             text-align: center;
         }
+        .tips-input {
+            margin-left: 80px !important; 
+        }
         .main {
             width: 660px;
             margin: 0 auto;
@@ -178,7 +262,6 @@ export default {
                 margin-left: 50px;
                 margin-top: 60px;
                 p {
-                    font-family: MicrosoftYaHei;
                     font-size: 16px;
                     color: #000000;
                     letter-spacing: 0;
@@ -205,11 +288,20 @@ export default {
                             display: inline-block;
                             .el-select {
                                 width: 290px;
+                                &:hover {
+                                    .el-input__inner {
+                                        border-color: #cccccc;
+                                    }
+                                }
                                 .el-input__inner {
                                     height: 36px;
                                     color: #000000;
+                                    border-color: #cccccc;
                                     &::placeholder {
                                         color: #000000;
+                                    }
+                                    &:focus {
+                                        border-color: #cccccc;
                                     }
                                 }
                             }
@@ -282,7 +374,6 @@ export default {
                         white-space: nowrap;
                         margin-bottom: 10px;
                         opacity: 0.4;
-                        font-family: MicrosoftYaHei;
                         font-size: 14px;
                         color: #000000;
                         letter-spacing: 0;

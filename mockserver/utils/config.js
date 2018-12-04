@@ -48,5 +48,9 @@ module.exports = {
       url: '/uc/system/question/listByAccount',
       name: 'listByAccount'
     },
+    {
+      url: '/uc/system/webjsp/resetpwd/checkSecurityPhone',
+      name: 'checkSecurityPhone'
+    },
   ]
 }

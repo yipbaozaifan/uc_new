@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <mzheader></mzheader>
+        <mzheader link="https://www.meizu.com/"></mzheader>
         <h1 class="title">账号申诉</h1>
         <p class="complaint-text">我们会人工审核你提交的信息，并在三个工作日内将结果发送到安全手机</p>
         <p class="complaint-text">请尽可能多地提供以下资料，资料越充足，申诉通过的成功率则越高</p>
@@ -10,13 +10,13 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="'请输入手机号/用户名/邮箱'" :type="'account'" :label="'flyme账号：'" v-model="account" ref="accountInput"></mzinput>
                 </div>
-                <a href="" class="link"></a>
+                <a class="link"></a>
             </div>
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="'请输入验证码'" :type="'imgCode'" :label="'验证码：'" v-model="varCode" ref="kapkeyInput"></mzinput>
+                    <mzinput :placeholder="'请输入验证码'" :type="'imgCode'" :label="'验证码：'" v-model="varCode" ref="kapkeyInput" :maxlen="6"></mzinput>
                 </div>
-                <a href="" class="link"></a>
+                <a class="link"></a>
             </div>
         </div>
         <div class="content content-btn">
@@ -26,12 +26,12 @@
         </div>
         <div class="mask" v-show="showModal">
         </div>
-        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
+        <mz-modal title="提示" v-show="showModal" @close="closeModal">
             <div class="modal-main" >
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <btn type="blue" text="确定" @clicked="closeModal"></btn>
                     </div>
                 </div>
             </div>
@@ -69,9 +69,9 @@ export default {
     next() {
         let account;
         if (this.$refs.accountInput.showCode) {
-            account = '00'+this.$refs.accountInput.countryCode.code+":"+this.account;
+            account = '00'+this.$refs.accountInput.countryCode.code+":"+this.account.trim();
         } else {
-            account = this.account;
+            account = this.account.trim();
         }
         if (account === '') {
             this.$refs.accountInput.showInputTips('请输入flyme账号');
@@ -87,11 +87,20 @@ export default {
         }
         axios.post('/uc/system/webjsp/forgetpwd/checkAccount', data).then((res) => {
             if (res.data.code !== "200") {
-                this.showModal = true;
-                this.message = res.data.message;
+                if (res.data.code == "403002") {
+                    this.$refs.kapkeyInput.showInputTips(res.data.message);
+                } else {
+                    this.message = res.data.message;
+                    this.showModal = true;
+                }
+                this.$refs.kapkeyInput.getImageKey();
             } else {
                 location.href = res.data.value;
             }
+        }, (err) => {
+            this.showModal = true;
+            this.message = '网络错误，请重试';
+            this.$refs.kapkeyInput.getImageKey();
         })
     },
     closeModal() {
@@ -108,7 +117,6 @@ export default {
 <style lang="scss">
     @import '../../assets/base.scss';
      .complaint-text {
-            font-family: MicrosoftYaHei;
             font-size: 16px;
             color: #000000;
             letter-spacing: 0;

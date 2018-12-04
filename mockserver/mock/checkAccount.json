@@ -1,5 +1,5 @@
 {
-    "code": 201,
+    "code": "200",
     "message": "账号含非法字符，请输入合法账号或联系客服热线 400-788-3333 修改账号",
-    "value": "/forgetPassword_var_phone.html"
+    "value": "/step2.html?account=0086:15622382023"
 }

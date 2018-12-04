@@ -23,6 +23,10 @@ module.exports = {
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
       },
+      '/uc/system/webjsp/resetpwd/checkSecurityPhone': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
       '/uc/system/webjsp/forgetpwd/isValidSmsVCode': {
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
