@@ -215,7 +215,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.origin + '/complaint/step1';
+                        location.href = location.origin + '/appeal/step1';
                     }, 2000);
                 }
             } else if (err == 1) { // 已经处理的错误

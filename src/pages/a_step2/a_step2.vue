@@ -154,7 +154,7 @@ export default {
             // 没选择重置手机
             axios.post('https://i.flyme.cn/uc/system/webjsp/resetpwd/new', data).then((res) => {
                 if(res.data.code == 200) {
-                    location.replace('/step3?resetId=' + res.data.value.resetId);
+                    location.replace('/appeal/step3?resetId=' + res.data.value.resetId);
                 } else {
                     this.showModal = true;
                     this.message = res.data.message || "未知错误，请重试";
@@ -189,7 +189,7 @@ export default {
                     return Promise.reject(0);
                 }
                 if(res.data.code == 200) {
-                    location.replace('/complaint/step3?resetId=' + res.data.value.resetId);
+                    location.replace('/appeal/step3?resetId=' + res.data.value.resetId);
                 } else {
                     this.showModal = true;
                     this.message = res.data.message || "未知错误，请重试";
@@ -201,7 +201,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/complaint/step1';
+                            location.href = location.origin + '/appeal/step1';
                         }, 2000);
                     }
                 } else if (err == 1) { // 已经处理的错误
@@ -240,7 +240,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/complaint/step1';
+                            location.href = location.origin + '/appeal/step1';
                         }, 2000);
                         return;
                     }

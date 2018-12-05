@@ -95,7 +95,7 @@ export default {
                 }
                 this.$refs.kapkeyInput.getImageKey();
             } else {
-                location.replace('/complaint/step2?account=' + res.data.value.account)
+                location.replace('/appeal/step2?account=' + res.data.value.account)
             }
         }, (err) => {
             this.showModal = true;

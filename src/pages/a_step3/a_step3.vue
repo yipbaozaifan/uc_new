@@ -189,7 +189,7 @@ export default {
         }
         axios.post('/uc/system/webjsp/resetpwd/addIdentifyInfo', data).then((res) => {
             if (res.data.code == 200) {
-                return location.replace('/complaint/step4?resetId=' + res.value.resetId)
+                return location.replace('/appeal/step4?resetId=' + res.value.resetId)
             } else {
                 if (res.data.message == "非法参数") {
                     return Promise.reject(0);
@@ -205,7 +205,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.origin + '/complaint/step1';
+                        location.href = location.origin + '/appeal/step1';
                     }, 2000);
                 }
             } else if (err == 1) { // 已经处理的错误

@@ -2182,7 +2182,7 @@ export default {
             //console.log(data);
             axios.post('/uc/system/webjsp/resetpwd/addEvidence', data).then((res) => {
                 if (res.data.code == 200) {
-                    return location.replace('/complaint/step5?resetId=' + res.data.value.resetId);
+                    return location.replace('/appeal/step5?resetId=' + res.data.value.resetId);
                 } else if (res.data.code == 200014) {
                     this.message = "已经提交过了，请重新填写账号申诉";
                     this.showModal = true;
@@ -2202,7 +2202,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/complaint/step1';
+                            location.href = location.origin + '/appeal/step1';
                         }, 2000);
                     }
                 } else if (err == 1) { // 已经处理的错误
