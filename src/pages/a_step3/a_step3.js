@@ -1,8 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
-import App from './step4.vue';
-import { Select, Option, DatePicker } from 'element-ui';
+import App from './a_step3.vue';
+import { Select, Option, Upload } from 'element-ui';
+
+
 import qs from 'qs';
 import axios from 'axios';
 
@@ -10,8 +12,8 @@ import './assets/reset.css';
 Vue.config.productionTip = false;
 
 Vue.component(Option.name, Option);
+Vue.component(Upload.name, Upload);
 Vue.component(Select.name, Select);
-Vue.component(DatePicker.name, DatePicker);
 
 // axios 默认配置
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';

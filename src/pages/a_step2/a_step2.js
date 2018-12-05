@@ -1,7 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
-import App from './step5.vue';
+import App from './a_step2.vue';
 
 import qs from 'qs';
 import axios from 'axios';
