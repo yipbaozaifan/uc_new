@@ -55,7 +55,7 @@
         </div>
         <div class="content content-btn">
             <span class="btn-back" v-if="changePhone">
-                <btn :type="'white'" :text="'上一步'"></btn>
+                <btn :type="'white'" :text="'上一步'" @clicked="back"></btn>
             </span>
             <span class="btn-next">
                 <btn :type="'blue'" :text="'下一步'" @clicked="next"></btn>
@@ -135,6 +135,9 @@ export default {
     }
   },
   methods: {
+    back() {
+        this.changePhone = false;
+    },
     next() {
         console.log(this.wrong);
         let data = {
@@ -189,11 +192,17 @@ export default {
                     return Promise.reject(0);
                 }
                 if(res.data.code == 200) {
-                    location.replace('/appeal/step3?resetId=' + res.data.value.resetId);
+                    location.replace(`/appeal/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
                 } else {
-                    this.showModal = true;
-                    this.message = res.data.message || "未知错误，请重试";
-                    return Promise.reject(1);
+                    if (res.data.code == 200000) {
+                        this.$refs.kapkeyInput.showInputTips(res.data.message);
+                        return Promise.reject(1); 
+                    } else {
+                        this.showModal = true;
+                        this.message = res.data.message || "未知错误，请重试";
+                        return Promise.reject(1); 
+                    }
+                    
                 }
             }).catch((err) => {
                 if (err == 0) { // 页面超时错误
@@ -201,7 +210,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/appeal/step1';
+                            location.href = location.origin + '/appeal';
                         }, 2000);
                     }
                 } else if (err == 1) { // 已经处理的错误
@@ -222,7 +231,7 @@ export default {
         this.message = "";
     },
     handleBlur() { // 离开电话输入框时判断电话是否合法
-        const phoneReg = /^[0-9]*$/;
+            const phoneReg = /^[0-9]*$/;
             if (this.wrong) {
                 return;
             }
@@ -230,8 +239,6 @@ export default {
                 return;
             }
             if (!phoneReg.test(this.phone)) {
-                this.$refs.phoneInput.showInputTips('请输入纯数字手机号');
-                this.wrong = true;
                 return;
             }
             this.varPhone().then((res) => {
@@ -240,7 +247,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/appeal/step1';
+                            location.href = location.origin + '/appeal';
                         }, 2000);
                         return;
                     }
@@ -258,6 +265,77 @@ export default {
     },
     handleSend() {
         const phoneReg = /^[0-9]*$/;
+        if (this.wrong) {
+            return;
+        }
+        if (this.phone === '') {
+            this.$refs.phoneInput.showInputTips('请先输入手机号');
+            this.wrong = true;
+            return;
+        }
+        if (!phoneReg.test(this.phone)) {
+            this.$refs.phoneInput.showInputTips('请输入纯数字手机号');
+            this.wrong = true;
+            return;
+        }
+        axios.post('/uc/system/vcode/action/sendSmsVCode', {
+            phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
+            vCodeTypeValue: 22,
+            account: this.account
+        }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = location.origin + '/appeal';
+                }, 2000);
+                return;
+            }
+            if (res.data.code == "200") {
+                this.$refs.kapkeyInput.changeState();
+                this.sent = true;
+            } else {
+                this.message = res.data.message;
+                this.showModal = true;
+            }
+        })
+        /*this.varPhone().then((res) => {
+            if(!res.data) {
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/appeal/step1';
+                    }, 2000);
+                    return;
+                }
+            }
+            if (res.data.code == "200" && res.data.value) {
+                return axios.post('/uc/system/vcode/sendCgiSmsVCode', {
+                    phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
+                    vCodeTypeValue: 22
+                })
+            } else {
+                this.$refs.phoneInput.showInputTips(res.data.message || '错误的手机号码');
+                this.wrong = true;
+            }
+        }).then((res) => {
+            if(!res.data) {
+                this.showModal = true;
+                this.overTime = true;
+                setTimeout(() => {
+                    location.href = location.origin + '/forgetpwd';
+                }, 2000);
+                return;
+            }
+            if (res.data.code == "200") {
+                this.$refs.kapkeyInput.changeState();
+                this.sent = true;
+            } else {
+                this.message = res.data.message;
+                this.showModal = true;
+            }
+        })*/
     },
     handleChange(varPhone) {
         if (this.wrong) {
@@ -275,7 +353,10 @@ export default {
     }
   },
   mounted() {
-      this.account = getParams('account');
+      this.account = getParams('account') || "";
+      if (!this.account) {
+          location.replace('/appeal')
+      }
   }
 }
 </script>

@@ -37,7 +37,7 @@
                 </div>
                 <div class="section" v-if="!changePhoneType">
                     <div class="bar bar-input">
-                        <mzinput placeholder="请输入验证码" label="验证码：" v-model="phoneCode" ref="varInput" :type="'phoneCode'" @send="handleSend" :maxlen="6"></mzinput>
+                        <mzinput placeholder="请输入验证码" label="验证码：" v-model="varCode" ref="varInput" :type="'phoneCode'" @send="handleSend" :maxlen="6"></mzinput>
                     </div>
                 </div>
             </div>
@@ -121,12 +121,10 @@ export default {
       phone: '',
       originPhone: '',
       varCode: '',
-      phoneCode: '',
       resetPwd: '',
       showModal: false,
       message: '',
       repeatPwd: '',
-      phoneCode: '',
       wrong: false,
       hasSubmit: false,
       canSubmit: false,
@@ -184,7 +182,7 @@ export default {
                 return;
             }
             if (this.varCode == "") {
-                this.$refs.phoneInput.showInputTips('请输入验证码');
+                this.$refs.varInput.showInputTips('请输入验证码');
                 return;
             }
         }
@@ -258,9 +256,10 @@ export default {
         let data = {
             vCodeTypeValue: 22,
             phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
+            account: this.account,
         }
 
-        axios.post('/uc/system/vcode/sendCgiSmsVCode', data).then((res) => {
+        axios.post('/uc/system/vcode/action/sendSmsVCode', data).then((res) => {
             if(!res.data) {
                 this.showModal = true;
                 this.overTime = true;
@@ -301,6 +300,9 @@ export default {
       this.originPhone = getParams('phone') || "";
       this.resetId = getParams('resetId') || "";
       this.cycode = getParams('cycode') || "";
+      if (!this.resetId || !this.account) {
+          location.replace('/appeal');
+      }
       if (this.originPhone) {
           this.changePhoneType = true;
       }

@@ -2182,7 +2182,12 @@ export default {
             //console.log(data);
             axios.post('/uc/system/webjsp/resetpwd/addEvidence', data).then((res) => {
                 if (res.data.code == 200) {
-                    return location.replace('/appeal/step5?resetId=' + res.data.value.resetId);
+                    let gotoUrl = '';
+                    if (res.data.value.phone) {
+                        location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}&vcode=${res.data.value.areacode}&phone=${res.data.value.phone}`);
+                    } else {
+                        location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}`);
+                    }
                 } else if (res.data.code == 200014) {
                     this.message = "已经提交过了，请重新填写账号申诉";
                     this.showModal = true;
@@ -2384,6 +2389,9 @@ export default {
   mounted() {
       this.account = getParams('account') || "";
       this.resetId = getParams('resetId') || "";
+      if (!this.resetId || !this.account) {
+          location.replace('/appeal')
+      }
   }
 }
 </script>

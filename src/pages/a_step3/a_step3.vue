@@ -168,7 +168,7 @@ export default {
             this.$refs.nameInput.showInputTips('请输入真实姓名');
             return ;
         }
-        if (this.idCardTypes == "") {
+        if (this.choosenType == "") {
             this.typeTips = "请选择证件类型";
             return;
         }
@@ -176,7 +176,7 @@ export default {
             this.$refs.idInput.showInputTips('请输入证件号码');
             return;
         }
-        if (this.idCardTypes = "id" && !idReg.test(this.idNum)) {
+        if (this.choosenType == "id" && !idReg.test(this.idNum)) {
             this.$refs.idInput.showInputTips('请输入正确的身份证号');
             return;
         }
@@ -189,7 +189,7 @@ export default {
         }
         axios.post('/uc/system/webjsp/resetpwd/addIdentifyInfo', data).then((res) => {
             if (res.data.code == 200) {
-                return location.replace('/appeal/step4?resetId=' + res.value.resetId)
+                location.replace(`/appeal/step4?account=${this.account}&resetId=${res.data.value.resetId}`)
             } else {
                 if (res.data.message == "非法参数") {
                     return Promise.reject(0);
@@ -240,8 +240,11 @@ export default {
     }
   },
   mounted() {
-      this.account = getParams('account');
-      this.resetId = getParams('resetId');
+      this.account = getParams('account') || "";
+      this.resetId = getParams('resetId') || "";
+      if (!this.resetId || !this.account) {
+          location.replace('/appeal')
+      }
   }
 }
 </script>
