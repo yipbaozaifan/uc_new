@@ -85,7 +85,7 @@ export default {
             kapkey: this.varCode,
             account: account,
         }
-        axios.post('/uc/system/webjsp/forgetpwd/checkAccount', data).then((res) => {
+        axios.post('/uc/system/webjsp/resetpwd/checkAccount', data).then((res) => {
             if (res.data.code !== "200") {
                 if (res.data.code == "403002") {
                     this.$refs.kapkeyInput.showInputTips(res.data.message);
