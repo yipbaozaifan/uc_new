@@ -83,7 +83,7 @@
 <script>
 import mzheader from '../../components/header/header.vue';
 import mzprogress from '../../components/progress/progress.vue';
-import mzinput from '../../components/input/input.vue';
+import mzinput from '../../components/input/input_c.vue';
 import btn from '../../components/button/button.vue';
 import mzCheckbox from '../../components/checkbox/mzCheckbox.vue';
 import mzfooter from '../../components/footer/footer.vue';
@@ -157,7 +157,7 @@ export default {
             // 没选择重置手机
             axios.post('https://i.flyme.cn/uc/system/webjsp/resetpwd/new', data).then((res) => {
                 if(res.data.code == 200) {
-                    location.replace('/appeal/step3?resetId=' + res.data.value.resetId);
+                    location.replace(`/appeal/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
                 } else {
                     this.showModal = true;
                     this.message = res.data.message || "未知错误，请重试";

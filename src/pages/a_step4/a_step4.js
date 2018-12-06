@@ -5,7 +5,7 @@ import App from './a_step4.vue';
 import { Select, Option, DatePicker } from 'element-ui';
 import qs from 'qs';
 import axios from 'axios';
-
+import "babel-polyfill";
 import './assets/reset.css';
 Vue.config.productionTip = false;
 

@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import App from './a_step3.vue';
 import { Select, Option, Upload } from 'element-ui';
-
+import "babel-polyfill";
 
 import qs from 'qs';
 import axios from 'axios';

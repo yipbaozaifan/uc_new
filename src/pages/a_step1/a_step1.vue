@@ -8,7 +8,7 @@
         <div class="content content-form">
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="'请输入手机号/用户名/邮箱'" :type="'account'" :label="'flyme账号：'" v-model="account" ref="accountInput"></mzinput>
+                    <mzinput :placeholder="'请输入手机号/用户名'" :type="'account'" :label="'Flyme 账号：'" v-model="account" ref="accountInput"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -120,7 +120,7 @@ export default {
             font-size: 16px;
             color: #000000;
             letter-spacing: 0;
-            line-height: 24px;
+            line-height: 28px;
             width: 518px;
             margin: 0 auto;
             font-weight: 600;
@@ -129,6 +129,7 @@ export default {
                 color: #999999;
                 width: 518px;
                 margin: 0 auto;
+                margin-top: 2px;
             }
         }
     .content-form {

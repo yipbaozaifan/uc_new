@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './a_step2.vue';
-
+import "babel-polyfill";
 import qs from 'qs';
 import axios from 'axios';
 

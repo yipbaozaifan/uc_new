@@ -21,8 +21,8 @@
                                 <input type="text" placeholder="请输入曾用昵称" v-model="nicknames[index]" :disabled="forgotNickname" @input="handleInput('nickname')">
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index]">+</span>
-                                <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">-</span>
+                                <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index]">&#xe648;</span>
+                                <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">&#xe60b;</span>
                             </div>
                             <p class="tips tips-input" v-show="nicknameTips[0]">{{nicknameTips[0]}}</p>
                         </div>
@@ -46,8 +46,8 @@
                                 <input type="text" placeholder="请输入曾用邮箱" v-model="emails[index]" :disabled="forgotMail" @input="handleInput('email', index)">
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index]">+</span>
-                                <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">-</span>
+                                <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index]">&#xe648;</span>
+                                <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">&#xe60b;</span>
                             </div>
                             <p class="tips tips-input" v-show="emailsTips[index]">{{emailsTips[index]}}</p>
                         </div>
@@ -71,8 +71,8 @@
                                 <input type="text" placeholder="请输入曾用手机" v-model="phones[index]" :disabled="forgotPhone" @input="handleInput('phones', index)">
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index]">+</span>
-                                <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">-</span>
+                                <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index]">&#xe648;</span>
+                                <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">&#xe60b;</span>
                             </div>
                             <p class="tips tips-input" v-show="phonesTips[index]">{{phonesTips[index]}}</p>
                         </div>
@@ -128,8 +128,8 @@
                         </div>
                     </div>
                     <div class="operation" v-show="!noLoginPhone">
-                        <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && (item.phoneType || item.phoneId)" >+</span>
-                        <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">-</span>
+                        <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && (item.phoneType || item.phoneId)" >&#xe648;</span>
+                        <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">&#xe60b;</span>
                     </div>
                 </div>
             </div>
@@ -145,7 +145,8 @@
                             placeholder="选择注册日期"
                             format="yyyy 年 MM 月 dd 日"
                             value-format="yyyy-MM-dd"
-                            :picker-options="pickerOptions">
+                            :picker-options="pickerOptions"
+                            @change="handleChangeDate">
                         </el-date-picker>
                     </div>
                     <p class="tips tips-selection" v-show="showRegTimeTips">{{dateTips}}</p>
@@ -153,7 +154,7 @@
                 <div class="section">
                     <span class="select-label">注册地：</span>
                     <div class="select-content">
-                        <el-select v-model="RegLand[0]" placeholder="请选择省份" @change="RegLand[1] = ''; showRegLandTips = false">
+                        <el-select v-model="RegLand[0]" placeholder="请选择省份" @change="RegLand[1] = ''; showRegLandTips = false;step3Ok = true;">
                             <el-option
                                 v-for="(item, index) in CityMap"
                                 :key="index"
@@ -181,7 +182,7 @@
                             'mt30': index > 0
                         }">
                             <div class="select-content">
-                                <el-select v-model="item.p" placeholder="请选择省份" @change="item.c = ''; showUsedLandTips = false">
+                                <el-select v-model="item.p" placeholder="请选择省份" @change="item.c = ''; showUsedLandTips = false;step3Ok = true;">
                                     <el-option
                                         v-for="(p, i) in CityMap"
                                         :key="i"
@@ -201,8 +202,8 @@
                                 </el-select>
                             </div>
                             <div class="operations">
-                                <span class="op add" v-show="index == 0" @click="handleAdd('usedLand')">+</span>
-                                <span class="op sub" v-show="index > 0" @click="handleSub(index, 'usedLand')">-</span>
+                                <span class="op add" v-show="index == 0" @click="handleAdd('usedLand')">&#xe648;</span>
+                                <span class="op sub" v-show="index > 0" @click="handleSub(index, 'usedLand')">&#xe60b;</span>
                             </div>
                             <p class="tips tips-selection" v-show="index == 0 && showUsedLandTips">{{usedLandTips}}</p>
                         </div>
@@ -213,11 +214,11 @@
                     <div class="content input-content">
                         <div class="bar bar-input" v-for="(item, index) in usedPassword" :key="index">
                             <div class="outer-input">
-                                <input type="text" placeholder="请输入曾用密码" v-model="usedPassword[index]">
+                                <input type="password" placeholder="请输入曾用密码" v-model="usedPassword[index]" >
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="addUsedPwd" v-show="index == 0 && usedPassword[index]">+</span>
-                                <span class="op sub" @click="subUsedPwd(index)" v-show="index > 0">-</span>
+                                <span class="op add" @click="addUsedPwd" v-show="index == 0 && usedPassword[index]">&#xe648;</span>
+                                <span class="op sub" @click="subUsedPwd(index)" v-show="index > 0">&#xe60b;</span>
                             </div>
                         </div>
                     </div>
@@ -2178,6 +2179,7 @@ export default {
                 deviceUsedBeforeList: usedPhoneTypes.substring(0, usedPhoneTypes.length-1),
                 phoneUsedBeforeList: usedPhones.substring(0, usedPhones.length-1),
                 passwordUsedBeforeList: usedPwd.substring(0, usedPwd.length-1),
+                snUsedBeforeList: usedPhoneIds.substring(0, usedPhoneIds.length-1),
             }
             //console.log(data);
             axios.post('/uc/system/webjsp/resetpwd/addEvidence', data).then((res) => {
@@ -2265,6 +2267,10 @@ export default {
     handleNoPhoneId(index) {
         this.usedPhoneType[index].phoneId = "";
         this.phoneIdTips[index] = '';
+    },
+    handleChangeDate() {
+        this.showRegTimeTips = false;
+        this.step3Ok = true;
     },
     addUsedPwd() {
         this.usedPassword.push('');
@@ -2398,6 +2404,14 @@ export default {
 
 <style lang="scss">
     @import '../../assets/base.scss';
+    @font-face {
+        font-family: 'operations';  /* project id 952637 */
+        src: url('//at.alicdn.com/t/font_952637_ut5molpe9ea.eot');
+        src: url('//at.alicdn.com/t/font_952637_ut5molpe9ea.eot?#iefix') format('embedded-opentype'),
+        url('//at.alicdn.com/t/font_952637_ut5molpe9ea.woff') format('woff'),
+        url('//at.alicdn.com/t/font_952637_ut5molpe9ea.ttf') format('truetype'),
+        url('//at.alicdn.com/t/font_952637_ut5molpe9ea.svg#iconfont') format('svg');
+    }
         .mt30 {
             margin-top: 30px;
         }
@@ -2457,6 +2471,18 @@ export default {
                             position: absolute;
                             top: 0;
                             right: 0;
+                            .op {
+                                display: inline-block;
+                                width: 26px;
+                                height: 40px;
+                                font-family: 'operations';
+                                line-height: 40px;
+                                font-size: 22px;
+                                color: #387AFF;
+                                &.add {
+                                    margin-right: 6px;
+                                }
+                            }
                         }
                     }
                 }
@@ -2478,10 +2504,15 @@ export default {
                             display: inline-block;
                             margin-left: 10px;
                             vertical-align: middle;
+                            
                             .op {
                                 display: inline-block;
                                 width: 26px;
                                 height: 26px;
+                                font-family: 'operations';
+                                line-height: 26px;
+                                font-size: 22px;
+                                color: #387AFF;
                                 &.add {
                                     margin-right: 6px;
                                 }
@@ -2533,6 +2564,9 @@ export default {
                                     height: 20px;
                                     display: inline-block;
                                     width: 100%;
+                                    &:disabled {
+                                        background-color: #ffffff;
+                                    }
                                 }
                             }
                             .operations {
@@ -2543,6 +2577,10 @@ export default {
                                     display: inline-block;
                                     width: 26px;
                                     height: 26px;
+                                    font-family: 'operations';
+                                    line-height: 26px;
+                                    font-size: 22px;
+                                    color: #387AFF;
                                     &.add {
                                         margin-right: 6px;
                                     }
@@ -2571,8 +2609,10 @@ export default {
                     .forgoten-content {
                         margin-left: 195px;
                         font-size: 14px;
-                        opacity: 0.4;
                         margin-top: 8px;
+                        .mz_checkbox-label {
+                            opacity: 0.4;
+                        }   
                     }
                 }
             }

@@ -30,8 +30,10 @@
                     <div class="bar bar-input">
                         <div class="selection">
                             <span class="select-label">证件类型：</span>
-                            <div class="select-content">
-                                <el-select v-model="choosenType" placeholder="请选择证件类型">
+                            <div class="select-content" :class="{
+                                'error': typeTips,
+                            }">
+                                <el-select v-model="choosenType" placeholder="请选择证件类型" @change="typeTips = ''">
                                     <el-option
                                         v-for="item in idCardTypes"
                                         :key="item.value"
@@ -41,6 +43,7 @@
                                 </el-select>
                             </div>
                         </div>
+                        <p class="tips tips-type" v-show="typeTips">{{typeTips}}</p>
                     </div>
                 </div>
                 <div class="section">
@@ -54,6 +57,9 @@
                         <div class="upload-bar">
                             <el-upload
                                 class="upload-btn"
+                                :class="{
+                                    'error': uploadTips
+                                }"
                                 action="https://i.flyme.cn/uc/system/webjsp/resetpwd/uploadIdentifyPhoto"
                                 name="file"
                                 :show-file-list="false"
@@ -63,7 +69,7 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </div>
-                        
+                        <p class="tips upload-tips" v-show="uploadTips">{{uploadTips}}</p>
                     </div>
 
                 </div>
@@ -158,7 +164,9 @@ export default {
       hasUpload: false,
       choosenPic: '',
       photoPath: '',
-      overTime: false
+      overTime: false,
+      typeTips: '',
+      uploadTips: '',
     }
   },
   methods: {
@@ -178,6 +186,10 @@ export default {
         }
         if (this.choosenType == "id" && !idReg.test(this.idNum)) {
             this.$refs.idInput.showInputTips('请输入正确的身份证号');
+            return;
+        }
+        if (this.photoPath == ""){
+            this.uploadTips = "请先上传图片";
             return;
         }
         const data = {
@@ -221,8 +233,14 @@ export default {
         this.message = "";
     },
     handleAvatarSuccess(res, file) {
-        this.choosenPic = URL.createObjectURL(file.raw);
-        this.photoPath = res.value;
+        if( res.code == 200 ) {
+            this.choosenPic = URL.createObjectURL(file.raw);
+            this.photoPath = res.value;
+            this.uploadTips = '';
+        } else {
+            this.uploadTips = "上传失败";
+        }
+        
     },
     beforeAvatarUpload(file) {
         const isPic = /(jpg|jpeg|png|bmp)$/.test(file.type)
@@ -279,6 +297,13 @@ export default {
                     width: 100%;
                     text-align: left;
                     margin-left: 50px;
+                    .tips {
+                        font-size: 12px;
+                        color: #DE3131;
+                        margin-top: 10px;
+                        text-align: left;
+                        margin-left: 90px;
+                    }
                     .selection {
                         font-size: 0px;
                         cursor: pointer;
@@ -307,6 +332,13 @@ export default {
                                         border-color: #cccccc;
                                     }
                                 }
+                            }
+                            &.error {
+                                .el-select{
+                                    .el-input__inner {
+                                        border-color: #DE3131;
+                                    }
+                                }   
                             }
                         }
                     } 
@@ -337,6 +369,9 @@ export default {
                                 border-radius: 4px;
                                 position: relative;
                                 cursor: pointer;
+                                &.error {
+                                    border-color: #DE3131;
+                                }
                                 .avatar-uploader-icon {
                                     display: inline-block;
                                     font-size: 34px;
