@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <mzheader link="https://www.meizu.com/"></mzheader>
         <h1 class="title">账号申诉</h1>
         <mzprogress :steps="steps" :actived="3" size="96" line-length="600"></mzprogress>
         <div class="main step1" v-show="nowStep === 1">
@@ -18,10 +17,10 @@
                             <div class="outer-input" :class="{
                                 'error': nicknameTips[index] != ''
                             }">
-                                <input type="text" placeholder="请输入曾经用过的昵称" v-model="nicknames[index]" :disabled="forgotNickname" @input="handleInput('nickname')">
+                                <input type="text" placeholder="请输入曾用昵称" v-model="nicknames[index]" :disabled="forgotNickname" @input="handleInput('nickname')">
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index] && nicknames.length < 5">&#xe648;</span>
+                                <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index]">&#xe648;</span>
                                 <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">&#xe60b;</span>
                             </div>
                             <p class="tips tips-input" v-show="nicknameTips[0]">{{nicknameTips[0]}}</p>
@@ -43,10 +42,10 @@
                             <div class="outer-input" :class="{
                                 'error': emailsTips[index] != ''
                             }">
-                                <input type="text" placeholder="请输入曾经用过的邮箱" v-model="emails[index]" :disabled="forgotMail" @input="handleInput('email', index)">
+                                <input type="text" placeholder="请输入曾用邮箱" v-model="emails[index]" :disabled="forgotMail" @input="handleInput('email', index)">
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index] && emails.length < 5">&#xe648;</span>
+                                <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index]">&#xe648;</span>
                                 <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">&#xe60b;</span>
                             </div>
                             <p class="tips tips-input" v-show="emailsTips[index]">{{emailsTips[index]}}</p>
@@ -55,12 +54,12 @@
                     <div class="forgoten-content">
                         <mz-checkbox
                         v-model="forgotMail"
-                        :label="'未绑定过邮箱'"
+                        :label="'忘记邮箱'"
                         ></mz-checkbox>
                     </div>
                 </div>
                 <div class="section">
-                    <span class="label-input">曾用手机号：</span>
+                    <span class="label-input">曾用手机：</span>
                     <div class="content input-content">
                         <div class="bar bar-input" v-for="(item, index) in phones" :key="index" :class="{
                             'last-input': index == (phones.length-1),
@@ -68,17 +67,17 @@
                             <div class="outer-input" :class="{
                                 'error': phonesTips[index] != ''
                             }">
-                                <input type="text" placeholder="请输入曾经用过的手机号" v-model="phones[index]" :disabled="forgotPhone" @input="handleInput('phones', index)">
+                                <input type="text" placeholder="请输入曾用手机" v-model="phones[index]" :disabled="forgotPhone" @input="handleInput('phones', index)">
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index] && phones.length < 5">&#xe648;</span>
+                                <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index]">&#xe648;</span>
                                 <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">&#xe60b;</span>
                             </div>
                             <p class="tips tips-input" v-show="phonesTips[index]">{{phonesTips[index]}}</p>
                         </div>
                     </div>
                     <div class="forgoten-content">
-                        <mz-checkbox v-model="forgotPhone" :label="'未绑定过手机号'"
+                        <mz-checkbox v-model="forgotPhone" :label="'忘记手机'"
                         ></mz-checkbox>
                     </div>
                 </div>
@@ -94,7 +93,7 @@
                                 <div class="outer-input" :class="{
                                     'error': phoneTypeTips[index] != ''
                                 }">
-                                    <input type="text" placeholder="请输入登录过该账号的手机型号" v-model="item.phoneType" :disabled="noLoginPhone" @input="handleInput('phoneType', index)">
+                                    <input type="text" placeholder="请输入登陆过该手机的手机型号" v-model="item.phoneType" :disabled="noLoginPhone" @input="handleInput('phoneType', index)">
                                 </div>
                             </div>
                             <p class="tips tips-input" v-show="phoneTypeTips[index]">{{phoneTypeTips[index]}}</p>
@@ -102,7 +101,7 @@
                                 <p>可在“设置>关于手机”中，或手机保修书、包装盒上查看。如 MEIZU 16</p>
                             </div>
                             <div class="forgoten-content" v-show="index == 0">
-                                <mz-checkbox v-model="noLoginPhone" :label="'未曾登录过手机'"
+                                <mz-checkbox v-model="noLoginPhone" :label="'未曾登陆过手机'"
                                 ></mz-checkbox>
                             </div>
                         </div>
@@ -114,7 +113,7 @@
                                 <div class="outer-input" :class="{
                                     'error': phoneIdTips[index] != ''
                                 }">
-                                    <input type="text" placeholder="请输入登录过该手机的序列号" v-model="item.phoneId" ref="phoneIdInput" :disabled="item.noPhoneId" @input="handleInput('phoneId', index)">
+                                    <input type="text" placeholder="请输入登陆过该手机的序列号" v-model="item.phoneId" ref="phoneIdInput" :disabled="item.noPhoneId" @input="handleInput('phoneId', index)">
                                 </div>
                             </div>
                             <p class="tips tips-input" v-show="phoneIdTips[index]">{{phoneIdTips[index]}}</p>
@@ -128,7 +127,7 @@
                         </div>
                     </div>
                     <div class="operation" v-show="!noLoginPhone">
-                        <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && (item.phoneType || item.phoneId) && usedPhoneType.length < 5" >&#xe648;</span>
+                        <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && (item.phoneType || item.phoneId)" >&#xe648;</span>
                         <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">&#xe60b;</span>
                     </div>
                 </div>
@@ -202,7 +201,7 @@
                                 </el-select>
                             </div>
                             <div class="operations">
-                                <span class="op add" v-show="index == 0 && UsedLand.length < 5" @click="handleAdd('usedLand')">&#xe648;</span>
+                                <span class="op add" v-show="index == 0" @click="handleAdd('usedLand')">&#xe648;</span>
                                 <span class="op sub" v-show="index > 0" @click="handleSub(index, 'usedLand')">&#xe60b;</span>
                             </div>
                             <p class="tips tips-selection" v-show="index == 0 && showUsedLandTips">{{usedLandTips}}</p>
@@ -217,7 +216,7 @@
                                 <input type="password" placeholder="请输入曾用密码" v-model="usedPassword[index]" >
                             </div>
                             <div class="operations">
-                                <span class="op add" @click="addUsedPwd" v-show="index == 0 && usedPassword[index] && usedPassword.length < 5">&#xe648;</span>
+                                <span class="op add" @click="addUsedPwd" v-show="index == 0 && usedPassword[index]">&#xe648;</span>
                                 <span class="op sub" @click="subUsedPwd(index)" v-show="index > 0">&#xe60b;</span>
                             </div>
                         </div>
@@ -248,29 +247,24 @@
                 <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
         </mz-modal>
-        <mzfooter now-lang="简体中文" lang-menu-item="简体中文"></mzfooter>
     </div>
 </template>
 
 <script>
-import mzheader from '../../components/header/header.vue';
-import mzprogress from '../../components/progress/progress.vue';
-import btn from '../../components/button/button.vue';
+import mzprogress from '../../components/progress/progress_m.vue';
+import btn from '../../components/button/button_m.vue';
 import mzCheckbox from '../../components/checkbox/mzCheckbox.vue';
-import mzfooter from '../../components/footer/footer.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
 
 export default {
   name: 'app',
   components: {
-    mzheader,
     mzprogress,
     btn,
     mzCheckbox,
     mzModal,
-    mzfooter,
   },
   watch: {
       noLoginPhone(newValue, oldValue) {
@@ -291,21 +285,21 @@ export default {
           if (newValue) {
               this.nicknames = [''];
               this.nicknameTips = [''];
-              this.step1Ok[0] = true;
+              this.step1Ok = true;
           }
       },
       forgotMail(newValue, oldValue) {
           if (newValue) {
               this.emails = [''];
               this.emailsTips = [''];
-              this.step1Ok[1] = true;
+              this.step1Ok = true;
           }
       },
       forgotPhone(newValue, oldValue) {
           if (newValue) {
               this.phones = [''];
               this.phonesTips = [''];
-              this.step1Ok[2] = true;
+              this.step1Ok = true;
           }
       }
   },
@@ -2059,7 +2053,7 @@ export default {
             return time.getTime() > Date.now();
           },
       },
-      step1Ok: [true, true, true],
+      step1Ok: true,
       step2Ok: true,
       step3Ok: true,
       resetId: "",
@@ -2080,31 +2074,31 @@ export default {
                 if (!this.forgotNickname) {
                     let checkResult = this.checkInput('nickname', this.nicknames, this.nicknameTips);
                     if (checkResult != 1) {
-                        this.step1Ok[0] = false;
+                        this.step1Ok = false;
                         //this.nickFlag = false;
                     } else {
-                        this.step1Ok[0] = true;
+                        this.step1Ok = true;
                     }
                 }
                 if (!this.forgotMail) {
                     let checkResult = this.checkInput('email', this.emails, this.emailsTips, mailReg);
                     if (checkResult != 1) {
-                        this.step1Ok[1] = false;
+                        this.step1Ok = false;
                         //this.emailFlag = false;
                     } else {
-                        this.step1Ok[1] = true;
+                        this.step1Ok = true;
                     }
                 }
                 if (!this.forgotPhone) {
                     let checkResult = this.checkInput('phone', this.phones, this.phonesTips ,phoneReg);
                     if (checkResult != 1) {
-                        this.step1Ok[2] = false;
+                        this.step1Ok = false;
                         //this.phoneFlag = false;
                     } else {
-                        this.step1Ok[2] = true;
+                        this.step1Ok = true;
                     }
                 }
-                if (this.step1Ok[0] && this.step1Ok[1] && this.step1Ok[2]) {
+                if (this.step1Ok) {
                     this.nowStep ++;
                 } 
             } else if (this.nowStep == 2) {     
@@ -2273,9 +2267,7 @@ export default {
         this.step3Ok = true;
     },
     addUsedPwd() {
-        if (this.usedPassword.length < 5) {
-            this.usedPassword.push('');
-        }
+        this.usedPassword.push('');
     },
     subUsedPwd(index) {
         this.usedPassword.splice(index,1);
@@ -2283,46 +2275,35 @@ export default {
     handleAdd(type) {
         switch(type) {
             case 'nickname': {
-                if (this.nicknames.length < 5) {
-                    this.nicknames.push('');
-                    this.nicknameTips.push('');
-                }
+                this.nicknames.push('');
+                this.nicknameTips.push('');
                 break;
             }
             case 'email': {
-                if (this.nicknames.length < 5) {
-                    this.emails.push('');
-                    this.emailsTips.push('');
-                }
+                this.emails.push('');
+                this.emailsTips.push('');
                 break;
             }
             case 'phones': {
-                if (this.phones.length < 5 ) {
-                    this.phones.push('');
-                    this.phonesTips.push('');
-                }
+                this.phones.push('');
+                this.phonesTips.push('');
                 break;
             }
             case 'phoneType': {
-                if (this.usedPhoneType.length < 5) {
-                    this.usedPhoneType.push({
-                        phoneType: '',
-                        phoneId: '',
-                        noPhoneId: false,
-                    });
-                    this.phoneTypeTips.push('');
-                    this.phoneIdTips.push('');
-                }
-                
+                this.usedPhoneType.push({
+                    phoneType: '',
+                    phoneId: '',
+                    noPhoneId: false,
+                });
+                this.phoneTypeTips.push('');
+                this.phoneIdTips.push('');
                 break;
             }
             case 'usedLand': {
-                if (this.UsedLand.length < 5) {
-                    this.UsedLand.push({
-                        p: '',
-                        c: ''
-                    });
-                }
+                this.UsedLand.push({
+                    p: '',
+                    c: ''
+                });
                 break;
             }
         }
@@ -2361,19 +2342,19 @@ export default {
             case 'nickname': {
                 this.nicknames=[''];
                 this.nicknameTips = [''];
-                this.step1Ok[0] = true;
+                this.step1Ok = true;
                 break;
             }
             case 'email': {
                 this.emails=[''];
                 this.emailsTips = [''];
-                this.step1Ok[1] = true;
+                this.step1Ok = true;
                 break;
             }
             case 'phones': {
                 this.phones=[''];
                 this.phonesTips = [''];
-                this.step1Ok[2] = true;
+                this.step1Ok = true;
                 break;
             }
         }
@@ -2416,7 +2397,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '../../assets/base.scss';
+    @import '../../assets/base_m.scss';
     @font-face {
         font-family: 'operations';  /* project id 952637 */
         src: url('//at.alicdn.com/t/font_952637_ut5molpe9ea.eot');

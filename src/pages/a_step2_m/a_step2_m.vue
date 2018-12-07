@@ -1,8 +1,9 @@
 <template>
     <div id="app" class="complaint_select_type">
-        <mzheader link="https://www.meizu.com/"></mzheader>
-        <h1 class="title">账号申诉</h1>
-        <mzprogress :steps="steps" :actived="1" size="96" line-length="600"></mzprogress>
+        <div class="steps-warp">
+            <mzprogress :steps="steps" :actived="1" size="58" line-length="188"></mzprogress>
+        </div>
+        <h1 class="title">选择申诉类型</h1>
         <div v-if="changePhone" class="bar bar-text">
             <p class="complaint-text">重置安全手机</p>
             <p class="complaint-text-gray">重置安全手机后，账号将绑定此手机号码，并可作为账号进行登录</p>
@@ -22,34 +23,29 @@
             </div>
         </div>
         <div class="content content-form" v-else>
-            <div class="section">
                 <div class="checkbox-bar">
+                    <p class="option-desc">清除账号原有密保并重置密码</p>
                     <mz-checkbox
                         v-model="resetQuestions"
                         :label="'清除密保'"
                     ></mz-checkbox>
-                    <p class="option-desc">清除账号原有密保并重置密码</p>
                 </div>
-            </div>
-            <div class="section">
                 <div class="checkbox-bar">
+                    <p class="option-desc">重新绑定账号安全手机并重置密码</p>
                     <mz-checkbox
                     v-model="resetPhone"
                     :label="'重置安全手机'"
                     ></mz-checkbox>
-                    <p class="option-desc">重新绑定账号安全手机并重置密码</p>
                 </div>
-            </div>
+        </div>
+        <div class="content content-form">
             <div class="section">
-                <div class="checkbox-bar">
-                    <mz-checkbox
-                    v-model="otherReason"
-                    :label="'其他原因 :'"
-                    ></mz-checkbox>
-                    <div class="extra">
-                        <input type="text" v-model="reason" placeholder="如账号被盗，密保信息被修改" :disabled="!otherReason" @input="handleInput">
-                        <!--<span v-show="showExtraTips" class="extra-tips">{{extraTips}}</span>-->
-                    </div>
+                <div class="section-title">
+                    <p>其他原因</p>
+                </div>
+                <div class="extra">
+                    <input type="text" v-model="reason" placeholder="如账号被盗，密保信息被修改" :disabled="!otherReason" @input="handleInput">
+                    <!--<span v-show="showExtraTips" class="extra-tips">{{extraTips}}</span>-->                    
                 </div>
             </div>
         </div>
@@ -76,43 +72,38 @@
                 <p class="modal-tips modal-tips-ot">此页面已失效</p>
             </div>
         </mz-modal>
-        <mzfooter now-lang="简体中文" lang-menu-item="简体中文"></mzfooter>
     </div>
 </template>
 
 <script>
-import mzheader from '../../components/header/header.vue';
-import mzprogress from '../../components/progress/progress.vue';
-import mzinput from '../../components/input/input_c.vue';
-import btn from '../../components/button/button.vue';
+import mzprogress from '../../components/progress/progress_m.vue';
+import mzinput from '../../components/input/input_m.vue';
+import btn from '../../components/button/button_m.vue';
 import mzCheckbox from '../../components/checkbox/mzCheckbox.vue';
-import mzfooter from '../../components/footer/footer.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
 
 export default {
   name: 'app',
   components: {
-    mzheader,
     mzprogress,
     btn,
     mzCheckbox,
     mzModal,
-    mzfooter,
     mzinput,
   },
   data() {
     return {
       steps: [
         {
-          name: '选择申诉类型',
+          name: '申诉类型',
         },
         {
           name: '身份信息',
         },
         {
-          name: '填写申诉材料',
+          name: '申诉材料',
         },
         {
           name: '重置密码',
@@ -159,7 +150,6 @@ export default {
                 if(res.data.code == 200) {
                     location.replace(`/appeal/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
                 } else {
-                    
                     this.showModal = true;
                     this.message = res.data.message || "未知错误，请重试";
                 }
@@ -363,7 +353,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '../../assets/base.scss';
+    @import '../../assets/base_m.scss';
     .complaint_select_type {
         .title {
             text-align: center;
@@ -395,14 +385,13 @@ export default {
                 font-size: 20px;
                 color: #000000;
                 font-weight: 600;
-                width: 600px;
+
                 margin-left: auto;
                 margin-right: auto;
                 margin-bottom: 30px;
                 .checkbox-bar {
                     text-align: left;
-                    margin-left: 180px; 
-                    height: 42px;
+                    height: px2vw(216);
                 }
                 .bar-input {
                     width: 433px;
@@ -415,20 +404,32 @@ export default {
                     font-size: 14px;
                     margin-left: 26px;
                 }
+                .section-title {
+                    font-size: 12px;
+                    background-color: #f2f2f2;
+                    height: px2vw(108);
+                    line-height: px2vw(108);
+                    padding: 0 px2vw(48);
+                    text-align: left;
+                    p {
+                        opacity: 0.4;
+                    }
+                }
                 .extra {
-                    display: inline-block;
-                    padding-left: 6px;
-                    width: 230px;
-                    border: 1px solid #CCCCCC;
-                    border-radius: 4px;
-                    padding: 9px 15px;
-                    height: 20px;
+                    width: px2vw(984);
+                    border: none;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    margin: 0 auto;
+                    margin-top: px2vw(72);
+                    padding-bottom: px2vw(27);
                     input {
                         border: none;
                         width: 100%;
-                        font-size: 14px;
+                        font-size: 16px;
                         line-height: 20px;
                         height: 20px;
+                        vertical-align: bottom;
+                        display: inline-block;
                         &:disabled {
                             background-color: #ffffff;
                         }

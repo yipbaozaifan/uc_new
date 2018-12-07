@@ -1,6 +1,5 @@
 <template>
     <div id="app" class="complaint_select_type">
-        <mzheader link="https://www.meizu.com/"></mzheader>
         <h1 class="title">账号申诉</h1>
         <mzprogress :steps="steps" :actived="2" size="96" line-length="600"></mzprogress>
         <div class="main">
@@ -95,28 +94,23 @@
                 <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
         </mz-modal>
-        <mzfooter now-lang="简体中文" lang-menu-item="简体中文"></mzfooter>
     </div>
 </template>
 
 <script>
-import mzheader from '../../components/header/header.vue';
-import mzprogress from '../../components/progress/progress.vue';
-import btn from '../../components/button/button.vue';
-import mzinput from '../../components/input/input.vue';
-import mzfooter from '../../components/footer/footer.vue';
+import mzprogress from '../../components/progress/progress_m.vue';
+import btn from '../../components/button/button_m.vue';
+import mzinput from '../../components/input/input_m.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
 
 export default {
   name: 'app',
   components: {
-    mzheader,
     mzprogress,
     btn,
     mzModal,
-    mzfooter,
     mzinput
   },
   data() {
@@ -205,9 +199,6 @@ export default {
             } else {
                 if (res.data.message == "非法操作") {
                     return Promise.reject(0);
-                } else if (res.data.code == 200016) {
-                    this.$refs.idInput.showInputTips('身份信息不符');
-                    return Promise.reject(1);
                 } else {
                     this.message = res.data.message || "未知错误，请重试";
                     this.showModal = true;
@@ -250,10 +241,12 @@ export default {
         const isLt10M = file.size / 1024 / 1024 < 10;
 
         if (!isPic) {
-          this.uploadTips = "文件格式不正确";
+          this.message = '文件格式不正确';
+          this.showModal = true;
         }
         if (!isLt10M) {
-          this.uploadTips = '上传头像图片大小不能超过10MB';
+          this.message = '上传头像图片大小不能超过10MB';
+          this.showModal = true;
         }
         return isPic && isLt10M;
     }
@@ -269,7 +262,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '../../assets/base.scss';
+    @import '../../assets/base_m.scss';
     .complaint_select_type {
         .title {
             text-align: center;

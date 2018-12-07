@@ -1,20 +1,17 @@
 <template>
     <div id="app">
-        <mzheader link="https://www.meizu.com/"></mzheader>
         <h1 class="title">账号申诉</h1>
-        <p class="complaint-text">我们会人工审核你提交的信息，并在三个工作日内将结果发送到安全手机</p>
-        <p class="complaint-text">请尽可能多地提供以下资料，资料越充足，申诉通过的成功率则越高</p>
-        <p class="complaint-text-gray">需要的信息：账号信息、使用历史、手机设备信息、身份证件信息、手持身份证照片</p>
+        <p class="complaint-text-gray">我们会人工审核你提交的信息，并在三个工作日内将结果发送到安全手机，请尽可能多地提供以下资料，资料越充足，申诉通过的成功率则越高</p>
         <div class="content content-form">
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="'请输入手机号/用户名'" :type="'account'" :label="'Flyme 账号：'" v-model="account" ref="accountInput"></mzinput>
+                    <mzinput :placeholder="'请输入手机号/用户名'" :type="'account'" v-model="account" ref="accountInput"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="'请输入验证码'" :type="'imgCode'" :label="'验证码：'" v-model="varCode" ref="kapkeyInput" :maxlen="6"></mzinput>
+                    <mzinput :placeholder="'请输入验证码'" :type="'imgCode'" v-model="varCode" ref="kapkeyInput" :maxlen="6"></mzinput>
                 </div>
                 <a class="link"></a>
             </div>
@@ -36,26 +33,21 @@
                 </div>
             </div>
         </mz-modal>
-        <mzfooter now-lang="简体中文" lang-menu-item="简体中文"></mzfooter>
     </div>
 </template>
 
 <script>
-import mzheader from '../../components/header/header.vue';
-import btn from '../../components/button/button.vue';
-import mzinput from '../../components/input/input.vue';
-import mzfooter from '../../components/footer/footer.vue';
+import btn from '../../components/button/button_m.vue';
+import mzinput from '../../components/input/input_m.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 
 export default {
   name: 'app',
   components: {
-    mzheader,
     btn,
     mzinput,
     mzModal,
-    mzfooter
   },
   data() {
     return {
@@ -74,7 +66,7 @@ export default {
             account = this.account.trim();
         }
         if (account === '') {
-            this.$refs.accountInput.showInputTips('请输入账号');
+            this.$refs.accountInput.showInputTips('请输入flyme账号');
             return;
         }
         if (this.varCode === '') {
@@ -90,7 +82,8 @@ export default {
                 if (res.data.code == "403002") {
                     this.$refs.kapkeyInput.showInputTips(res.data.message);
                 } else {
-                    this.$refs.kapkeyInput.showInputTips(res.data.message);
+                    this.message = res.data.message;
+                    this.showModal = true;
                 }
                 this.$refs.kapkeyInput.getImageKey();
             } else {
@@ -114,29 +107,25 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '../../assets/base.scss';
+    @import '../../assets/base_m.scss';
      .complaint-text {
-            font-size: 16px;
-            color: #000000;
-            letter-spacing: 0;
-            line-height: 28px;
-            width: 518px;
-            margin: 0 auto;
-            font-weight: 600;
             &-gray{
                 font-size: 14px;
                 color: #999999;
-                width: 518px;
+                width: px2vw(948);
                 margin: 0 auto;
                 margin-top: 2px;
+                line-height: px2vw(54);
             }
         }
     .content-form {
         .section {
             .bar-input {
-                width: 433px;
-                display: inline-block;
-                vertical-align: middle;
+                width: 100%;
+                height: px2vw(156);
+                padding: 0 px2vw(48);
+                padding-top: px2vw(72);
+                box-sizing: border-box;
             }
         }
     }

@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <mzheader></mzheader>
         <h1 class="title">账号申诉</h1>
         <mzprogress :steps="steps" :actived="4" size="96" line-length="600"></mzprogress>
         <div class="main" v-show="!complaintSuccess">
@@ -78,25 +77,21 @@
 </template>
 
 <script>
-import mzheader from '../../components/header/header.vue';
-import mzprogress from '../../components/progress/progress.vue';
-import btn from '../../components/button/button.vue';
-import mzinput from '../../components/input/input.vue';
+import mzprogress from '../../components/progress/progress_m.vue';
+import btn from '../../components/button/button_m.vue';
+import mzinput from '../../components/input/input_m.vue';
 import mzCheckbox from '../../components/checkbox/mzCheckbox.vue';
-import mzfooter from '../../components/footer/footer.vue';
 import axios from 'axios';
-import mzModal from '../../components/mzModal/mzModal.vue';
+import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
 
 export default {
   name: 'app',
   components: {
-    mzheader,
     mzprogress,
     btn,
     mzCheckbox,
     mzModal,
-    mzfooter,
     mzinput
   },
   data() {
@@ -260,7 +255,6 @@ export default {
         }
 
         axios.post('/uc/system/vcode/action/sendSmsVCode', data).then((res) => {
-            console.log(res);
             if(!res.data) {
                 this.showModal = true;
                 this.overTime = true;
@@ -269,8 +263,8 @@ export default {
                 }, 2000);
                 return;
             }
-            if (res.data.code == "200") {
-                this.$refs.varInput.changeState();
+            if (res.data.code === "200") {
+                this.$refs.varinput.changeState();
             } else {
                 this.message = res.data.message;
                 this.showModal = true;
@@ -312,7 +306,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '../../assets/base.scss';
+    @import '../../assets/base_m.scss';
         .title {
             text-align: center;
         }
