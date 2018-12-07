@@ -90,7 +90,7 @@ export default {
                 if (res.data.code == "403002") {
                     this.$refs.kapkeyInput.showInputTips(res.data.message);
                 } else {
-                    this.$refs.kapkeyInput.showInputTips(res.data.message);
+                    this.$refs.accountInput.showInputTips(res.data.message);
                 }
                 this.$refs.kapkeyInput.getImageKey();
             } else {

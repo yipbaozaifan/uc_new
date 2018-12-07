@@ -132,6 +132,7 @@ export default {
       changePhone: false,
       wrong: false,
       overTime: false,
+      varPhoneFlag: false,
     }
   },
   methods: {
@@ -279,24 +280,47 @@ export default {
             this.wrong = true;
             return;
         }
-        axios.post('/uc/system/vcode/action/sendSmsVCode', {
-            phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
-            vCodeTypeValue: 22,
-            account: this.account
+        this.varPhone().then((res) => {
+            if(!res.data) {
+                return Promise.reject(0);
+            }
+            if (res.data.code == "200" && res.data.value) {
+                return axios.post('/uc/system/vcode/action/sendSmsVCode', {
+                    phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
+                    vCodeTypeValue: 22,
+                    account: this.account
+                })
+            } else {
+                this.$refs.phoneInput.showInputTips(res.data.message || '错误的手机号码');
+                this.wrong = true;
+                return Promise.reject(1);
+            }
         }).then((res) => {
             if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/appeal';
-                }, 2000);
-                return;
+                return Promise.reject(0);
             }
             if (res.data.code == "200") {
                 this.$refs.kapkeyInput.changeState();
                 this.sent = true;
+                return Promise.reject(1);
             } else {
                 this.message = res.data.message;
+                this.showModal = true;
+                return Promise.reject(1);
+            }
+        }).catch((err) => {
+            if (err == 0) { // 页面超时错误
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/appeal';
+                    }, 2000);
+                }
+            } else if (err == 1) { // 已经处理的错误
+                console.log(err);
+            } else { // 网络错误
+                this.message = "网络错误，请重试";
                 this.showModal = true;
             }
         })
@@ -339,11 +363,11 @@ export default {
         })*/
     },
     handleChange(varPhone) {
+        if (varPhone) { 
+            this.handleBlur()
+        }
         if (this.wrong) {
             this.wrong = false;
-            if (varPhone) { 
-                this.handleBlur()
-            }
         } else {
             return
         }

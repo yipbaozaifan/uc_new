@@ -114,7 +114,7 @@
                                 <div class="outer-input" :class="{
                                     'error': phoneIdTips[index] != ''
                                 }">
-                                    <input type="text" placeholder="请输入登录过该手机的序列号" v-model="item.phoneId" ref="phoneIdInput" :disabled="item.noPhoneId" @input="handleInput('phoneId', index)">
+                                    <input type="text" placeholder="请输入登录手机的序列号" v-model="item.phoneId" ref="phoneIdInput" :disabled="item.noPhoneId" @input="handleInput('phoneId', index)">
                                 </div>
                             </div>
                             <p class="tips tips-input" v-show="phoneIdTips[index]">{{phoneIdTips[index]}}</p>
@@ -154,7 +154,7 @@
                 <div class="section">
                     <span class="select-label">注册地：</span>
                     <div class="select-content">
-                        <el-select v-model="RegLand[0]" placeholder="请选择省份" @change="RegLand[1] = ''; showRegLandTips = false;step3Ok = true;">
+                        <el-select v-model="RegLand[0]" placeholder="请选择省份" @change="RegLand[1] = ''; showRegLandTips = false;step3Ok[1] = true;">
                             <el-option
                                 v-for="(item, index) in CityMap"
                                 :key="index"
@@ -182,7 +182,7 @@
                             'mt30': index > 0
                         }">
                             <div class="select-content">
-                                <el-select v-model="item.p" placeholder="请选择省份" @change="item.c = ''; showUsedLandTips = false;step3Ok = true;">
+                                <el-select v-model="item.p" placeholder="请选择省份" @change="item.c = ''; showUsedLandTips = false;step3Ok[2] = true;">
                                     <el-option
                                         v-for="(p, i) in CityMap"
                                         :key="i"
@@ -214,12 +214,13 @@
                     <div class="content input-content">
                         <div class="bar bar-input" v-for="(item, index) in usedPassword" :key="index">
                             <div class="outer-input">
-                                <input type="password" placeholder="请输入曾用密码" v-model="usedPassword[index]" >
+                                <input type="password" placeholder="请输入曾用密码" v-model="usedPassword[index]" @input="handleInput('password', index)">
                             </div>
                             <div class="operations">
                                 <span class="op add" @click="addUsedPwd" v-show="index == 0 && usedPassword[index] && usedPassword.length < 5">&#xe648;</span>
                                 <span class="op sub" @click="subUsedPwd(index)" v-show="index > 0">&#xe60b;</span>
                             </div>
+                            <p class="tips tips-input" v-show="passwordTips[index]">{{passwordTips[index]}}</p>
                         </div>
                     </div>
                 </div>
@@ -334,6 +335,7 @@ export default {
       nicknameTips: [''],
       emailsTips: [''],
       phonesTips: [''],
+      passwordTips:[''],
       showModal: false,
       message: '',
       usedPhoneType:[
@@ -2056,12 +2058,12 @@ export default {
       showUsedLandTips: false,
       pickerOptions: {
           disabledDate(time) {
-            return time.getTime() > Date.now();
+            return time.getTime() > Date.now() || time.getTime() < new Date(1990,1,1);
           },
       },
       step1Ok: [true, true, true],
       step2Ok: true,
-      step3Ok: true,
+      step3Ok: [true, true, true, true],
       resetId: "",
       overTime: false,
     }
@@ -2075,6 +2077,7 @@ export default {
     next(steps) {
         const mailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
         const phoneReg = /^[0-9]*$/;
+        const pwdReg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
         if (steps < 3) {
             if (this.nowStep == 1) {
                 if (!this.forgotNickname) {
@@ -2128,13 +2131,12 @@ export default {
             if (this.RegTime == "") {
                 this.dateTips = "请选择注册时间";
                 this.showRegTimeTips = true;
-                this.step3Ok = false;
+                this.step3Ok[0] = false;
             }
-            console.log(this.RegLand);
             if (this.RegLand[0] === "" || this.RegLand[1] === "") {
                 this.regLandTips = "请选择注册地点";
                 this.showRegLandTips = true;
-                this.step3Ok = false;
+                this.step3Ok[1] = false;
             }
             let usedLandFlag = false;
             let usedLand = '';
@@ -2148,10 +2150,26 @@ export default {
             if (!usedLandFlag) {
                 this.usedLandTips = "至少填写一个常用地";
                 this.showUsedLandTips = true;
-                this.step3Ok = false;
+                this.step3Ok[2] = false;
             }
-
-            if (!this.step3Ok) {
+            let passwordFlag = false;
+            for (let i = 0;i < this.usedPassword.length; i++) {
+                if (this.usedPassword[i] != "") {
+                    if (this.usedPassword[i].length < 8 || this.usedPassword[i].length > 16) {
+                        this.$set(this.passwordTips, i, '密码应为8~16个字符，区分大小写');
+                        passwordFlag = true;
+                    } else if (!pwdReg.test(this.usedPassword[i])) {
+                        this.$set(this.passwordTips, i, '密码至少包含数字、字母和符号两种类型');
+                        passwordFlag = true;
+                    }
+                }
+            }
+            if (passwordFlag) {
+                this.step3Ok[3] = false;
+            } else {
+                this.step3Ok[3] = true;
+            }
+            if (!this.step3Ok[0] || !this.step3Ok[1] || !this.step3Ok[2] || !this.step3Ok[3]) {
                 return;
             }
             const usedPwd = this.contactInput(this.usedPassword);
@@ -2237,7 +2255,7 @@ export default {
                     if (type == 'email') {
                         this.$set(tipsList, i, '输入邮箱格式不正确')
                     } else if (type == 'phone') {
-                        this.$set(tipsList, i, '输入手机格式不正确')
+                        this.$set(tipsList, i, '输入手机号格式不正确')
                     }
                     result = 2;
                }
@@ -2249,7 +2267,7 @@ export default {
             } else if (type == 'email') {
                 this.$set(tipsList, 0, '请输入曾用邮箱')
             } else if (type == 'phone') {
-                this.$set(tipsList, 0, '请输入曾用手机')
+                this.$set(tipsList, 0, '请输入曾用手机号')
             }
             result = 0; //输入框列表都未空
         }
@@ -2270,7 +2288,7 @@ export default {
     },
     handleChangeDate() {
         this.showRegTimeTips = false;
-        this.step3Ok = true;
+        this.step3Ok[0] = true;
     },
     addUsedPwd() {
         if (this.usedPassword.length < 5) {
@@ -2395,12 +2413,18 @@ export default {
             case 'phoneType': {
                 this.phoneTypeTips[index] = "";
                 this.phoneIdTips[index] = "";
+                this.step2Ok = true;
                 break;
             }
             case 'phoneId': {
                 this.phoneTypeTips[index] = "";
                 this.phoneIdTips[index] = "";
+                this.step2Ok = true;
                 break;
+            }
+            case 'password': {
+                this.passwordTips[index] = "";
+                this.step3Ok[3] = false;
             }
         }
     }
@@ -2483,7 +2507,7 @@ export default {
                         .operation {
                             position: absolute;
                             top: 0;
-                            right: 0;
+                            left: 494px;
                             .op {
                                 display: inline-block;
                                 width: 26px;

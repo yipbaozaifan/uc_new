@@ -202,6 +202,9 @@ export default {
                 return
             } else if(res.data.message == "非法操作") {
                 return Promise.reject(0);
+            } else if (res.data.code == 200000) {
+                this.$refs.varInput.showInputTips('验证码错误');
+                return Promise.reject(1);
             } else {
                 this.message = res.data.message || "未知错误，请重试";
                 this.showModal = true;
