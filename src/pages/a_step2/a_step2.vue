@@ -46,10 +46,12 @@
                     v-model="otherReason"
                     :label="'其他原因 :'"
                     ></mz-checkbox>
-                    <div class="extra">
+                    <div class="extra" :class="{
+                        'error': showExtraTips
+                    }">
                         <input type="text" v-model="reason" placeholder="如账号被盗，密保信息被修改" :disabled="!otherReason" @input="handleInput">
-                        <!--<span v-show="showExtraTips" class="extra-tips">{{extraTips}}</span>-->
                     </div>
+                    <p v-show="showExtraTips" class="extra-tips">{{extraTips}}</p>
                 </div>
             </div>
         </div>
@@ -102,6 +104,14 @@ export default {
     mzfooter,
     mzinput,
   },
+  watch: {
+      otherReason(newValue, oldValue) {
+          if (!newValue) {
+              this.showExtraTips = false;
+              this.extraTips = "";
+          }
+      }
+  },
   data() {
     return {
       steps: [
@@ -151,6 +161,11 @@ export default {
         };
         const phoneReg = /^[0-9]*$/;
         if (!this.changePhone){ // 选择类型
+            if (this.otherReason && this.reason.length < 10) {
+                this.extraTips = "其他原因不得少于10个字符";
+                this.showExtraTips = true;
+                return;
+            }
             if (this.resetPhone) { // 选择了重置手机 跳转到输入安全手机页面
                 this.changePhone = true;
                 return;
@@ -280,21 +295,10 @@ export default {
             this.wrong = true;
             return;
         }
-        this.varPhone().then((res) => {
-            if(!res.data) {
-                return Promise.reject(0);
-            }
-            if (res.data.code == "200" && res.data.value) {
-                return axios.post('/uc/system/vcode/action/sendSmsVCode', {
-                    phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
-                    vCodeTypeValue: 22,
-                    account: this.account
-                })
-            } else {
-                this.$refs.phoneInput.showInputTips(res.data.message || '错误的手机号码');
-                this.wrong = true;
-                return Promise.reject(1);
-            }
+        axios.post('/uc/system/vcode/action/sendSmsVCode', {
+            phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.phone,
+            vCodeTypeValue: 22,
+            account: this.account
         }).then((res) => {
             if(!res.data) {
                 return Promise.reject(0);
@@ -363,12 +367,17 @@ export default {
         })*/
     },
     handleChange(varPhone) {
-        if (varPhone) { 
-            this.handleBlur()
-        }
         if (this.wrong) {
             this.wrong = false;
+            this.$refs.kapkeyInput.invalid = true;
+            if (varPhone) { 
+                this.handleBlur()
+            }
         } else {
+            this.$refs.kapkeyInput.invalid = true;
+            if (varPhone) { 
+                this.handleBlur()
+            }
             return
         }
     },
@@ -456,12 +465,16 @@ export default {
                         &:disabled {
                             background-color: #ffffff;
                         }
-                    }   
-                    .extra-tips {
-                        font-size: 14px;
-                        color: #DE3131;
-                        margin-top: 10px;
-                    }
+                    }  
+                    &.error {
+                        border-color: #DE3131;
+                    } 
+                }
+                .extra-tips {
+                    font-size: 14px;
+                    color: #DE3131;
+                    margin-top: 6px;
+                    margin-left: 137px;
                 }
             }
         }

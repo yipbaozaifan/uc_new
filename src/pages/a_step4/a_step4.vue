@@ -2308,7 +2308,7 @@ export default {
                 break;
             }
             case 'email': {
-                if (this.nicknames.length < 5) {
+                if (this.emails.length < 5) {
                     this.emails.push('');
                     this.emailsTips.push('');
                 }
@@ -2448,6 +2448,9 @@ export default {
         url('//at.alicdn.com/t/font_952637_ut5molpe9ea.woff') format('woff'),
         url('//at.alicdn.com/t/font_952637_ut5molpe9ea.ttf') format('truetype'),
         url('//at.alicdn.com/t/font_952637_ut5molpe9ea.svg#iconfont') format('svg');
+    }
+    .footer {
+        z-index: 2;
     }
         .mt30 {
             margin-top: 30px;
