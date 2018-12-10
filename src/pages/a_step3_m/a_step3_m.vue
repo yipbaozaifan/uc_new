@@ -4,7 +4,7 @@
         <mzprogress :steps="steps" :actived="2" size="96" line-length="600"></mzprogress>
         <div class="main">
             <div class="tips-bar">
-                <p class="complaint-text">请填写帐号主人的实名信息，全部资料仅用于帐号的身份验证</p>
+                <p class="complaint-text">请填写账号主人的实名信息，全部资料仅用于账号的身份验证</p>
                 <p class="complaint-text">不真实的资料同样会导致申诉不过，请您认真填写</p>
             </div>
             <div class="photo-example">

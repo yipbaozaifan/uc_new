@@ -2058,7 +2058,7 @@ export default {
       showUsedLandTips: false,
       pickerOptions: {
           disabledDate(time) {
-            return time.getTime() > Date.now() || time.getTime() < new Date(1990,1,1);
+            return time.getTime() > Date.now() || time.getTime() < new Date(1990,0,1);
           },
       },
       step1Ok: [true, true, true],
@@ -2078,11 +2078,32 @@ export default {
         const mailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
         const phoneReg = /^[0-9]*$/;
         const pwdReg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
+        const nickReg = /^[.a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        const phoneTypeReg = /^[.a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        const phoneIdReg = /^[0-9a-zA_Z]+$/;
         if (steps < 3) {
             if (this.nowStep == 1) {
                 if (!this.forgotNickname) {
-                    let checkResult = this.checkInput('nickname', this.nicknames, this.nicknameTips);
-                    if (checkResult != 1) {
+                    let nickFlag = false;
+                    let nickResult = 1;
+                    for (let i=0;i<this.nicknames.length;i++) {
+                        if (this.nicknames[i]!="") {
+                            nickFlag = true;
+                            if (this.getLen(this.nicknames[i])<2 || this.getLen(this.nicknames[i])>32) {
+                                this.$set(this.nicknameTips, i, "昵称应为2-32位中英文、数字、下划线字符");
+                                nickResult = 2;
+                            } else if (!nickReg.test(this.nicknames[i])){
+                                this.$set(this.nicknameTips, i, "昵称应为2-32位中英文、数字、下划线字符");
+                                nickResult = 2;
+                            }
+                        }
+                    }
+                    if (!nickFlag) {
+                        this.$set(this.nicknameTips, 0, '请输入曾用昵称');
+                        nickResult = 0;
+                    }
+                    //let checkResult = this.checkInput('nickname', this.nicknames, this.nicknameTips);
+                    if (nickResult != 1) {
                         this.step1Ok[0] = false;
                         //this.nickFlag = false;
                     } else {
@@ -2112,14 +2133,38 @@ export default {
                 } 
             } else if (this.nowStep == 2) {     
                 if (!this.noLoginPhone) {
+                    let phoneTypeResult = 1;
                     for(let i = 0;i < this.usedPhoneType.length; i ++) {
                         if (this.usedPhoneType[i].phoneType == "" && !this.usedPhoneType[i].noPhoneId && this.usedPhoneType[i].phoneId == '') {
                             this.$set(this.phoneIdTips, i, "请填写曾用手机序列号");
                             this.$set(this.phoneTypeTips, i, "请填写曾用手机型号");
-                            this.step2Ok = false;
+                            phoneTypeResult = 2;
+                        } else if(this.usedPhoneType[i].phoneType!="" || this.usedPhoneType[i].phoneId != "") {
+                            if (this.usedPhoneType[i].phoneType!="") {
+                                if (this.getLen(this.trim(this.usedPhoneType[i].phoneType))<2 || this.getLen(this.trim(this.usedPhoneType[i].phoneType))>32) {
+                                    this.$set(this.phoneTypeTips, i, "设备名只允许输入2-32位中英文、数字、下划线");
+                                    phoneTypeResult = 0;
+                                }
+                                if (!phoneTypeReg.test(this.trim(this.usedPhoneType[i].phoneType))) {
+                                    this.$set(this.phoneTypeTips, i, "设备名只允许输入2-32位中英文、数字、下划线");
+                                    phoneTypeResult = 0;
+                                }
+                            }
+                            if (this.usedPhoneType[i].phoneId != "") {
+                                if (!phoneIdReg.test(this.usedPhoneType[i].phoneId)) {
+                                    this.$set(this.phoneIdTips, i, "请输入正确的序列号");
+                                    phoneTypeResult = 0;
+                                }
+                            }
                         }
                     }
+                    if (phoneTypeResult!=1) {
+                        this.step2Ok = false;
+                    } else {
+                        this.step2Ok = true;
+                    }
                 }
+
                 if (!this.step2Ok) {
                     return;
                 }
@@ -2238,6 +2283,20 @@ export default {
                 }
             })
         }
+    },
+    getLen(str) {
+        var len = 0;  
+        for (var i=0; i<str.length; i++) {   
+            var c = str.charCodeAt(i);   
+            //单字节加1   
+            if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {   
+                len++;
+            }
+            else {
+                len+=2;
+            }
+        }   
+        return len;
     },
     closeModal() {
         this.showModal = false;
@@ -2427,6 +2486,9 @@ export default {
                 this.step3Ok[3] = false;
             }
         }
+    },
+    trim(str) {
+        return str.replace(/\s+/g,"");
     }
   },
   mounted() {
