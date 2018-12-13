@@ -52,5 +52,9 @@ module.exports = {
       url: '/uc/system/webjsp/resetpwd/checkSecurityPhone',
       name: 'checkSecurityPhone'
     },
+    {
+      url: '/uc/system/webjsp/resetpwd/addIdentifyInfo',
+      name: 'addIdentifyInfo'
+    },
   ]
 }

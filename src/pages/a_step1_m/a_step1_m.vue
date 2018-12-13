@@ -28,7 +28,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn type="blue" text="确定" @clicked="closeModal"></btn>
+                        <a @click="closeModal">确定</a>
                     </div>
                 </div>
             </div>
@@ -82,12 +82,11 @@ export default {
                 if (res.data.code == "403002") {
                     this.$refs.kapkeyInput.showInputTips(res.data.message);
                 } else {
-                    this.message = res.data.message;
-                    this.showModal = true;
+                    this.$refs.accountInput.showInputTips(res.data.message);
                 }
                 this.$refs.kapkeyInput.getImageKey();
             } else {
-                location.replace('/appeal/step2?account=' + res.data.value.account)
+                location.replace('/complaint/step2?account=' + res.data.value.account)
             }
         }, (err) => {
             this.showModal = true;
@@ -111,7 +110,8 @@ export default {
      .complaint-text {
             &-gray{
                 font-size: 14px;
-                color: #999999;
+                color: #000000;
+                opacity: 0.6;
                 width: px2vw(948);
                 margin: 0 auto;
                 margin-top: 2px;

@@ -8,7 +8,7 @@
             'is-disabled': isDisabled,
             'is-checked': isChecked,
         }">
-            <span class="mz_checkbox-inner"></span>
+            <span class="mz_checkbox-inner" :class="{'circle': circle}"></span>
             <input type="checkbox" class="mz_checkbox-original" 
                 :disabled="isDisabled"
                 :value="label"
@@ -36,6 +36,7 @@ export default {
         name: String,
         size: String,
         trueLabel: [String, Number],
+        circle: Boolean,
     },
     computed: {
         model: {
@@ -135,6 +136,21 @@ export default {
                 background-color: #fff;
                 z-index: 1;
                 transition: border-color .25s cubic-bezier(.71,-.46,.29,1.46),background-color .25s cubic-bezier(.71,-.46,.29,1.46);
+                &.circle {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 24px;
+                    &::after {
+                        content: "";
+                        border: 2px solid #fff;
+                        border-left: 0;
+                        border-top: 0;
+                        height: 9px;
+                        left: 8px;
+                        top: 4px;
+                        width: 5px;
+                    }
+                }
             }
             .mz_checkbox-original {
                 opacity: 0;
@@ -150,21 +166,6 @@ export default {
             display: inline-block;
             padding-left: 6px;
             line-height: 19px;
-        }
-        .mz_checkbox-extra {
-            display: inline-block;
-            padding-left: 6px;
-            width: 230px;
-            border: 1px solid #CCCCCC;
-            border-radius: 4px;
-            padding: 9px 15px;
-            input {
-                border: none;
-                width: 100%;
-                font-size: 14px;
-                line-height: 20px;
-                height: 20px;
-            }
         }
     }
 </style>

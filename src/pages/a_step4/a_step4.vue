@@ -24,7 +24,7 @@
                                 <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index] && nicknames.length < 5">&#xe648;</span>
                                 <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">&#xe60b;</span>
                             </div>
-                            <p class="tips tips-input" v-show="nicknameTips[0]">{{nicknameTips[0]}}</p>
+                            <p class="tips tips-input" v-show="nicknameTips[index]">{{nicknameTips[index]}}</p>
                         </div>
                     </div>
                     <div class="forgoten-content">
@@ -68,7 +68,7 @@
                             <div class="outer-input" :class="{
                                 'error': phonesTips[index] != ''
                             }">
-                                <input type="text" placeholder="请输入曾经用过的手机号" v-model="phones[index]" :disabled="forgotPhone" @input="handleInput('phones', index)">
+                                <input type="text" placeholder="请输入曾经用过的手机号" v-model="phones[index]" :disabled="forgotPhone" @input="handleInput('phones', index)" maxlength="11">
                             </div>
                             <div class="operations">
                                 <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index] && phones.length < 5">&#xe648;</span>
@@ -164,7 +164,7 @@
                         </el-select>
                     </div>
                     <div class="select-content">
-                        <el-select v-model="RegLand[1]" placeholder="请选择城市" @change="showUsedLandTips = false">
+                        <el-select v-model="RegLand[1]" placeholder="请选择城市" @change="showRegLandTips = false;step3Ok[1] = true;">
                             <el-option
                                 v-for="(item, index) in (CityMap[RegLand[0]] ? CityMap[RegLand[0]].cs : [])"
                                 :key="index"
@@ -192,7 +192,7 @@
                                 </el-select>
                             </div>
                             <div class="select-content">
-                                <el-select v-model="item.c" placeholder="请选择城市" @change="showUsedLandTips = false">
+                                <el-select v-model="item.c" placeholder="请选择城市" @change="showUsedLandTips = false;step3Ok[2] = true;">
                                     <el-option
                                         v-for="(c, i) in (CityMap[item.p] ? CityMap[item.p].cs : [])"
                                         :key="i"
@@ -2080,7 +2080,7 @@ export default {
         const pwdReg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
         const nickReg = /^[.a-zA-Z0-9_\u4e00-\u9fa5]+$/;
         const phoneTypeReg = /^[.a-zA-Z0-9_\u4e00-\u9fa5]+$/;
-        const phoneIdReg = /^[0-9a-zA_Z]+$/;
+        const phoneIdReg = /^[0-9a-zA-Z]+$/;
         if (steps < 3) {
             if (this.nowStep == 1) {
                 if (!this.forgotNickname) {

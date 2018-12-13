@@ -3,42 +3,47 @@
         <div class="steps-warp">
             <mzprogress :steps="steps" :actived="1" size="58" line-length="188"></mzprogress>
         </div>
-        <h1 class="title">选择申诉类型</h1>
+        <h1 class="title" v-show="!changePhone">选择申诉类型</h1>
         <div v-if="changePhone" class="bar bar-text">
             <p class="complaint-text">重置安全手机</p>
-            <p class="complaint-text-gray">重置安全手机后，账号将绑定此手机号码，并可作为账号进行登录</p>
         </div>
         <div class="content content-form reset-phone" v-if="changePhone">
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="'请输入手机号'" type="account" label="手机号码：" v-model="phone" ref="phoneInput" @finished="handleBlur" :maxlen="11" @changeinp="handleChange"></mzinput>
+                    <mzinput :placeholder="'请输入手机号'" type="account" v-model="phone" ref="phoneInput" @finished="handleBlur" :maxlen="11" @changeinp="handleChange"></mzinput>
                 </div>
-                <a class="link"></a>
             </div>
             <div class="section">
                 <div class="bar bar-input">
-                    <mzinput :placeholder="'请输入验证码'" type="phoneCode" :label="'验证码：'" v-model="varCode" ref="kapkeyInput" :maxlen="6" @send="handleSend"></mzinput>
+                    <mzinput :placeholder="'请输入验证码'" type="phoneCode"  v-model="varCode" ref="kapkeyInput" :maxlen="6" @send="handleSend"></mzinput>
                 </div>
-                <a class="link"></a>
             </div>
         </div>
         <div class="content content-form" v-else>
                 <div class="checkbox-bar">
-                    <p class="option-desc">清除账号原有密保并重置密码</p>
+                    <div class="checkbox-option">
+                        <p class="option-name">清除密保</p>
+                        <p class="option-desc">清除账号原有密保并重置密码</p>
+                    </div>
                     <mz-checkbox
                         v-model="resetQuestions"
-                        :label="'清除密保'"
-                    ></mz-checkbox>
+                        circle
+                    >
+                    </mz-checkbox>
                 </div>
                 <div class="checkbox-bar">
-                    <p class="option-desc">重新绑定账号安全手机并重置密码</p>
+                    <div class="checkbox-option">
+                        <p class="option-name">重置安全手机</p>
+                        <p class="option-desc">重新绑定账号安全手机并重置密码</p>
+                    </div>
                     <mz-checkbox
-                    v-model="resetPhone"
-                    :label="'重置安全手机'"
-                    ></mz-checkbox>
+                        v-model="resetPhone"
+                        circle
+                    >
+                    </mz-checkbox>
                 </div>
         </div>
-        <div class="content content-form">
+        <div class="content content-form" v-show="!changePhone">
             <div class="section">
                 <div class="section-title">
                     <p>其他原因</p>
@@ -49,7 +54,9 @@
                 </div>
             </div>
         </div>
-        <div class="content content-btn">
+        <div class="content content-btn" :class="{
+            'changePhone': changePhone
+        }">
             <span class="btn-back" v-if="changePhone">
                 <btn :type="'white'" :text="'上一步'" @clicked="back"></btn>
             </span>
@@ -64,7 +71,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <a @click="closeModal">确定</a>
                     </div>
                 </div>
             </div>
@@ -123,6 +130,7 @@ export default {
       changePhone: false,
       wrong: false,
       overTime: false,
+      varPhoneFlag: false,
     }
   },
   methods: {
@@ -148,8 +156,9 @@ export default {
             // 没选择重置手机
             axios.post('https://i.flyme.cn/uc/system/webjsp/resetpwd/new', data).then((res) => {
                 if(res.data.code == 200) {
-                    location.replace(`/appeal/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
+                    location.replace(`/complaint/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
                 } else {
+                    
                     this.showModal = true;
                     this.message = res.data.message || "未知错误，请重试";
                 }
@@ -183,7 +192,7 @@ export default {
                     return Promise.reject(0);
                 }
                 if(res.data.code == 200) {
-                    location.replace(`/appeal/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
+                    location.replace(`/complaint/step3?account=${this.account}&resetId=${res.data.value.resetId}`);
                 } else {
                     if (res.data.code == 200000) {
                         this.$refs.kapkeyInput.showInputTips(res.data.message);
@@ -275,18 +284,30 @@ export default {
             account: this.account
         }).then((res) => {
             if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/appeal';
-                }, 2000);
-                return;
+                return Promise.reject(0);
             }
             if (res.data.code == "200") {
                 this.$refs.kapkeyInput.changeState();
                 this.sent = true;
+                return Promise.reject(1);
             } else {
                 this.message = res.data.message;
+                this.showModal = true;
+                return Promise.reject(1);
+            }
+        }).catch((err) => {
+            if (err == 0) { // 页面超时错误
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/appeal';
+                    }, 2000);
+                }
+            } else if (err == 1) { // 已经处理的错误
+                console.log(err);
+            } else { // 网络错误
+                this.message = "网络错误，请重试";
                 this.showModal = true;
             }
         })
@@ -331,10 +352,15 @@ export default {
     handleChange(varPhone) {
         if (this.wrong) {
             this.wrong = false;
+            this.$refs.kapkeyInput.invalid = true;
             if (varPhone) { 
                 this.handleBlur()
             }
         } else {
+            this.$refs.kapkeyInput.invalid = true;
+            if (varPhone) { 
+                this.handleBlur()
+            }
             return
         }
     },
@@ -354,56 +380,70 @@ export default {
 
 <style lang="scss">
     @import '../../assets/base_m.scss';
+    .footer {
+        z-index: 2;
+    }
     .complaint_select_type {
+        .mz_checkbox {
+            vertical-align: middle;
+            float: right;
+        }
         .title {
             text-align: center;
         }
         .bar-text {
-            margin-top: 74px;
+            margin-top: px2vw(126);
             .complaint-text {
-                font-size: 16px;
+                font-size: 18px;
                 color: #000000;
                 letter-spacing: 0;
-                line-height: 24px;
-                width: 518px;
+                line-height: px2vw(63);
                 margin: 0 auto;
                 font-weight: 600;
-                &-gray{
-                    font-size: 14px;
-                    color: #999999;
-                    width: 518px;
-                    margin: 0 auto;
-                }
+                text-align: center;
             }
         }
         
         .content-form {
             &.reset-phone {
-                margin-top: 34px;
+                margin-top: px2vw(60);
+            }
+            .checkbox-bar {
+                text-align: left;
+                height: px2vw(216);
+                padding: px2vw(54) px2vw(48);
+                box-sizing: border-box;
+                .checkbox-option {
+                    display: inline-block;
+                    vertical-align: middle;
+                    .option-desc {
+                        opacity: 0.4;
+                        font-weight: 500;
+                        font-size: 12px;
+                        margin-top: px2vw(9);
+                    }
+                    .option-name {
+                        font-weight: 600;
+                        font-size: 16px;
+                    }
+                }
             }
             .section {
                 font-size: 20px;
                 color: #000000;
                 font-weight: 600;
-
                 margin-left: auto;
                 margin-right: auto;
-                margin-bottom: 30px;
-                .checkbox-bar {
-                    text-align: left;
-                    height: px2vw(216);
-                }
                 .bar-input {
-                    width: 433px;
-                    display: inline-block;
+                    width:100%;
+                    display: inline-block;  
                     vertical-align: middle;
+                    height: px2vw(156);
+                    padding: 0 px2vw(48);
+                    padding-top: px2vw(72);
+                    box-sizing: border-box;
                 }
-                .option-desc {
-                    opacity: 0.4;
-                    font-weight: 500;
-                    font-size: 14px;
-                    margin-left: 26px;
-                }
+                
                 .section-title {
                     font-size: 12px;
                     background-color: #f2f2f2;
@@ -443,10 +483,13 @@ export default {
             }
         }
         .content-btn {
-            margin-top: 99px;
+            margin-top: px2vw(449);
+            &.changePhone {
+                margin-top: px2vw(794);
+            }
             .btn-back,.btn-next {
                 display: inline-block;
-                width: 140px;
+                width: px2vw(396);
                 margin-top: 0;  
             }
             .btn-back {

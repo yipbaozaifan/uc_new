@@ -1,235 +1,261 @@
 <template>
     <div id="app">
-        <h1 class="title">账号申诉</h1>
-        <mzprogress :steps="steps" :actived="3" size="96" line-length="600"></mzprogress>
-        <div class="main step1" v-show="nowStep === 1">
-            <div class="tips-bar">
-                <p class="complaint-text">为了账号安全，请尽量多提供账号使用资料以帮助我们判断你是号码主人，而非盗号者</p>
-                <p class="complaint-text">即使你对某些答案不确定，也可提供你认为正确的答案</p>
-            </div>
+        <div class="steps-warp">
+            <mzprogress :steps="steps" :actived="3" size="58" line-length="188"></mzprogress>
+        </div>
+        <h1 class="title">填写申诉材料</h1>
+        <div class="tips-bar">
+            <p class="complaint-text">为了账号安全，请尽量多提供账号使用资料以帮助我们判断你是号码主人，而非盗号者。即使你对某些答案不确定，也可提供你认为正确的答案</p>
+        </div>
+        <div class="main step3">
             <div class="content content-form">
                 <div class="section">
-                    <span class="label-input">曾用昵称：</span>
-                    <div class="content input-content">
-                        <div class="bar bar-input" v-for="(item, index) in nicknames" :key="index" :class="{
-                            'last-input': index == (nicknames.length-1),
+                    <div class="section-title">
+                        <p>注册信息</p>
+                    </div>
+                    <div class="content select-content">
+                        <!--<div class="date-picker">
+                            <el-date-picker
+                                v-model="RegTime"
+                                type="date"
+                                placeholder="选择注册日期"
+                                format="yyyy 年 MM 月 dd 日"
+                                value-format="yyyy-MM-dd"
+                                :picker-options="pickerOptions"
+                                @change="handleChangeDate">
+                            </el-date-picker>
+                        </div>-->
+                        <div class="picker-opener" @click="openPicker" :class="{
+                            'error': showRegTimeTips
                         }">
-                            <div class="outer-input" :class="{
-                                'error': nicknameTips[index] != ''
+                            <div class="opener-main">
+                                <p class="opener-name">注册时间</p>
+                                <p class="opener-desc" v-show="regTime == ''">必填</p>
+                                <p class="opener-desc" v-show="regTime">{{regTime}}</p>
+                            </div>
+                        </div>
+                        <mt-datetime-picker
+                            ref="picker"
+                            type="date"
+                            year-format="{value} 年"
+                            month-format="{value} 月"
+                            date-format="{value} 日"
+                            :start-date="new Date(1990,0,1)"
+                            :end-date="new Date()"
+                            @confirm="confirmTime"
+                            v-model="RegTime">
+                        </mt-datetime-picker>
+                        <p class="tips tips-selection" v-show="showRegTimeTips">{{dateTips}}</p>
+                    </div>
+                    <div class="content select-content">
+                        <div class="picker-opener" @click="showPickLand(-1)" :class="{
+                            'error': showRegLandTips
+                        }">
+                            <div>
+                                <p class="opener-name">注册地</p>
+                                <p class="opener-desc" v-show="!choosenRegLand">必填</p>
+                                <p class="opener-desc" v-show="choosenRegLand">{{regLand[0] + ' - ' + regLand[1]}}</p>
+                            </div>
+                        </div>
+                        <p class="tips tips-selection" v-show="showRegLandTips">{{regLandTips}}</p>
+                    </div>
+                    <div class="content select-content" v-for="(item, index) in usedLand" :key="index" @click="showPickLand(index)">
+                        <div class="picker-opener" :class="{
+                            'error': showUsedLandTips
+                        }">
+                            <div>
+                                <p class="opener-name">常用地</p>
+                                <p class="opener-desc" v-show="choosenUsedLand[index] == ''">必填</p>
+                                <p class="opener-desc" v-show="choosenUsedLand[index]">{{item.p + ' - ' + item.c}}</p>
+                            </div>
+                        </div>
+                        <p class="tips tips-selection" v-show="showUsedLandTips">{{usedLandTips}}</p>
+                    </div>
+                    <mt-popup v-model="pickLand" class="landPicker-bar">
+                        <mt-picker :slots="citySlots" @change="onCityChange" v-show="pickLandIndex == -1">
+                        </mt-picker>
+                        <mt-picker :slots="citySlots" v-show="pickLandIndex != -1" @change="onUsedChange">
+                        </mt-picker>
+                        <div class="popup-footer">
+                            <a class="popup-btn" @click="confirmLand">确定</a>
+                        </div>
+                    </mt-popup>
+                </div>
+            </div>
+        </div>
+        <div class="main step1">
+            <div class="content content-form">
+                <div class="section">
+                    <div class="section-title">
+                        <p>账号曾用信息</p>
+                    </div>
+                    <div>
+                        <div class="content input-content" v-for="(item, index) in usedPassword" :key="index">
+                            <div class="bar bar-input" :class="{
+                                'focus': showPwdLabel[index],
+                                'error': passwordTips[index],
                             }">
-                                <input type="text" placeholder="请输入曾用昵称" v-model="nicknames[index]" :disabled="forgotNickname" @input="handleInput('nickname')">
+                                <div class="outer-input" v-show="!forgotPwd">
+                                    <input type="password" placeholder="请输入曾用密码" v-model="usedPassword[index]" @input="handleInput('password', index)" @focus="handleFocus(showPwdLabel, index)" @blur="handleBlur(showPwdLabel, index)">
+                                </div>
+                                <a class="forgot-btn" v-show="index == 0 && usedPassword[index] == '' && !forgotPwd" @click="forgotPwd = true">
+                                    忘记密码
+                                </a>
+                                <div class="forgoten" v-show="forgotPwd" @click="forgotPwd = false">
+                                    忘记密码
+                                </div>
+                                <div class="operations">
+                                    <span class="op add" @click="handleAdd('password')" v-show="index == 0 && usedPassword[index]">&#xe648;</span>
+                                    <span class="op sub" @click="handleSub(index, 'password')" v-show="index > 0">&#xe60b;</span>
+                                </div>
                             </div>
-                            <div class="operations">
-                                <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index]">&#xe648;</span>
-                                <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">&#xe60b;</span>
-                            </div>
-                            <p class="tips tips-input" v-show="nicknameTips[0]">{{nicknameTips[0]}}</p>
+                            <p class="tips tips-input" v-show="passwordTips[index]">{{passwordTips[index]}}</p>
+                            <span class="label-input" 
+                                :class="{
+                                    'focus': showPwdLabel[index]
+                                }" 
+                                v-show="showPwdLabel[index] || usedPassword[index] || forgotPwd">曾用密码</span>
                         </div>
                     </div>
-                    <div class="forgoten-content">
-                        <mz-checkbox
-                        v-model="forgotNickname"
-                        :label="'忘记昵称'"
-                        ></mz-checkbox>
-                    </div>
-                </div>
-                <div class="section">
-                    <span class="label-input">曾用邮箱：</span>
-                    <div class="content input-content">
-                        <div class="bar bar-input" v-for="(item, index) in emails" :key="index" :class="{
-                            'last-input': index == (emails.length-1),
-                        }">
-                            <div class="outer-input" :class="{
-                                'error': emailsTips[index] != ''
+                    <div>
+                        <div class="content input-content" v-for="(item, index) in nicknames" :key="index">
+                            <div class="bar bar-input" :class="{
+                                'focus': showNickLabel[index],
+                                'error': nicknameTips[index],
                             }">
-                                <input type="text" placeholder="请输入曾用邮箱" v-model="emails[index]" :disabled="forgotMail" @input="handleInput('email', index)">
+                                <div class="outer-input" v-show="!forgotNickname">
+                                    <input type="text" placeholder="请输入曾用昵称" v-model="nicknames[index]" @input="handleInput('nickname', index)" @focus="handleFocus(showNickLabel, index)" @blur="handleBlur(showNickLabel, index)">
+                                </div>
+                                <a class="forgot-btn" v-show="index == 0 && nicknames[index] == '' && !forgotNickname" @click="forgotNickname = true">
+                                    忘记昵称
+                                </a>
+                                <div class="forgoten" v-show="forgotNickname" @click="forgotNickname = false">
+                                    忘记昵称
+                                </div>
+                                <div class="operations">
+                                    <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index]">&#xe648;</span>
+                                    <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">&#xe60b;</span>
+                                </div>
                             </div>
-                            <div class="operations">
-                                <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index]">&#xe648;</span>
-                                <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">&#xe60b;</span>
+                            <p class="tips tips-input" v-show="nicknameTips[index]">{{nicknameTips[index]}}</p>
+                            <span class="label-input" 
+                                :class="{
+                                    'focus': showNickLabel[index]
+                                }" 
+                                v-show="showNickLabel[index] || nicknames[index] || forgotNickname">曾用昵称</span>
+                        </div>
+                    </div>
+                    <div>
+                       <div class="content input-content" v-for="(item, index) in emails" :key="index">
+                            <div class="bar bar-input" :class="{
+                                'focus': showEmailLabel[index],
+                                'error': emailsTips[index],
+                            }">
+                                <div class="outer-input" v-show="!forgotMail">
+                                    <input type="text" placeholder="请输入曾用邮箱" v-model="emails[index]" :disabled="forgotMail" @input="handleInput('email', index)" @focus="handleFocus(showEmailLabel, index)" @blur="handleBlur(showEmailLabel, index)">
+                                </div>
+                                <div class="operations">
+                                    <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index]">&#xe648;</span>
+                                    <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">&#xe60b;</span>
+                                </div>
+                                <a class="forgot-btn" v-show="index == 0 && emails[index] == '' && !forgotMail" @click="forgotMail = true">
+                                    未绑定过邮箱
+                                </a>
+                                <div class="forgoten" v-show="forgotMail" @click="forgotMail = false">
+                                    未绑定过邮箱
+                                </div>
                             </div>
                             <p class="tips tips-input" v-show="emailsTips[index]">{{emailsTips[index]}}</p>
-                        </div>
+                            <span class="label-input" 
+                                :class="{
+                                    'focus': showEmailLabel[index]
+                                }" 
+                                v-show="showEmailLabel[index] || emails[index] || forgotMail">曾用邮箱</span>
+                        </div> 
                     </div>
-                    <div class="forgoten-content">
-                        <mz-checkbox
-                        v-model="forgotMail"
-                        :label="'忘记邮箱'"
-                        ></mz-checkbox>
-                    </div>
-                </div>
-                <div class="section">
-                    <span class="label-input">曾用手机：</span>
-                    <div class="content input-content">
-                        <div class="bar bar-input" v-for="(item, index) in phones" :key="index" :class="{
-                            'last-input': index == (phones.length-1),
-                        }">
-                            <div class="outer-input" :class="{
-                                'error': phonesTips[index] != ''
+                    <div>
+                       <div class="content input-content" v-for="(item, index) in phones" :key="index">
+                            <div class="bar bar-input" :class="{
+                                'focus': showPhoneLabel[index],
+                                'error': phonesTips[index],
                             }">
-                                <input type="text" placeholder="请输入曾用手机" v-model="phones[index]" :disabled="forgotPhone" @input="handleInput('phones', index)">
-                            </div>
-                            <div class="operations">
-                                <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index]">&#xe648;</span>
-                                <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">&#xe60b;</span>
+                                <div class="outer-input" v-show="!forgotPhone">
+                                    <input type="text" placeholder="请输入曾用手机号" v-model="phones[index]" @input="handleInput('phones', index)" @focus="handleFocus(showPhoneLabel, index)" @blur="handleBlur(showPhoneLabel, index)">
+                                </div>
+                                <div class="operations">
+                                    <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index]">&#xe648;</span>
+                                    <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">&#xe60b;</span>
+                                </div>
+                                <a class="forgot-btn" v-show="index == 0 && phones[index] == '' && !forgotPhone" @click="forgotPhone = true">
+                                    未绑定过手机号
+                                </a>
+                                <div class="forgoten" v-show="forgotPhone" @click="forgotPhone = false">
+                                    未绑定过手机号
+                                </div>
                             </div>
                             <p class="tips tips-input" v-show="phonesTips[index]">{{phonesTips[index]}}</p>
-                        </div>
+                            <span class="label-input" 
+                                :class="{
+                                    'focus': showPhoneLabel[index]
+                                }" 
+                                v-show="showPhoneLabel[index] || phones[index] || forgotPhone">曾用手机号</span>
+                        </div> 
                     </div>
-                    <div class="forgoten-content">
-                        <mz-checkbox v-model="forgotPhone" :label="'忘记手机'"
-                        ></mz-checkbox>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="main step2" v-show="nowStep === 2">
-            <div class="content content-form used-phone-data">
-                <div class="group" v-for="(item, index) in usedPhoneType" :key="index" >
-                    <div class="section">
-                        <span class="label-input">手机型号：</span>
-                        <div class="input-content">
-                            <div class="bar bar-input">
-                                <div class="outer-input" :class="{
-                                    'error': phoneTypeTips[index] != ''
-                                }">
-                                    <input type="text" placeholder="请输入登陆过该手机的手机型号" v-model="item.phoneType" :disabled="noLoginPhone" @input="handleInput('phoneType', index)">
+                    <div v-for="(item, index) in usedPhoneType" :key="index">
+                       <div class="content input-content">
+                            <div class="bar bar-input" :class="{
+                                'focus': item.showPhoneTypeLabel
+                            }">
+                                <div class="outer-input" v-show="!noLoginPhone">
+                                    <input type="text" placeholder="请输入曾用手机型号" v-model="item.phoneType" @input="item.phoneTypeTips = '';item.phoneIdTips = ''" @focus="item.showPhoneTypeLabel = true" @blur="item.showPhoneTypeLabel = false">
+                                </div>
+                                <div class="operations">
+                                    <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && item.phoneType">&#xe648;</span>
+                                    <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">&#xe60b;</span>
+                                </div>
+                                <a class="forgot-btn" v-show="index == 0 && item.phoneType == '' && !noLoginPhone" @click="noLoginPhone = true">
+                                    未登录过手机
+                                </a>
+                                <div class="forgoten" v-show="noLoginPhone" @click="noLoginPhone = false">
+                                    未登录过手机
                                 </div>
                             </div>
-                            <p class="tips tips-input" v-show="phoneTypeTips[index]">{{phoneTypeTips[index]}}</p>
-                            <div class="phone-type-tips" v-show="index == 0">
-                                <p>可在“设置>关于手机”中，或手机保修书、包装盒上查看。如 MEIZU 16</p>
-                            </div>
-                            <div class="forgoten-content" v-show="index == 0">
-                                <mz-checkbox v-model="noLoginPhone" :label="'未曾登陆过手机'"
-                                ></mz-checkbox>
-                            </div>
+                            <p class="tips tips-input" v-show="item.phoneTypeTips">{{item.phoneTypeTips}}</p>
+                            <span class="label-input" 
+                                :class="{
+                                    'focus': item.showPhoneTypeLabel
+                                }" 
+                                v-show="item.showPhoneTypeLabel || item.phoneType || noLoginPhone">曾用手机型号</span>
                         </div>
-                    </div>
-                    <div class="section" v-show="!noLoginPhone">
-                        <span class="label-input">手机序列号：</span>
-                        <div class="input-content">
-                            <div class="bar bar-input">
-                                <div class="outer-input" :class="{
-                                    'error': phoneIdTips[index] != ''
-                                }">
-                                    <input type="text" placeholder="请输入登陆过该手机的序列号" v-model="item.phoneId" ref="phoneIdInput" :disabled="item.noPhoneId" @input="handleInput('phoneId', index)">
+                        <div class="content input-content" v-show="!noLoginPhone">
+                            <div class="bar bar-input" :class="{
+                                'focus': item.showPhoneIdLabel
+                            }">
+                                <div class="outer-input" v-show="!item.noPhoneId">
+                                    <input type="text" placeholder="请填写曾用手机序列号" v-model="item.phoneId" @input="item.phoneIdTips = '';item.phoneTypeTips = ''" @focus="item.showPhoneIdLabel = true" @blur="item.showPhoneIdLabel = false">
+                                </div>
+                                <a class="forgot-btn" v-show="item.phoneId == '' && !item.noPhoneId" @click="item.noPhoneId = true;item.phoneIdTips = '';item.phoneTypeTips = ''">
+                                    无法提供序列号
+                                </a>
+                                <div class="forgoten" v-show="item.noPhoneId" @click="item.noPhoneId = false">
+                                    无法提供序列号
                                 </div>
                             </div>
-                            <p class="tips tips-input" v-show="phoneIdTips[index]">{{phoneIdTips[index]}}</p>
-                            <div class="forgoten-content">
-                                <mz-checkbox
-                                v-model="item.noPhoneId"
-                                :label="'找不到序列号'"
-                                @change="handleNoPhoneId(index)"
-                                ></mz-checkbox>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="operation" v-show="!noLoginPhone">
-                        <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && (item.phoneType || item.phoneId)" >&#xe648;</span>
-                        <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">&#xe60b;</span>
+                            <p class="tips tips-input" v-show="item.phoneIdTips">{{item.phoneIdTips}}</p>
+                            <span class="label-input" 
+                                :class="{
+                                    'focus': item.showPhoneIdLabel
+                                }" 
+                                v-show="item.showPhoneIdLabel || item.phoneId || item.noPhoneId">曾用手机序列号</span>
+                        </div> 
                     </div>
                 </div>
             </div>
         </div>
-        <div class="main step3" v-show="nowStep === 3">
-            <div class="content content-form">
-                <div class="section">
-                    <span class="select-label">账号注册时间：</span>
-                    <div class="date-picker">
-                        <el-date-picker
-                            v-model="RegTime"
-                            type="date"
-                            placeholder="选择注册日期"
-                            format="yyyy 年 MM 月 dd 日"
-                            value-format="yyyy-MM-dd"
-                            :picker-options="pickerOptions"
-                            @change="handleChangeDate">
-                        </el-date-picker>
-                    </div>
-                    <p class="tips tips-selection" v-show="showRegTimeTips">{{dateTips}}</p>
-                </div>
-                <div class="section">
-                    <span class="select-label">注册地：</span>
-                    <div class="select-content">
-                        <el-select v-model="RegLand[0]" placeholder="请选择省份" @change="RegLand[1] = ''; showRegLandTips = false;step3Ok = true;">
-                            <el-option
-                                v-for="(item, index) in CityMap"
-                                :key="index"
-                                :label="item.pn"
-                                :value="index">
-                            </el-option>
-                        </el-select>
-                    </div>
-                    <div class="select-content">
-                        <el-select v-model="RegLand[1]" placeholder="请选择城市" @change="showUsedLandTips = false">
-                            <el-option
-                                v-for="(item, index) in (CityMap[RegLand[0]] ? CityMap[RegLand[0]].cs : [])"
-                                :key="index"
-                                :label="item.cn"
-                                :value="index">
-                            </el-option>
-                        </el-select>
-                    </div>
-                    <p class="tips tips-selection" v-show="showRegLandTips">{{regLandTips}}</p>
-                </div>
-                <div class="section">
-                    <span class="select-label">常用地：</span>
-                    <div class="selections-warp">
-                        <div class="bar selection-bar" v-for="(item, index) in UsedLand" :key="index" :class="{
-                            'mt30': index > 0
-                        }">
-                            <div class="select-content">
-                                <el-select v-model="item.p" placeholder="请选择省份" @change="item.c = ''; showUsedLandTips = false;step3Ok = true;">
-                                    <el-option
-                                        v-for="(p, i) in CityMap"
-                                        :key="i"
-                                        :label="p.pn"
-                                        :value="i">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <div class="select-content">
-                                <el-select v-model="item.c" placeholder="请选择城市" @change="showUsedLandTips = false">
-                                    <el-option
-                                        v-for="(c, i) in (CityMap[item.p] ? CityMap[item.p].cs : [])"
-                                        :key="i"
-                                        :label="c.cn"
-                                        :value="i">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <div class="operations">
-                                <span class="op add" v-show="index == 0" @click="handleAdd('usedLand')">&#xe648;</span>
-                                <span class="op sub" v-show="index > 0" @click="handleSub(index, 'usedLand')">&#xe60b;</span>
-                            </div>
-                            <p class="tips tips-selection" v-show="index == 0 && showUsedLandTips">{{usedLandTips}}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="section">
-                    <span class="select-label">曾用密码：</span>
-                    <div class="content input-content">
-                        <div class="bar bar-input" v-for="(item, index) in usedPassword" :key="index">
-                            <div class="outer-input">
-                                <input type="password" placeholder="请输入曾用密码" v-model="usedPassword[index]" >
-                            </div>
-                            <div class="operations">
-                                <span class="op add" @click="addUsedPwd" v-show="index == 0 && usedPassword[index]">&#xe648;</span>
-                                <span class="op sub" @click="subUsedPwd(index)" v-show="index > 0">&#xe60b;</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <div class="content content-btn">
-            <span class="btn-back" v-show="nowStep != 1">
-                <btn :type="'white'" :text="'上一步'" @clicked="back(nowStep)"></btn>
-            </span>
             <span class="btn-next">
-                <btn :type="'blue'" :text="'下一步'" @clicked="next(nowStep)"></btn>
+                <btn :type="'blue'" :text="'下一步'" @clicked="next"></btn>
             </span>
         </div>
         <div class="mask" v-show="showModal">
@@ -239,7 +265,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <a @click="closeModal">确定</a>
                     </div>
                 </div>
             </div>
@@ -257,7 +283,43 @@ import mzCheckbox from '../../components/checkbox/mzCheckbox.vue';
 import axios from 'axios';
 import mzModal from '../../components/mzModal/mzModal_m.vue';
 import { getParams } from '../../assets/utils.js';
-
+const address = {
+    '北京': ['北京'],
+    '广东': ['广州', '深圳', '珠海', '汕头', '韶关', '佛山', '江门', '湛江', '茂名', '肇庆', '惠州', '梅州', '汕尾', '河源', '阳江', '清远', '东莞', '中山', '潮州', '揭阳', '云浮'],
+    '上海': ['上海'],
+    '天津': ['天津'],
+    '重庆': ['重庆'],
+    '辽宁': ['沈阳', '大连', '鞍山', '抚顺', '本溪', '丹东', '锦州', '营口', '阜新', '辽阳', '盘锦', '铁岭', '朝阳', '葫芦岛'],
+    '江苏': ['南京', '苏州', '无锡', '常州', '镇江', '南通', '泰州', '扬州', '盐城', '连云港', '徐州', '淮安', '宿迁'],
+    '湖北': ['武汉', '黄石', '十堰', '荆州', '宜昌', '襄樊', '鄂州', '荆门', '孝感', '黄冈', '咸宁', '随州', '恩施土家族苗族自治州', '仙桃', '天门', '潜江', '神农架林区'],
+    '四川': ['成都', '自贡', '攀枝花', '泸州', '德阳', '绵阳', '广元', '遂宁', '内江', '乐山', '南充', '眉山', '宜宾', '广安', '达州', '雅安', '巴中', '资阳', '阿坝藏族羌族自治州', '甘孜藏族自治州', '凉山彝族自治州'],
+    '陕西': ['西安', '铜川', '宝鸡', '咸阳', '渭南', '延安', '汉中', '榆林', '安康', '商洛'],
+    '河北': ['石家庄', '唐山', '秦皇岛', '邯郸', '邢台', '保定', '张家口', '承德', '沧州', '廊坊', '衡水'],
+    '山西': ['太原', '大同', '阳泉', '长治', '晋城', '朔州', '晋中', '运城', '忻州', '临汾', '吕梁'],
+    '河南': ['郑州', '开封', '洛阳', '平顶山', '安阳', '鹤壁', '新乡', '焦作', '濮阳', '许昌', '漯河', '三门峡', '南阳', '商丘', '信阳', '周口', '驻马店'],
+    '吉林': ['长春', '吉林', '四平', '辽源', '通化', '白山', '松原', '白城', '延边朝鲜族自治州'],
+    '黑龙江': ['哈尔滨', '齐齐哈尔', '鹤岗', '双鸭山', '鸡西', '大庆', '伊春', '牡丹江', '佳木斯', '七台河', '黑河', '绥化', '大兴安岭地区'],
+    '内蒙古': ['呼和浩特', '包头', '乌海', '赤峰', '通辽', '鄂尔多斯', '呼伦贝尔', '巴彦淖尔', '乌兰察布', '锡林郭勒盟', '兴安盟', '阿拉善盟'],
+    '山东': ['济南', '青岛', '淄博', '枣庄', '东营', '烟台', '潍坊', '济宁', '泰安', '威海', '日照', '莱芜', '临沂', '德州', '聊城', '滨州', '菏泽'],
+    '安徽': ['合肥', '芜湖', '蚌埠', '淮南', '马鞍山', '淮北', '铜陵', '安庆', '黄山', '滁州', '阜阳', '宿州', '巢湖', '六安', '亳州', '池州', '宣城'],
+    '浙江': ['杭州', '宁波', '温州', '嘉兴', '湖州', '绍兴', '金华', '衢州', '舟山', '台州', '丽水'],
+    '福建': ['福州', '厦门', '莆田', '三明', '泉州', '漳州', '南平', '龙岩', '宁德'],
+    '湖南': ['长沙', '株洲', '湘潭', '衡阳', '邵阳', '岳阳', '常德', '张家界', '益阳', '郴州', '永州', '怀化', '娄底', '湘西土家族苗族自治州'],
+    '广西': ['南宁', '柳州', '桂林', '梧州', '北海', '防城港', '钦州', '贵港', '玉林', '百色', '贺州', '河池', '来宾', '崇左'],
+    '江西': ['南昌', '景德镇', '萍乡', '九江', '新余', '鹰潭', '赣州', '吉安', '宜春', '抚州', '上饶'],
+    '贵州': ['贵阳', '六盘水', '遵义', '安顺', '铜仁地区', '毕节地区', '黔西南布依族苗族自治州', '黔东南苗族侗族自治州', '黔南布依族苗族自治州'],
+    '云南': ['昆明', '曲靖', '玉溪', '保山', '昭通', '丽江', '普洱', '临沧', '德宏傣族景颇族自治州', '怒江傈僳族自治州', '迪庆藏族自治州', '大理白族自治州', '楚雄彝族自治州', '红河哈尼族彝族自治州', '文山壮族苗族自治州', '西双版纳傣族自治州'],
+    '西藏': ['拉萨', '那曲地区', '昌都地区', '林芝地区', '山南地区', '日喀则地区', '阿里地区'],
+    '海南': ['海口', '三亚', '五指山', '琼海', '儋州', '文昌', '万宁', '东方', '澄迈县', '定安县', '屯昌县', '临高县', '白沙黎族自治县', '昌江黎族自治县', '乐东黎族自治县', '陵水黎族自治县', '保亭黎族苗族自治县', '琼中黎族苗族自治县'],
+    '甘肃': ['兰州', '嘉峪关', '金昌', '白银', '天水', '武威', '酒泉', '张掖', '庆阳', '平凉', '定西', '陇南', '临夏回族自治州', '甘南藏族自治州'],
+    '宁夏': ['银川', '石嘴山', '吴忠', '固原', '中卫'],
+    '青海': ['西宁', '海东地区', '海北藏族自治州', '海南藏族自治州', '黄南藏族自治州', '果洛藏族自治州', '玉树藏族自治州', '海西蒙古族藏族自治州'],
+    '新疆': ['乌鲁木齐', '克拉玛依', '吐鲁番地区', '哈密地区', '和田地区', '阿克苏地区', '喀什地区', '克孜勒苏柯尔克孜自治州', '巴音郭楞蒙古自治州', '昌吉回族自治州', '博尔塔拉蒙古自治州', '石河子', '阿拉尔', '图木舒克', '五家渠', '伊犁哈萨克自治州'],
+    '香港': ['香港'],
+    '澳门': ['澳门'],
+    '台湾': ['台北市', '高雄市', '台北县', '桃园县', '新竹县', '苗栗县', '台中县', '彰化县', '南投县', '云林县', '嘉义县', '台南县', '高雄县', '屏东县', '宜兰县', '花莲县', '台东县', '澎湖县', '基隆市', '新竹市', '台中市', '嘉义市', '台南市']
+};
+const parr = Object.keys(address);
 export default {
   name: 'app',
   components: {
@@ -271,35 +333,43 @@ export default {
           if (newValue) {
               this.usedPhoneType = [
                   {
-                      phoneType: '',
-                      phoneId: '',
-                      noPhoneId: false,
+                    phoneType: '',
+                    phoneId: '',
+                    noPhoneId: false,
+                    showPhoneTypeLabel: false,
+                    showPhoneIdLabel: false,
+                    phoneTypeTips: '',
+                    phoneIdTips: ''
                   }
               ];
-              this.phoneTypeTips = [''];
-              this.phoneIdTips = [''];
-              this.step2Ok = true;
           }
       },
       forgotNickname(newValue, oldValue) {
           if (newValue) {
               this.nicknames = [''];
               this.nicknameTips = [''];
-              this.step1Ok = true;
+              this.showNickLabel = [false];
+          }
+      },
+      forgotPwd(newValue, oldValue) {
+          if (newValue) {
+              this.usedPassword = [''];
+              this.passwordTips = [''];
+              this.showPwdLabel = [false];
           }
       },
       forgotMail(newValue, oldValue) {
           if (newValue) {
               this.emails = [''];
               this.emailsTips = [''];
-              this.step1Ok = true;
+              this.showEmailLabel = [false];
           }
       },
       forgotPhone(newValue, oldValue) {
           if (newValue) {
               this.phones = [''];
               this.phonesTips = [''];
-              this.step1Ok = true;
+              this.showPhoneLabel = [false];
           }
       }
   },
@@ -307,27 +377,31 @@ export default {
     return {
       steps: [
         {
-          name: '选择申诉类型',
+          name: '申诉类型',
         },
         {
           name: '身份信息',
         },
         {
-          name: '填写申诉材料',
+          name: '申诉材料',
         },
         {
           name: '重置密码',
         },
       ],
-      nowStep: 1,
       account: '',
       nicknames: [''], //曾用昵称
       emails: [''], //曾用邮箱
       phones: [''], //曾用手机
       usedPassword: [''],
+      passwordTips: [''],
+      showPwdLabel: [false],
       nicknameTips: [''],
+      showNickLabel: [false],
       emailsTips: [''],
+      showEmailLabel: [false],
       phonesTips: [''],
+      showPhoneLabel: [false],
       showModal: false,
       message: '',
       usedPhoneType:[
@@ -335,1885 +409,250 @@ export default {
               phoneType: '',
               phoneId: '',
               noPhoneId: false,
+              showPhoneTypeLabel: false,
+              showPhoneIdLabel: false,
+              phoneTypeTips: '',
+              phoneIdTips: ''
           }
       ],
-      phoneTypeTips: [''],
-      phoneIdTips: [''],
       forgotNickname: false,
       forgotMail: false,
       forgotPhone: false,
+      forgotPwd: false,
       hasUpload: false,
       noLoginPhone: false,
       choosenPic: null,
       RegTime: '',
+      regTime: '',
       showUsedPwd: '',
-      RegLand: ['',''],
-      CityMap: [
-        {
-            "cs": [
-                {
-                    "cid": 1,
-                    "cn": "北京市"
-                }
-            ],
-            "pid": 1,
-            "pn": "北京市"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 2,
-                    "cn": "天津市"
-                }
-            ],
-            "pid": 2,
-            "pn": "天津市"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 5,
-                    "cn": "邯郸市"
-                },
-                {
-                    "cid": 6,
-                    "cn": "石家庄市"
-                },
-                {
-                    "cid": 7,
-                    "cn": "保定市"
-                },
-                {
-                    "cid": 8,
-                    "cn": "张家口市"
-                },
-                {
-                    "cid": 9,
-                    "cn": "承德市"
-                },
-                {
-                    "cid": 10,
-                    "cn": "唐山市"
-                },
-                {
-                    "cid": 11,
-                    "cn": "廊坊市"
-                },
-                {
-                    "cid": 12,
-                    "cn": "沧州市"
-                },
-                {
-                    "cid": 13,
-                    "cn": "衡水市"
-                },
-                {
-                    "cid": 14,
-                    "cn": "邢台市"
-                },
-                {
-                    "cid": 15,
-                    "cn": "秦皇岛市"
-                }
-            ],
-            "pid": 3,
-            "pn": "河北省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 16,
-                    "cn": "朔州市"
-                },
-                {
-                    "cid": 17,
-                    "cn": "忻州市"
-                },
-                {
-                    "cid": 18,
-                    "cn": "太原市"
-                },
-                {
-                    "cid": 19,
-                    "cn": "大同市"
-                },
-                {
-                    "cid": 20,
-                    "cn": "阳泉市"
-                },
-                {
-                    "cid": 21,
-                    "cn": "晋中市"
-                },
-                {
-                    "cid": 22,
-                    "cn": "长治市"
-                },
-                {
-                    "cid": 23,
-                    "cn": "晋城市"
-                },
-                {
-                    "cid": 24,
-                    "cn": "临汾市"
-                },
-                {
-                    "cid": 25,
-                    "cn": "吕梁市"
-                },
-                {
-                    "cid": 26,
-                    "cn": "运城市"
-                }
-            ],
-            "pid": 4,
-            "pn": "山西省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 351,
-                    "cn": "呼伦贝尔市"
-                },
-                {
-                    "cid": 352,
-                    "cn": "呼和浩特市"
-                },
-                {
-                    "cid": 353,
-                    "cn": "包头市"
-                },
-                {
-                    "cid": 354,
-                    "cn": "乌海市"
-                },
-                {
-                    "cid": 355,
-                    "cn": "乌兰察布市"
-                },
-                {
-                    "cid": 356,
-                    "cn": "通辽市"
-                },
-                {
-                    "cid": 357,
-                    "cn": "赤峰市"
-                },
-                {
-                    "cid": 358,
-                    "cn": "鄂尔多斯市"
-                },
-                {
-                    "cid": 359,
-                    "cn": "巴彦淖尔市"
-                },
-                {
-                    "cid": 360,
-                    "cn": "锡林郭勒盟"
-                },
-                {
-                    "cid": 361,
-                    "cn": "兴安盟"
-                },
-                {
-                    "cid": 362,
-                    "cn": "阿拉善盟"
-                }
-            ],
-            "pid": 5,
-            "pn": "内蒙古自治区"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 27,
-                    "cn": "沈阳市"
-                },
-                {
-                    "cid": 28,
-                    "cn": "铁岭市"
-                },
-                {
-                    "cid": 29,
-                    "cn": "大连市"
-                },
-                {
-                    "cid": 30,
-                    "cn": "鞍山市"
-                },
-                {
-                    "cid": 31,
-                    "cn": "抚顺市"
-                },
-                {
-                    "cid": 32,
-                    "cn": "本溪市"
-                },
-                {
-                    "cid": 33,
-                    "cn": "丹东市"
-                },
-                {
-                    "cid": 34,
-                    "cn": "锦州市"
-                },
-                {
-                    "cid": 35,
-                    "cn": "营口市"
-                },
-                {
-                    "cid": 36,
-                    "cn": "阜新市"
-                },
-                {
-                    "cid": 37,
-                    "cn": "辽阳市"
-                },
-                {
-                    "cid": 38,
-                    "cn": "朝阳市"
-                },
-                {
-                    "cid": 39,
-                    "cn": "盘锦市"
-                },
-                {
-                    "cid": 40,
-                    "cn": "葫芦岛市"
-                }
-            ],
-            "pid": 6,
-            "pn": "辽宁省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 41,
-                    "cn": "长春市"
-                },
-                {
-                    "cid": 42,
-                    "cn": "吉林市"
-                },
-                {
-                    "cid": 43,
-                    "cn": "延边朝鲜族自治州"
-                },
-                {
-                    "cid": 44,
-                    "cn": "四平市"
-                },
-                {
-                    "cid": 45,
-                    "cn": "通化市"
-                },
-                {
-                    "cid": 46,
-                    "cn": "白城市"
-                },
-                {
-                    "cid": 47,
-                    "cn": "辽源市"
-                },
-                {
-                    "cid": 48,
-                    "cn": "松原市"
-                },
-                {
-                    "cid": 49,
-                    "cn": "白山市"
-                }
-            ],
-            "pid": 7,
-            "pn": "吉林省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 50,
-                    "cn": "哈尔滨市"
-                },
-                {
-                    "cid": 51,
-                    "cn": "齐齐哈尔市"
-                },
-                {
-                    "cid": 52,
-                    "cn": "鸡西市"
-                },
-                {
-                    "cid": 53,
-                    "cn": "牡丹江市"
-                },
-                {
-                    "cid": 54,
-                    "cn": "七台河市"
-                },
-                {
-                    "cid": 55,
-                    "cn": "佳木斯市"
-                },
-                {
-                    "cid": 56,
-                    "cn": "鹤岗市"
-                },
-                {
-                    "cid": 57,
-                    "cn": "双鸭山市"
-                },
-                {
-                    "cid": 58,
-                    "cn": "绥化市"
-                },
-                {
-                    "cid": 59,
-                    "cn": "黑河市"
-                },
-                {
-                    "cid": 60,
-                    "cn": "大兴安岭地区"
-                },
-                {
-                    "cid": 61,
-                    "cn": "伊春市"
-                },
-                {
-                    "cid": 62,
-                    "cn": "大庆市"
-                }
-            ],
-            "pid": 8,
-            "pn": "黑龙江省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 3,
-                    "cn": "上海市"
-                }
-            ],
-            "pid": 9,
-            "pn": "上海市"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 63,
-                    "cn": "南京市"
-                },
-                {
-                    "cid": 64,
-                    "cn": "无锡市"
-                },
-                {
-                    "cid": 65,
-                    "cn": "镇江市"
-                },
-                {
-                    "cid": 66,
-                    "cn": "苏州市"
-                },
-                {
-                    "cid": 67,
-                    "cn": "南通市"
-                },
-                {
-                    "cid": 68,
-                    "cn": "扬州市"
-                },
-                {
-                    "cid": 69,
-                    "cn": "盐城市"
-                },
-                {
-                    "cid": 70,
-                    "cn": "徐州市"
-                },
-                {
-                    "cid": 71,
-                    "cn": "淮安市"
-                },
-                {
-                    "cid": 72,
-                    "cn": "连云港市"
-                },
-                {
-                    "cid": 73,
-                    "cn": "常州市"
-                },
-                {
-                    "cid": 74,
-                    "cn": "泰州市"
-                },
-                {
-                    "cid": 75,
-                    "cn": "宿迁市"
-                }
-            ],
-            "pid": 10,
-            "pn": "江苏省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 76,
-                    "cn": "舟山市"
-                },
-                {
-                    "cid": 77,
-                    "cn": "衢州市"
-                },
-                {
-                    "cid": 78,
-                    "cn": "杭州市"
-                },
-                {
-                    "cid": 79,
-                    "cn": "湖州市"
-                },
-                {
-                    "cid": 80,
-                    "cn": "嘉兴市"
-                },
-                {
-                    "cid": 81,
-                    "cn": "宁波市"
-                },
-                {
-                    "cid": 82,
-                    "cn": "绍兴市"
-                },
-                {
-                    "cid": 83,
-                    "cn": "温州市"
-                },
-                {
-                    "cid": 84,
-                    "cn": "丽水市"
-                },
-                {
-                    "cid": 85,
-                    "cn": "金华市"
-                },
-                {
-                    "cid": 86,
-                    "cn": "台州市"
-                }
-            ],
-            "pid": 11,
-            "pn": "浙江省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 87,
-                    "cn": "合肥市"
-                },
-                {
-                    "cid": 88,
-                    "cn": "芜湖市"
-                },
-                {
-                    "cid": 89,
-                    "cn": "蚌埠市"
-                },
-                {
-                    "cid": 90,
-                    "cn": "淮南市"
-                },
-                {
-                    "cid": 91,
-                    "cn": "马鞍山市"
-                },
-                {
-                    "cid": 92,
-                    "cn": "淮北市"
-                },
-                {
-                    "cid": 93,
-                    "cn": "铜陵市"
-                },
-                {
-                    "cid": 94,
-                    "cn": "安庆市"
-                },
-                {
-                    "cid": 95,
-                    "cn": "黄山市"
-                },
-                {
-                    "cid": 96,
-                    "cn": "滁州市"
-                },
-                {
-                    "cid": 97,
-                    "cn": "阜阳市"
-                },
-                {
-                    "cid": 98,
-                    "cn": "宿州市"
-                },
-                {
-                    "cid": 99,
-                    "cn": "巢湖市"
-                },
-                {
-                    "cid": 100,
-                    "cn": "六安市"
-                },
-                {
-                    "cid": 101,
-                    "cn": "亳州市"
-                },
-                {
-                    "cid": 102,
-                    "cn": "池州市"
-                },
-                {
-                    "cid": 103,
-                    "cn": "宣城市"
-                }
-            ],
-            "pid": 12,
-            "pn": "安徽省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 104,
-                    "cn": "福州市"
-                },
-                {
-                    "cid": 105,
-                    "cn": "厦门市"
-                },
-                {
-                    "cid": 106,
-                    "cn": "宁德市"
-                },
-                {
-                    "cid": 107,
-                    "cn": "莆田市"
-                },
-                {
-                    "cid": 108,
-                    "cn": "泉州市"
-                },
-                {
-                    "cid": 109,
-                    "cn": "漳州市"
-                },
-                {
-                    "cid": 110,
-                    "cn": "龙岩市"
-                },
-                {
-                    "cid": 111,
-                    "cn": "三明市"
-                },
-                {
-                    "cid": 112,
-                    "cn": "南平市"
-                }
-            ],
-            "pid": 13,
-            "pn": "福建省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 113,
-                    "cn": "鹰潭市"
-                },
-                {
-                    "cid": 114,
-                    "cn": "新余市"
-                },
-                {
-                    "cid": 115,
-                    "cn": "南昌市"
-                },
-                {
-                    "cid": 116,
-                    "cn": "九江市"
-                },
-                {
-                    "cid": 117,
-                    "cn": "上饶市"
-                },
-                {
-                    "cid": 118,
-                    "cn": "抚州市"
-                },
-                {
-                    "cid": 119,
-                    "cn": "宜春市"
-                },
-                {
-                    "cid": 120,
-                    "cn": "吉安市"
-                },
-                {
-                    "cid": 121,
-                    "cn": "赣州市"
-                },
-                {
-                    "cid": 122,
-                    "cn": "景德镇市"
-                },
-                {
-                    "cid": 123,
-                    "cn": "萍乡市"
-                }
-            ],
-            "pid": 14,
-            "pn": "江西省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 124,
-                    "cn": "菏泽市"
-                },
-                {
-                    "cid": 125,
-                    "cn": "济南市"
-                },
-                {
-                    "cid": 126,
-                    "cn": "青岛市"
-                },
-                {
-                    "cid": 127,
-                    "cn": "淄博市"
-                },
-                {
-                    "cid": 128,
-                    "cn": "德州市"
-                },
-                {
-                    "cid": 129,
-                    "cn": "烟台市"
-                },
-                {
-                    "cid": 130,
-                    "cn": "潍坊市"
-                },
-                {
-                    "cid": 131,
-                    "cn": "济宁市"
-                },
-                {
-                    "cid": 132,
-                    "cn": "泰安市"
-                },
-                {
-                    "cid": 133,
-                    "cn": "临沂市"
-                },
-                {
-                    "cid": 134,
-                    "cn": "滨州市"
-                },
-                {
-                    "cid": 135,
-                    "cn": "东营市"
-                },
-                {
-                    "cid": 136,
-                    "cn": "威海市"
-                },
-                {
-                    "cid": 137,
-                    "cn": "枣庄市"
-                },
-                {
-                    "cid": 138,
-                    "cn": "日照市"
-                },
-                {
-                    "cid": 139,
-                    "cn": "莱芜市"
-                },
-                {
-                    "cid": 140,
-                    "cn": "聊城市"
-                }
-            ],
-            "pid": 15,
-            "pn": "山东省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 141,
-                    "cn": "商丘市"
-                },
-                {
-                    "cid": 142,
-                    "cn": "郑州市"
-                },
-                {
-                    "cid": 143,
-                    "cn": "安阳市"
-                },
-                {
-                    "cid": 144,
-                    "cn": "新乡市"
-                },
-                {
-                    "cid": 145,
-                    "cn": "许昌市"
-                },
-                {
-                    "cid": 146,
-                    "cn": "平顶山市"
-                },
-                {
-                    "cid": 147,
-                    "cn": "信阳市"
-                },
-                {
-                    "cid": 148,
-                    "cn": "南阳市"
-                },
-                {
-                    "cid": 149,
-                    "cn": "开封市"
-                },
-                {
-                    "cid": 150,
-                    "cn": "洛阳市"
-                },
-                {
-                    "cid": 151,
-                    "cn": "济源市"
-                },
-                {
-                    "cid": 152,
-                    "cn": "焦作市"
-                },
-                {
-                    "cid": 153,
-                    "cn": "鹤壁市"
-                },
-                {
-                    "cid": 154,
-                    "cn": "濮阳市"
-                },
-                {
-                    "cid": 155,
-                    "cn": "周口市"
-                },
-                {
-                    "cid": 156,
-                    "cn": "漯河市"
-                },
-                {
-                    "cid": 157,
-                    "cn": "驻马店市"
-                },
-                {
-                    "cid": 158,
-                    "cn": "三门峡市"
-                }
-            ],
-            "pid": 16,
-            "pn": "河南省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 159,
-                    "cn": "武汉市"
-                },
-                {
-                    "cid": 160,
-                    "cn": "襄樊市"
-                },
-                {
-                    "cid": 161,
-                    "cn": "鄂州市"
-                },
-                {
-                    "cid": 162,
-                    "cn": "孝感市"
-                },
-                {
-                    "cid": 163,
-                    "cn": "黄冈市"
-                },
-                {
-                    "cid": 164,
-                    "cn": "黄石市"
-                },
-                {
-                    "cid": 165,
-                    "cn": "咸宁市"
-                },
-                {
-                    "cid": 166,
-                    "cn": "荆州市"
-                },
-                {
-                    "cid": 167,
-                    "cn": "宜昌市"
-                },
-                {
-                    "cid": 168,
-                    "cn": "恩施土家族苗族自治州"
-                },
-                {
-                    "cid": 169,
-                    "cn": "神农架林区"
-                },
-                {
-                    "cid": 170,
-                    "cn": "十堰市"
-                },
-                {
-                    "cid": 171,
-                    "cn": "随州市"
-                },
-                {
-                    "cid": 172,
-                    "cn": "荆门市"
-                },
-                {
-                    "cid": 173,
-                    "cn": "仙桃市"
-                },
-                {
-                    "cid": 174,
-                    "cn": "天门市"
-                },
-                {
-                    "cid": 175,
-                    "cn": "潜江市"
-                }
-            ],
-            "pid": 17,
-            "pn": "湖北省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 176,
-                    "cn": "岳阳市"
-                },
-                {
-                    "cid": 177,
-                    "cn": "长沙市"
-                },
-                {
-                    "cid": 178,
-                    "cn": "湘潭市"
-                },
-                {
-                    "cid": 179,
-                    "cn": "株洲市"
-                },
-                {
-                    "cid": 180,
-                    "cn": "衡阳市"
-                },
-                {
-                    "cid": 181,
-                    "cn": "郴州市"
-                },
-                {
-                    "cid": 182,
-                    "cn": "常德市"
-                },
-                {
-                    "cid": 183,
-                    "cn": "益阳市"
-                },
-                {
-                    "cid": 184,
-                    "cn": "娄底市"
-                },
-                {
-                    "cid": 185,
-                    "cn": "邵阳市"
-                },
-                {
-                    "cid": 186,
-                    "cn": "湘西土家族苗族自治州"
-                },
-                {
-                    "cid": 187,
-                    "cn": "张家界市"
-                },
-                {
-                    "cid": 188,
-                    "cn": "怀化市"
-                },
-                {
-                    "cid": 189,
-                    "cn": "永州市"
-                }
-            ],
-            "pid": 18,
-            "pn": "湖南省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 190,
-                    "cn": "广州市"
-                },
-                {
-                    "cid": 191,
-                    "cn": "汕尾市"
-                },
-                {
-                    "cid": 192,
-                    "cn": "阳江市"
-                },
-                {
-                    "cid": 193,
-                    "cn": "揭阳市"
-                },
-                {
-                    "cid": 194,
-                    "cn": "茂名市"
-                },
-                {
-                    "cid": 195,
-                    "cn": "惠州市"
-                },
-                {
-                    "cid": 196,
-                    "cn": "江门市"
-                },
-                {
-                    "cid": 197,
-                    "cn": "韶关市"
-                },
-                {
-                    "cid": 198,
-                    "cn": "梅州市"
-                },
-                {
-                    "cid": 199,
-                    "cn": "汕头市"
-                },
-                {
-                    "cid": 200,
-                    "cn": "深圳市"
-                },
-                {
-                    "cid": 201,
-                    "cn": "珠海市"
-                },
-                {
-                    "cid": 202,
-                    "cn": "佛山市"
-                },
-                {
-                    "cid": 203,
-                    "cn": "肇庆市"
-                },
-                {
-                    "cid": 204,
-                    "cn": "湛江市"
-                },
-                {
-                    "cid": 205,
-                    "cn": "中山市"
-                },
-                {
-                    "cid": 206,
-                    "cn": "河源市"
-                },
-                {
-                    "cid": 207,
-                    "cn": "清远市"
-                },
-                {
-                    "cid": 208,
-                    "cn": "云浮市"
-                },
-                {
-                    "cid": 209,
-                    "cn": "潮州市"
-                },
-                {
-                    "cid": 210,
-                    "cn": "东莞市"
-                }
-            ],
-            "pid": 19,
-            "pn": "广东省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 255,
-                    "cn": "海口市"
-                },
-                {
-                    "cid": 256,
-                    "cn": "三亚市"
-                },
-                {
-                    "cid": 257,
-                    "cn": "五指山市"
-                },
-                {
-                    "cid": 258,
-                    "cn": "琼海市"
-                },
-                {
-                    "cid": 259,
-                    "cn": "儋州市"
-                },
-                {
-                    "cid": 260,
-                    "cn": "文昌市"
-                },
-                {
-                    "cid": 261,
-                    "cn": "万宁市"
-                },
-                {
-                    "cid": 262,
-                    "cn": "东方市"
-                },
-                {
-                    "cid": 263,
-                    "cn": "澄迈县"
-                },
-                {
-                    "cid": 264,
-                    "cn": "定安县"
-                },
-                {
-                    "cid": 265,
-                    "cn": "屯昌县"
-                },
-                {
-                    "cid": 266,
-                    "cn": "临高县"
-                },
-                {
-                    "cid": 267,
-                    "cn": "白沙黎族自治县"
-                },
-                {
-                    "cid": 268,
-                    "cn": "昌江黎族自治县"
-                },
-                {
-                    "cid": 269,
-                    "cn": "乐东黎族自治县"
-                },
-                {
-                    "cid": 270,
-                    "cn": "陵水黎族自治县"
-                },
-                {
-                    "cid": 271,
-                    "cn": "保亭黎族苗族自治县"
-                },
-                {
-                    "cid": 272,
-                    "cn": "琼中黎族苗族自治县"
-                }
-            ],
-            "pid": 20,
-            "pn": "海南省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 307,
-                    "cn": "防城港市"
-                },
-                {
-                    "cid": 308,
-                    "cn": "南宁市"
-                },
-                {
-                    "cid": 309,
-                    "cn": "崇左市"
-                },
-                {
-                    "cid": 310,
-                    "cn": "来宾市"
-                },
-                {
-                    "cid": 311,
-                    "cn": "柳州市"
-                },
-                {
-                    "cid": 312,
-                    "cn": "桂林市"
-                },
-                {
-                    "cid": 313,
-                    "cn": "梧州市"
-                },
-                {
-                    "cid": 314,
-                    "cn": "贺州市"
-                },
-                {
-                    "cid": 315,
-                    "cn": "贵港市"
-                },
-                {
-                    "cid": 316,
-                    "cn": "玉林市"
-                },
-                {
-                    "cid": 317,
-                    "cn": "百色市"
-                },
-                {
-                    "cid": 318,
-                    "cn": "钦州市"
-                },
-                {
-                    "cid": 319,
-                    "cn": "河池市"
-                },
-                {
-                    "cid": 320,
-                    "cn": "北海市"
-                }
-            ],
-            "pid": 21,
-            "pn": "广西壮族自治区"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 211,
-                    "cn": "兰州市"
-                },
-                {
-                    "cid": 212,
-                    "cn": "金昌市"
-                },
-                {
-                    "cid": 213,
-                    "cn": "白银市"
-                },
-                {
-                    "cid": 214,
-                    "cn": "天水市"
-                },
-                {
-                    "cid": 215,
-                    "cn": "嘉峪关市"
-                },
-                {
-                    "cid": 216,
-                    "cn": "武威市"
-                },
-                {
-                    "cid": 217,
-                    "cn": "张掖市"
-                },
-                {
-                    "cid": 218,
-                    "cn": "平凉市"
-                },
-                {
-                    "cid": 219,
-                    "cn": "酒泉市"
-                },
-                {
-                    "cid": 220,
-                    "cn": "庆阳市"
-                },
-                {
-                    "cid": 221,
-                    "cn": "定西市"
-                },
-                {
-                    "cid": 222,
-                    "cn": "陇南市"
-                },
-                {
-                    "cid": 223,
-                    "cn": "临夏回族自治州"
-                },
-                {
-                    "cid": 224,
-                    "cn": "甘南藏族自治州"
-                }
-            ],
-            "pid": 22,
-            "pn": "甘肃省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 297,
-                    "cn": "西安市"
-                },
-                {
-                    "cid": 298,
-                    "cn": "咸阳市"
-                },
-                {
-                    "cid": 299,
-                    "cn": "延安市"
-                },
-                {
-                    "cid": 300,
-                    "cn": "榆林市"
-                },
-                {
-                    "cid": 301,
-                    "cn": "渭南市"
-                },
-                {
-                    "cid": 302,
-                    "cn": "商洛市"
-                },
-                {
-                    "cid": 303,
-                    "cn": "安康市"
-                },
-                {
-                    "cid": 304,
-                    "cn": "汉中市"
-                },
-                {
-                    "cid": 305,
-                    "cn": "宝鸡市"
-                },
-                {
-                    "cid": 306,
-                    "cn": "铜川市"
-                }
-            ],
-            "pid": 23,
-            "pn": "陕西省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 333,
-                    "cn": "塔城地区"
-                },
-                {
-                    "cid": 334,
-                    "cn": "哈密地区"
-                },
-                {
-                    "cid": 335,
-                    "cn": "和田地区"
-                },
-                {
-                    "cid": 336,
-                    "cn": "阿勒泰地区"
-                },
-                {
-                    "cid": 337,
-                    "cn": "克孜勒苏柯尔克孜自治州"
-                },
-                {
-                    "cid": 338,
-                    "cn": "博尔塔拉蒙古自治州"
-                },
-                {
-                    "cid": 339,
-                    "cn": "克拉玛依市"
-                },
-                {
-                    "cid": 340,
-                    "cn": "乌鲁木齐市"
-                },
-                {
-                    "cid": 341,
-                    "cn": "石河子市"
-                },
-                {
-                    "cid": 342,
-                    "cn": "昌吉回族自治州"
-                },
-                {
-                    "cid": 343,
-                    "cn": "五家渠市"
-                },
-                {
-                    "cid": 344,
-                    "cn": "吐鲁番地区"
-                },
-                {
-                    "cid": 345,
-                    "cn": "巴音郭楞蒙古自治州"
-                },
-                {
-                    "cid": 346,
-                    "cn": "阿克苏地区"
-                },
-                {
-                    "cid": 347,
-                    "cn": "阿拉尔市"
-                },
-                {
-                    "cid": 348,
-                    "cn": "喀什地区"
-                },
-                {
-                    "cid": 349,
-                    "cn": "图木舒克市"
-                },
-                {
-                    "cid": 350,
-                    "cn": "伊犁哈萨克自治州"
-                }
-            ],
-            "pid": 24,
-            "pn": "新疆维吾尔自治区"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 289,
-                    "cn": "海北藏族自治州"
-                },
-                {
-                    "cid": 290,
-                    "cn": "西宁市"
-                },
-                {
-                    "cid": 291,
-                    "cn": "海东地区"
-                },
-                {
-                    "cid": 292,
-                    "cn": "黄南藏族自治州"
-                },
-                {
-                    "cid": 293,
-                    "cn": "海南藏族自治州"
-                },
-                {
-                    "cid": 294,
-                    "cn": "果洛藏族自治州"
-                },
-                {
-                    "cid": 295,
-                    "cn": "玉树藏族自治州"
-                },
-                {
-                    "cid": 296,
-                    "cn": "海西蒙古族藏族自治州"
-                }
-            ],
-            "pid": 25,
-            "pn": "青海省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 328,
-                    "cn": "银川市"
-                },
-                {
-                    "cid": 329,
-                    "cn": "石嘴山市"
-                },
-                {
-                    "cid": 330,
-                    "cn": "吴忠市"
-                },
-                {
-                    "cid": 331,
-                    "cn": "固原市"
-                },
-                {
-                    "cid": 332,
-                    "cn": "中卫市"
-                }
-            ],
-            "pid": 26,
-            "pn": "宁夏回族自治区"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 4,
-                    "cn": "重庆市"
-                }
-            ],
-            "pid": 27,
-            "pn": "重庆市"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 225,
-                    "cn": "成都市"
-                },
-                {
-                    "cid": 226,
-                    "cn": "攀枝花市"
-                },
-                {
-                    "cid": 227,
-                    "cn": "自贡市"
-                },
-                {
-                    "cid": 228,
-                    "cn": "绵阳市"
-                },
-                {
-                    "cid": 229,
-                    "cn": "南充市"
-                },
-                {
-                    "cid": 230,
-                    "cn": "达州市"
-                },
-                {
-                    "cid": 231,
-                    "cn": "遂宁市"
-                },
-                {
-                    "cid": 232,
-                    "cn": "广安市"
-                },
-                {
-                    "cid": 233,
-                    "cn": "巴中市"
-                },
-                {
-                    "cid": 234,
-                    "cn": "泸州市"
-                },
-                {
-                    "cid": 235,
-                    "cn": "宜宾市"
-                },
-                {
-                    "cid": 236,
-                    "cn": "资阳市"
-                },
-                {
-                    "cid": 237,
-                    "cn": "内江市"
-                },
-                {
-                    "cid": 238,
-                    "cn": "乐山市"
-                },
-                {
-                    "cid": 239,
-                    "cn": "眉山市"
-                },
-                {
-                    "cid": 240,
-                    "cn": "凉山彝族自治州"
-                },
-                {
-                    "cid": 241,
-                    "cn": "雅安市"
-                },
-                {
-                    "cid": 242,
-                    "cn": "甘孜藏族自治州"
-                },
-                {
-                    "cid": 243,
-                    "cn": "阿坝藏族羌族自治州"
-                },
-                {
-                    "cid": 244,
-                    "cn": "德阳市"
-                },
-                {
-                    "cid": 245,
-                    "cn": "广元市"
-                }
-            ],
-            "pid": 28,
-            "pn": "四川省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 246,
-                    "cn": "贵阳市"
-                },
-                {
-                    "cid": 247,
-                    "cn": "遵义市"
-                },
-                {
-                    "cid": 248,
-                    "cn": "安顺市"
-                },
-                {
-                    "cid": 249,
-                    "cn": "黔南布依族苗族自治州"
-                },
-                {
-                    "cid": 250,
-                    "cn": "黔东南苗族侗族自治州"
-                },
-                {
-                    "cid": 251,
-                    "cn": "铜仁地区"
-                },
-                {
-                    "cid": 252,
-                    "cn": "毕节地区"
-                },
-                {
-                    "cid": 253,
-                    "cn": "六盘水市"
-                },
-                {
-                    "cid": 254,
-                    "cn": "黔西南布依族苗族自治州"
-                }
-            ],
-            "pid": 29,
-            "pn": "贵州省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 273,
-                    "cn": "西双版纳傣族自治州"
-                },
-                {
-                    "cid": 274,
-                    "cn": "德宏傣族景颇族自治州"
-                },
-                {
-                    "cid": 275,
-                    "cn": "昭通市"
-                },
-                {
-                    "cid": 276,
-                    "cn": "昆明市"
-                },
-                {
-                    "cid": 277,
-                    "cn": "大理白族自治州"
-                },
-                {
-                    "cid": 278,
-                    "cn": "红河哈尼族彝族自治州"
-                },
-                {
-                    "cid": 279,
-                    "cn": "曲靖市"
-                },
-                {
-                    "cid": 280,
-                    "cn": "保山市"
-                },
-                {
-                    "cid": 281,
-                    "cn": "文山壮族苗族自治州"
-                },
-                {
-                    "cid": 282,
-                    "cn": "玉溪市"
-                },
-                {
-                    "cid": 283,
-                    "cn": "楚雄彝族自治州"
-                },
-                {
-                    "cid": 284,
-                    "cn": "普洱市"
-                },
-                {
-                    "cid": 285,
-                    "cn": "临沧市"
-                },
-                {
-                    "cid": 286,
-                    "cn": "怒江傈傈族自治州"
-                },
-                {
-                    "cid": 287,
-                    "cn": "迪庆藏族自治州"
-                },
-                {
-                    "cid": 288,
-                    "cn": "丽江市"
-                }
-            ],
-            "pid": 30,
-            "pn": "云南省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 321,
-                    "cn": "拉萨市"
-                },
-                {
-                    "cid": 322,
-                    "cn": "日喀则地区"
-                },
-                {
-                    "cid": 323,
-                    "cn": "山南地区"
-                },
-                {
-                    "cid": 324,
-                    "cn": "林芝地区"
-                },
-                {
-                    "cid": 325,
-                    "cn": "昌都地区"
-                },
-                {
-                    "cid": 326,
-                    "cn": "那曲地区"
-                },
-                {
-                    "cid": 327,
-                    "cn": "阿里地区"
-                }
-            ],
-            "pid": 31,
-            "pn": "西藏自治区"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 363,
-                    "cn": "台北市"
-                },
-                {
-                    "cid": 364,
-                    "cn": "高雄市"
-                },
-                {
-                    "cid": 365,
-                    "cn": "基隆市"
-                },
-                {
-                    "cid": 366,
-                    "cn": "台中市"
-                },
-                {
-                    "cid": 367,
-                    "cn": "台南市"
-                },
-                {
-                    "cid": 368,
-                    "cn": "新竹市"
-                },
-                {
-                    "cid": 369,
-                    "cn": "嘉义市"
-                }
-            ],
-            "pid": 32,
-            "pn": "台湾省"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 370,
-                    "cn": "澳门特别行政区"
-                }
-            ],
-            "pid": 33,
-            "pn": "澳门特别行政区"
-        },
-        {
-            "cs": [
-                {
-                    "cid": 371,
-                    "cn": "香港特别行政区"
-                }
-            ],
-            "pid": 34,
-            "pn": "香港特别行政区"
-        }
-      ],
-      UsedLand: [{
+      RegLand: ['', ''], 
+      choosenRegLand: false,
+      regLand: ['', ''],
+      regLandPicker: '',
+      UsedLand: {
+          p: '',
+          c: ''
+      },
+      choosenUsedLand: [false],
+      usedLand:[{
           p: '',
           c: ''
       }],
+      usedLandPicker: '',
       dateTips: '',
       regLandTips: '',
       usedLandTips: '',
       showRegTimeTips: false,
       showRegLandTips: false,
       showUsedLandTips: false,
-      pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() > Date.now();
-          },
-      },
-      step1Ok: true,
-      step2Ok: true,
-      step3Ok: true,
+      citySlots: [
+        {
+            flex: 1,
+            values: parr,
+            className: 'slot1',
+            textAlign: 'center'
+        }, {
+            divider: true,
+            content: '-',
+            className: 'slot2'
+        },{
+            flex: 1,
+            values: ['北京'],
+            className: 'slot3',
+            textAlign: 'center'
+        }
+      ],
       resetId: "",
       overTime: false,
+      pickLand: false,
+      pickLandIndex: -1,
+      nickOk: true,
+      phonesOk: true,
+      emailOk: true,
+      passwordOk: true,
+      phoneTypeOk: true,
     }
   },
   methods: {
-    back(steps) {
-        if (steps > 1) {
-            this.nowStep -- ;
-        }
-    },
-    next(steps) {
+    next() {
         const mailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
         const phoneReg = /^[0-9]*$/;
-        if (steps < 3) {
-            if (this.nowStep == 1) {
-                if (!this.forgotNickname) {
-                    let checkResult = this.checkInput('nickname', this.nicknames, this.nicknameTips);
-                    if (checkResult != 1) {
-                        this.step1Ok = false;
-                        //this.nickFlag = false;
-                    } else {
-                        this.step1Ok = true;
+        const pwdReg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
+        const nickReg = /^[.a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        const phoneTypeReg = /^[.a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        const phoneIdReg = /^[0-9a-zA-Z]+$/;
+        if (!this.regTime) {
+            this.dateTips = '请选择注册时间';
+            this.showRegTimeTips = true;
+        }
+        if (!this.regLand[0] || !this.regLand[1]) {
+            this.regLandTips = '请选择注册地点';
+            this.showRegLandTips = true;
+        }
+        if (!this.usedLand[0].p || !this.usedLand[0].c) {
+            this.usedLandTips = '请选择常用地点';
+            this.showUsedLandTips = true;
+        }
+        if (!this.forgotPwd) {
+            let checkResult = this.checkInput('password', this.usedPassword, this.passwordTips, pwdReg);
+            if (checkResult != 1) {
+                //this.emailFlag = false;
+                this.passwordOk = false;
+            } else {
+                this.passwordOk = true;
+            }
+        }
+        if (!this.forgotNickname) {
+            let nickFlag = false;
+            let nickResult = 1;
+            for (let i=0;i<this.nicknames.length;i++) {
+                if (this.nicknames[i]!="") {
+                    nickFlag = true;
+                    if (this.getLen(this.nicknames[i])<2 || this.getLen(this.nicknames[i])>32) {
+                        this.$set(this.nicknameTips, i, "昵称应为2-32位中英文、数字、下划线字符");
+                        nickResult = 2;
+                    } else if (!nickReg.test(this.nicknames[i])){
+                        this.$set(this.nicknameTips, i, "昵称应为2-32位中英文、数字、下划线字符");
+                        nickResult = 2;
                     }
                 }
-                if (!this.forgotMail) {
-                    let checkResult = this.checkInput('email', this.emails, this.emailsTips, mailReg);
-                    if (checkResult != 1) {
-                        this.step1Ok = false;
-                        //this.emailFlag = false;
-                    } else {
-                        this.step1Ok = true;
+            }
+            if (!nickFlag) {
+                this.$set(this.nicknameTips, 0, '请输入曾用昵称');
+                nickResult = 0;
+            }
+            if (nickResult != 1) {
+                this.nickOk = false;
+                //this.nickFlag = false;
+            } else {
+                this.nickOk = true;
+            }
+        }
+        if (!this.forgotMail) {
+            let checkResult = this.checkInput('email', this.emails, this.emailsTips, mailReg);
+            if (checkResult != 1) {
+                //this.emailFlag = false;
+                this.emailOk = false;
+            } else {
+                this.emailOk = true;
+            }
+        }
+        if (!this.forgotPhone) {
+            let checkResult = this.checkInput('phone', this.phones, this.phonesTips ,phoneReg);
+            if (checkResult != 1) {
+                //this.phoneFlag = false;
+                this.phonesOk = false;
+            } else {
+                this.phonesOk = true;
+            }
+        }
+        if (!this.noLoginPhone) {
+            let phoneTypeResult = 1;
+            for(let i = 0;i < this.usedPhoneType.length; i ++) {
+                if (this.usedPhoneType[i].phoneType == "" && !this.usedPhoneType[i].noPhoneId && this.usedPhoneType[i].phoneId == '') {
+                    this.usedPhoneType[i].phoneIdTips = "请填写曾用手机序列号";
+                    this.usedPhoneType[i].phoneTypeTips =  "请填写曾用手机型号";
+                    phoneTypeResult = 2;
+                } else if(this.usedPhoneType[i].phoneType!="" || this.usedPhoneType[i].phoneId != "") {
+                    if (this.usedPhoneType[i].phoneType!="") {
+                        if (this.getLen(this.trim(this.usedPhoneType[i].phoneType))<2 || this.getLen(this.trim(this.usedPhoneType[i].phoneType))>32) {
+                            this.usedPhoneType[i].phoneTypeTips = "设备名只允许输入2-32位中英文、数字、下划线";
+                            phoneTypeResult = 0;
+                        }
+                        if (!phoneTypeReg.test(this.trim(this.usedPhoneType[i].phoneType))) {
+                            this.usedPhoneType[i].phoneTypeTips = "设备名只允许输入2-32位中英文、数字、下划线";
+                            phoneTypeResult = 0;
+                        }
                     }
-                }
-                if (!this.forgotPhone) {
-                    let checkResult = this.checkInput('phone', this.phones, this.phonesTips ,phoneReg);
-                    if (checkResult != 1) {
-                        this.step1Ok = false;
-                        //this.phoneFlag = false;
-                    } else {
-                        this.step1Ok = true;
-                    }
-                }
-                if (this.step1Ok) {
-                    this.nowStep ++;
-                } 
-            } else if (this.nowStep == 2) {     
-                if (!this.noLoginPhone) {
-                    for(let i = 0;i < this.usedPhoneType.length; i ++) {
-                        if (this.usedPhoneType[i].phoneType == "" && !this.usedPhoneType[i].noPhoneId && this.usedPhoneType[i].phoneId == '') {
-                            this.$set(this.phoneIdTips, i, "请填写曾用手机序列号");
-                            this.$set(this.phoneTypeTips, i, "请填写曾用手机型号");
-                            this.step2Ok = false;
+                    if (this.usedPhoneType[i].phoneId != "") {
+                        if (!phoneIdReg.test(this.usedPhoneType[i].phoneId)) {
+                            this.usedPhoneType[i].phoneIdTips = "请输入正确的序列号";
+                            phoneTypeResult = 0;
                         }
                     }
                 }
-                if (!this.step2Ok) {
-                    return;
+            }
+            if (phoneTypeResult!=1) {
+                this.phoneTypeOk = false;
+            } else {
+                this.phoneTypeOk = true;
+            }
+        }
+        if (this.showRegTimeTips || this.showRegLandTips || this.showUsedLandTips || !this.passwordOk || !this.nickOk || !this.emailOk || !this.phonesOk || !this.phonesOk) {
+            return 
+        }
+        const usedPwd = this.contactInput(this.usedPassword);
+        const useNickName = this.contactInput(this.nicknames);
+        const usedEmails = this.contactInput(this.emails);
+        const usedPhones = this.contactInput(this.phones);
+        const regLand = this.regLand[0] + '-' + this.regLand[1];
+        let usedLand = '';
+        for (let i = 0;i < this.usedLand.length; i++) {
+            if (this.usedLand[i].p !== "" && this.usedLand[i].c !== "") {
+                let tempLand = `${this.usedLand[i].p}-${this.usedLand[i].c}`;
+                usedLand += tempLand+',';
+            }
+        }
+        console.log(usedLand);
+        let usedPhoneTypes = "";
+        let usedPhoneIds = ""
+        for (let i = 0;i < this.usedPhoneType.length; i++) {
+            if (this.usedPhoneType[i].phoneType!=='') {
+                usedPhoneTypes += this.usedPhoneType[i].phoneType + ',';
+            }
+            if (this.usedPhoneType[i].phoneId!=='') {
+                usedPhoneIds += this.usedPhoneType[i].phoneId + ',';
+            }
+        }
+        const data = {
+            regLocation: regLand,
+            regDate: this.RegTime.getFullYear() + '-' + (this.RegTime.getMonth()+1) + '-' + this.RegTime.getDate(),
+            commonUsedLocation: usedLand.substring(0, usedLand.length-1),
+            resetId: this.resetId,
+            nameUsedBeforeList: useNickName.substring(0, useNickName.length-1),
+            emailUsedBeforeList: usedEmails.substring(0, usedEmails.length-1),
+            deviceUsedBeforeList: usedPhoneTypes.substring(0, usedPhoneTypes.length-1),
+            phoneUsedBeforeList: usedPhones.substring(0, usedPhones.length-1),
+            passwordUsedBeforeList: usedPwd.substring(0, usedPwd.length-1),
+            snUsedBeforeList: usedPhoneIds.substring(0, usedPhoneIds.length-1),
+        }
+        axios.post('/uc/system/webjsp/resetpwd/addEvidence', data).then((res) => {
+            if (res.data.code == 200) {
+                let gotoUrl = '';
+                if (res.data.value.phone) {
+                    location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}&vcode=${res.data.value.areacode}&phone=${res.data.value.phone}`);
+                } else {
+                    location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}`);
                 }
-                this.nowStep ++ ;
-            }
-        } else {
-            // 提交表单
-            // console.log(this.CityMap[this.RegLand[0]].pn, this.CityMap[this.RegLand[0]].cs[this.RegLand[1]].cn);
-            if (this.RegTime == "") {
-                this.dateTips = "请选择注册时间";
-                this.showRegTimeTips = true;
-                this.step3Ok = false;
-            }
-            console.log(this.RegLand);
-            if (this.RegLand[0] === "" || this.RegLand[1] === "") {
-                this.regLandTips = "请选择注册地点";
-                this.showRegLandTips = true;
-                this.step3Ok = false;
-            }
-            let usedLandFlag = false;
-            let usedLand = '';
-            for (let i = 0;i < this.UsedLand.length; i++) {
-                if (this.UsedLand[i].p !== "" && this.UsedLand[i].c !== "") {
-                    usedLandFlag = true;
-                    let tempLand = `${this.CityMap[this.UsedLand[i].p].pn}-${this.CityMap[this.UsedLand[i].p].cs[this.UsedLand[i].c].cn}`;
-                    usedLand += tempLand+',';
-                }
-            }
-            if (!usedLandFlag) {
-                this.usedLandTips = "至少填写一个常用地";
-                this.showUsedLandTips = true;
-                this.step3Ok = false;
-            }
-
-            if (!this.step3Ok) {
-                return;
-            }
-            const usedPwd = this.contactInput(this.usedPassword);
-            const useNickName = this.contactInput(this.nicknames);
-            const usedEmails = this.contactInput(this.emails);
-            const usedPhones = this.contactInput(this.phones);
-            const regLand = `${this.CityMap[this.RegLand[0]].pn}-${this.CityMap[this.RegLand[0]].cs[this.RegLand[1]].cn}`;
-            let usedPhoneTypes = "";
-            let usedPhoneIds = ""
-            for (let i = 0;i < this.usedPhoneType.length; i++) {
-                if (this.usedPhoneType[i].phoneType!=='') {
-                    usedPhoneTypes += this.usedPhoneType[i].phoneType + ',';
-                }
-                if (this.usedPhoneType[i].phoneId!=='') {
-                    usedPhoneIds += this.usedPhoneType[i].phoneId + ',';
-                }
-            }
-            const data = {
-                regLocation: regLand,
-                regDate: this.RegTime,
-                commonUsedLocation: usedLand.substring(0, usedLand.length-1),
-                resetId: this.resetId,
-                nameUsedBeforeList: useNickName.substring(0, useNickName.length-1),
-                emailUsedBeforeList: usedEmails.substring(0, usedEmails.length-1),
-                deviceUsedBeforeList: usedPhoneTypes.substring(0, usedPhoneTypes.length-1),
-                phoneUsedBeforeList: usedPhones.substring(0, usedPhones.length-1),
-                passwordUsedBeforeList: usedPwd.substring(0, usedPwd.length-1),
-                snUsedBeforeList: usedPhoneIds.substring(0, usedPhoneIds.length-1),
-            }
-            //console.log(data);
-            axios.post('/uc/system/webjsp/resetpwd/addEvidence', data).then((res) => {
-                if (res.data.code == 200) {
-                    let gotoUrl = '';
-                    if (res.data.value.phone) {
-                        location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}&vcode=${res.data.value.areacode}&phone=${res.data.value.phone}`);
-                    } else {
-                        location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}`);
-                    }
-                } else if (res.data.code == 200014) {
-                    this.message = "已经提交过了，请重新填写账号申诉";
+            } else if (res.data.code == 200014) {
+                this.message = "已经提交过了，请重新填写账号申诉";
+                this.showModal = true;
+                return Promise.reject(1);
+            } else {
+                if (res.data.message == "非法操作") {
+                    return Promise.reject(0);
+                } else {
+                    this.message = res.data.message || "未知错误，请重试";
                     this.showModal = true;
                     return Promise.reject(1);
-                } else {
-                    if (res.data.message == "非法操作") {
-                        return Promise.reject(0);
-                    } else {
-                        this.message = res.data.message || "未知错误，请重试";
-                        this.showModal = true;
-                        return Promise.reject(1);
-                    }
                 }
-            }).catch((err) => {
-                if (err == 0) { // 页面超时错误
-                    if (!this.overTime) {
-                        this.showModal = true;
-                        this.overTime = true;
-                        setTimeout(() => {
-                            location.href = location.origin + '/appeal/step1';
-                        }, 2000);
-                    }
-                } else if (err == 1) { // 已经处理的错误
-                    console.log(err);
-                } else { // 网络错误
-                    this.message = "网络错误，请重试";
+            }
+        }).catch((err) => {
+            if (err == 0) { // 页面超时错误
+                if (!this.overTime) {
                     this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/appeal/step1';
+                    }, 2000);
                 }
-            })
-        }
+            } else if (err == 1) { // 已经处理的错误
+                console.log(err);
+            } else { // 网络错误
+                this.message = "网络错误，请重试";
+                this.showModal = true;
+            }
+        })
     },
     closeModal() {
         this.showModal = false;
@@ -2226,12 +665,17 @@ export default {
         for (let i=0;i<inputList.length;i++) {
             if (inputList[i] !== "") { // 判断空值
                flag = true;
-               if (rule && !rule.test(inputList[i])) { // 若有条件参数，则进一步判断条件
+               if (type == 'password' && (inputList[i].length < 8 || inputList.length > 16)) {
+                   this.$set(tipsList, i, '密码应为8~16个字符，区分大小写')
+                   result = 2;
+               } else if (rule && !rule.test(inputList[i])) { // 若有条件参数，则进一步判断条件
                     // 提示不合法
                     if (type == 'email') {
                         this.$set(tipsList, i, '输入邮箱格式不正确')
                     } else if (type == 'phone') {
                         this.$set(tipsList, i, '输入手机格式不正确')
+                    } else if (type == 'password') {
+                        this.$set(tipsList, i, '密码至少包含数字、字母和符号两种类型')
                     }
                     result = 2;
                }
@@ -2244,10 +688,26 @@ export default {
                 this.$set(tipsList, 0, '请输入曾用邮箱')
             } else if (type == 'phone') {
                 this.$set(tipsList, 0, '请输入曾用手机')
+            } else if (type == 'password') {
+                this.$set(tipsList, 0, '请输入曾用密码')
             }
             result = 0; //输入框列表都未空
         }
         return result;
+    },
+    getLen(str) {
+        var len = 0;  
+        for (var i=0; i<str.length; i++) {   
+            var c = str.charCodeAt(i);   
+            //单字节加1   
+            if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {   
+                len++;
+            }
+            else {
+                len+=2;
+            }
+        }   
+        return len;
     },
     contactInput(list) {
         let result = '';
@@ -2258,9 +718,17 @@ export default {
         }
         return result;
     },
-    handleNoPhoneId(index) {
-        this.usedPhoneType[index].phoneId = "";
-        this.phoneIdTips[index] = '';
+    onCityChange(picker, values) {
+        this.regLandPicker = picker;
+        picker.setSlotValues(1, address[values[0]]);
+        this.RegLand[0] = values[0];
+        this.RegLand[1] = values[1];
+    },
+    onUsedChange(picker, values) {
+        this.usedLandPicker = picker;
+        picker.setSlotValues(1, address[values[0]]);
+        this.UsedLand.p = values[0];
+        this.UsedLand.c = values[1];
     },
     handleChangeDate() {
         this.showRegTimeTips = false;
@@ -2277,16 +745,19 @@ export default {
             case 'nickname': {
                 this.nicknames.push('');
                 this.nicknameTips.push('');
+                this.showNickLabel.push(false);
                 break;
             }
             case 'email': {
                 this.emails.push('');
                 this.emailsTips.push('');
+                this.showEmailLabel.push(false);
                 break;
             }
             case 'phones': {
                 this.phones.push('');
                 this.phonesTips.push('');
+                this.showPhoneLabel.push(false);
                 break;
             }
             case 'phoneType': {
@@ -2294,9 +765,11 @@ export default {
                     phoneType: '',
                     phoneId: '',
                     noPhoneId: false,
+                    showPhoneTypeLabel: false,
+                    showPhoneIdLabel: false,
+                    phoneTypeTips: '',
+                    phoneIdTips: ''
                 });
-                this.phoneTypeTips.push('');
-                this.phoneIdTips.push('');
                 break;
             }
             case 'usedLand': {
@@ -2306,6 +779,12 @@ export default {
                 });
                 break;
             }
+            case 'password': {
+                this.usedPassword.push('');
+                this.passwordTips.push('');
+                this.showPwdLabel.push(false);
+                break;
+            }
         }
     },
     handleSub(index, type) {
@@ -2313,22 +792,29 @@ export default {
             case 'nickname': {
                 this.nicknames.splice(index, 1);
                 this.nicknameTips.splice(index, 1);
+                this.showNickLabel.splice(index, 1);
                 break;
             }
             case 'email': {
                 this.emails.splice(index,1);
                 this.emailsTips.splice(index, 1);
+                this.showEmailLabel.splice(index, 1);
                 break;
             }
             case 'phones': {
                 this.phones.splice(index,1);
                 this.phonesTips.splice(index, 1);
+                this.showPhoneLabel.splice(index, 1);
+                break;
+            }
+            case 'password': {
+                this.usedPassword.splice(index,1);
+                this.passwordTips.splice(index, 1);
+                this.showPwdLabel.splice(index, 1);
                 break;
             }
             case 'phoneType': {
                 this.usedPhoneType.splice(index, 1);
-                this.phoneTypeTips.splice(index, 1);
-                this.phoneIdTips.splice(index, 1);
                 break;
             }
             case 'usedLand': {
@@ -2338,31 +824,12 @@ export default {
         }
     },
     handleForgot(type) {
-        switch(type) {
-            case 'nickname': {
-                this.nicknames=[''];
-                this.nicknameTips = [''];
-                this.step1Ok = true;
-                break;
-            }
-            case 'email': {
-                this.emails=[''];
-                this.emailsTips = [''];
-                this.step1Ok = true;
-                break;
-            }
-            case 'phones': {
-                this.phones=[''];
-                this.phonesTips = [''];
-                this.step1Ok = true;
-                break;
-            }
-        }
+        type = true;
     },
     handleInput(type, index) {
         switch(type) {
             case 'nickname': {
-                this.nicknameTips[0] = "";
+                this.nicknameTips[index] = "";
                 break;
             }
             case 'email': {
@@ -2373,17 +840,57 @@ export default {
                 this.phonesTips[index] = "";
                 break;
             }
-            case 'phoneType': {
-                this.phoneTypeTips[index] = "";
-                this.phoneIdTips[index] = "";
-                break;
-            }
-            case 'phoneId': {
-                this.phoneTypeTips[index] = "";
-                this.phoneIdTips[index] = "";
+            case 'password': {
+                this.passwordTips[index] = "";
                 break;
             }
         }
+    },
+    handleBlur(labelList, index) {
+        this.$set(labelList, index, false);
+    },
+    handleFocus(labelList, index) {
+        this.$set(labelList, index, true);;
+    },
+    openPicker() {
+        this.$refs.picker.open();
+    },
+    showPickLand(index) {
+        if (index != -1) { // 常用地址选择
+            this.pickLandIndex = index;
+            if (this.usedLand[this.pickLandIndex].p && this.usedLand[this.pickLandIndex].c) {
+                this.usedLandPicker.setSlotValue(0, this.usedLand[this.pickLandIndex].p);
+                this.usedLandPicker.setSlotValue(1, this.usedLand[this.pickLandIndex].c);
+            } 
+        } else { // 注册地址选择
+            this.pickLandIndex = -1;
+            if (this.regLand[0] && this.regLand[1]) {
+                this.regLandPicker.setSlotValue(0, this.regLand[0]);
+                this.regLandPicker.setSlotValue(1, this.regLand[1]);
+            }   
+        }
+        this.pickLand = true;
+    },
+    confirmLand() {
+        if (this.pickLandIndex == -1) {
+            this.choosenRegLand = true;
+            this.regLand[0] = this.RegLand[0];
+            this.regLand[1] = this.RegLand[1];
+            this.showRegLandTips = false;
+        } else {
+            this.choosenUsedLand[this.pickLandIndex] = true;
+            this.usedLand[this.pickLandIndex].p = this.UsedLand.p;
+            this.usedLand[this.pickLandIndex].c = this.UsedLand.c;
+            this.showUsedLandTips = false;
+        }
+        this.pickLand = false;
+    },
+    confirmTime() {
+        this.regTime = this.RegTime.getFullYear() + '-' + (this.RegTime.getMonth()+1) + '-' + this.RegTime.getDate();
+        this.showRegTimeTips = false;
+    },
+    trim(str) {
+        return str.replace(/\s+/g,"");
     }
   },
   mounted() {
@@ -2411,30 +918,85 @@ export default {
         }
         .title {
             text-align: center;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+        .tips-bar{
+            margin-top: px2vw(21);
+            p {
+                font-size: 12px;
+                color: #000000;
+                letter-spacing: 0;
+                line-height: px2vw(54);
+            }
         }
         .main {
-            width: 660px;
             margin: 0 auto;
-            .tips-bar{
-                margin-left: 50px;
-                margin-top: 60px;
-                p {
-                    font-size: 16px;
-                    color: #000000;
-                    letter-spacing: 0;
-                    line-height: 24px;
-                }
-            }
             &.step1 {
                 .content-form {
-                    margin-top: 40px;
                     .section {
                         .input-content{
+                            padding: 0 px2vw(48);
+                            box-sizing: border-box;
+                            position: relative;
+                            margin-top: px2vw(39);
                             .bar-input {
-                                .tips-input {
-                                    font-size: 12px;
-                                    color: #DE3131;
-                                    margin-top: 10px;
+                                border-bottom: 1px solid rgba(0,0,0,0.10);
+                                padding-top: px2vw(72);
+                                padding-bottom: px2vw(27);
+                                box-sizing: border-box;
+                                position: relative;
+                                &.focus {
+                                    border-color: #198DED;
+                                }
+                                &.error {
+                                    border-color: #DE3131;
+                                }
+                                .operations {
+                                    display: inline-block;
+                                    position: absolute;
+                                    top: px2vw(72);
+                                    right: 0;
+                                    .op {
+                                        display: inline-block;
+                                        width: px2vw(60);
+                                        height: px2vw(60);
+                                        font-family: 'operations';
+                                        line-height: px2vw(60);
+                                        font-size: 22px;
+                                        color: #387AFF;
+                                    }
+                                }
+                                .forgoten{
+                                    width: 100%;
+                                    background-color: #ffffff;
+                                    font-size: 16px;
+                                    line-height: 20px;
+                                }
+                                .forgot-btn {
+                                    background-color: #ffffff;
+                                    color: #198DED;
+                                    font-size: 14px;
+                                    line-height: 20px;
+                                    float: right;
+                                }
+                            }
+                            .tips-input {
+                                font-size: 12px;
+                                color: #DE3131;
+                                margin-top: 3px;
+                            }
+                            .label-input {
+                                position: absolute;
+                                top: px2vw(16);
+                                left: px2vw(49);
+                                opacity: 0.4;
+                                font-size: 12px;
+                                color: #000000;
+                                letter-spacing: 0;
+                                &.focus {
+                                    opacity: 1;
+                                    color: #198DED;
                                 }
                             }
                         }
@@ -2442,51 +1004,23 @@ export default {
                 }
             }
             .content-form {
-                &.used-phone-data {
-                    margin-top: 100px;
-                    .group {
-                        position: relative;
-                        .section {
-                            .input-content {
-                                .forgoten-content {
-                                    margin-left: 0;
-                                }
-                                .bar-input {
-                                    margin-bottom: 0;
-                                }
-                                .tips-input {
-                                    font-size: 12px;
-                                    color: #DE3131;
-                                    margin-top: 10px;
-                                }
-                            }
-                        }
-                        .operation {
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-                            .op {
-                                display: inline-block;
-                                width: 26px;
-                                height: 40px;
-                                font-family: 'operations';
-                                line-height: 40px;
-                                font-size: 22px;
-                                color: #387AFF;
-                                &.add {
-                                    margin-right: 6px;
-                                }
-                            }
-                        }
-                    }
-                }
                 .section {
                     width: 100%;
                     text-align: left;
+                    .section-title {
+                        font-size: 12px;
+                        background-color: #f2f2f2;
+                        height: px2vw(108);
+                        line-height: px2vw(108);
+                        padding: 0 px2vw(48);
+                        text-align: left;
+                        p {
+                            opacity: 0.4;
+                        }
+                    }
                     .tips-selection {
                         font-size: 12px;
                         color: #DE3131;
-                        margin-left: 204px;
                         margin-top: 6px;
                     }
                     .selections-warp {
@@ -2494,29 +1028,11 @@ export default {
                         :first-child {
                             margin-top: 0;
                         }
-                        .operations {
-                            display: inline-block;
-                            margin-left: 10px;
-                            vertical-align: middle;
-                            
-                            .op {
-                                display: inline-block;
-                                width: 26px;
-                                height: 26px;
-                                font-family: 'operations';
-                                line-height: 26px;
-                                font-size: 22px;
-                                color: #387AFF;
-                                &.add {
-                                    margin-right: 6px;
-                                }
-                            }
-                        } 
                         .tips {
                             margin-left:10px;
                         }
                     }
-                    .select-label, .label-input {
+                    .select-label {
                         display: inline-block;
                         width: 190px;
                         height: 42px;
@@ -2525,14 +1041,37 @@ export default {
                         vertical-align: top;
                     }
                     .select-content {
-                        width: 140px;
-                        display: inline-block;
+                        width: 100%;
+                        padding: 0 px2vw(48);
+                        box-sizing: border-box;
+                        margin-bottom: px2vw(39);
+                        .picker-opener {
+                            border-bottom: 1px solid rgba(0,0,0,0.10);
+                            padding: px2vw(39) 0;
+                            box-sizing: border-box;
+                            height: px2vw(186);
+                            &.error {
+                                border-color: #DE3131;
+                            }
+                        }
+                        .opener-name {
+                            font-size: 16px;
+                            color: #000000;
+                            text-align: left;
+                            line-height: px2vw(57);
+                        }
+                        .opener-desc {
+                            opacity: 0.4;
+                            font-family: FlymeRegular;
+                            font-size: 12px;
+                            color: #000000;
+                            text-align: left;
+                            line-height: px2vw(42);
+                        }
                     }
                     .input-content {
-                        display: inline-block;
-                        width: auto;
                         .bar-input {
-                            margin-bottom: 20px;
+                            font-size: 0;
                             .tips-input {
                                 font-size: 12px;
                                 color: #DE3131;
@@ -2542,13 +1081,9 @@ export default {
                                 margin-bottom: 0;
                             }
                             .outer-input {
-                                width: 256px;
-                                border: 1px solid rgba(0,0,0,0.15);
-                                border-radius: 5px;
-                                display: inline-block;
-                                padding: 9px 14px;
-                                height: 20px;
+                                width: px2vw(680);
                                 vertical-align: middle;
+                                display: inline-block;
                                 &.error {
                                     border-color: #DE3131;
                                 }
@@ -2562,89 +1097,38 @@ export default {
                                         background-color: #ffffff;
                                     }
                                 }
-                            }
-                            .operations {
-                                display: inline-block;
-                                margin-left: 10px;
-                                vertical-align: middle;
-                                .op {
-                                    display: inline-block;
-                                    width: 26px;
-                                    height: 26px;
-                                    font-family: 'operations';
-                                    line-height: 26px;
-                                    font-size: 22px;
-                                    color: #387AFF;
-                                    &.add {
-                                        margin-right: 6px;
-                                    }
-                                }
                             }   
                         }
-                    }
-                    .date-picker {
-                        width: 292px;
-                        display: inline-block;
-                        .el-date-editor.el-input, .el-date-editor.el-input__inner {
-                            width: 284px;
-                        }
-                    }
-                    .phone-type-tips {
-                        width: 268px;
-                        margin-top: 8px;
-                        p {
-                            opacity: 0.4;
-                            font-size: 14px;
-                            color: #000000;
-                            letter-spacing: 0;
-                            line-height: 24px;
-                        }
-                    }
-                    .forgoten-content {
-                        margin-left: 195px;
-                        font-size: 14px;
-                        margin-top: 8px;
-                        .mz_checkbox-label {
-                            opacity: 0.4;
-                        }   
-                    }
-                }
-            }
-            .photo-example {
-                width: 30%;
-                float: right;
-                margin-top: 40px;
-                .example-photo {
-                    margin-bottom: 22px;
-                    width: 132px;
-                    height: 132px;
-                    img {
-                        display: inline-block;
-                        width: 100%;
-                        height: 100%;
-                    }
-                }
-                .example-tips {
-                    li {
-                        white-space: nowrap;
-                        margin-bottom: 10px;
-                        opacity: 0.4;
-                        font-size: 14px;
-                        color: #000000;
-                        letter-spacing: 0;
                     }
                 }
             }
         }
         .content-btn {
             margin-top: 80px;
-            .btn-back,.btn-next {
+            .btn-next {
                 display: inline-block;
                 width: 140px;
                 margin-top: 0;  
             }
-            .btn-back {
-                margin-right: 12px;
+        }
+        .popup-footer {
+            width: 100%;
+            padding: px2vw(48);
+            box-sizing: border-box;
+            text-align: center;
+            .popup-btn {
+                font-size: 14px;
+                color: #198DED;
+                letter-spacing: 0;
             }
+        }
+        .landPicker-bar {
+            width: px2vw(936);
+        }
+        .modal {
+            position: fixed !important;
+        }
+        .mask {
+            position: fixed;
         }
 </style>

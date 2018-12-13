@@ -1,13 +1,11 @@
 <template>
     <div id="app">
-        <h1 class="title">账号申诉</h1>
-        <mzprogress :steps="steps" :actived="4" size="96" line-length="600"></mzprogress>
+        <div class="steps-warp">
+            <mzprogress :steps="steps" :actived="4" size="58" line-length="188"></mzprogress>
+        </div>
+        <h1 class="title">重置账号和密码</h1>
         <div class="main" v-show="!complaintSuccess">
             <div class="content content-form">
-                <div class="section">
-                    <h3 class="section-sub-title">重置密码</h3>
-                    <p class="section-tips">重置密码将会在申诉成功后启用，请留意申诉短信通知</p>
-                </div>
                 <div class="section">
                     <div class="bar bar-input">
                         <mzinput placeholder="请输入新密码" label="重置密码：" v-model="resetPwd" ref="resetInput" :type="'password'"></mzinput>
@@ -21,10 +19,9 @@
             </div>
             <div class="content content-form">
                 <div class="section">
-                    <h3 class="section-sub-title">申诉结果通知</h3>
-                    <p class="section-tips">申诉将在3个工作日内完成，并将结果发送至该手机号</p>
-                </div>
-                <div class="section">
+                    <div class="section-title">
+                        <p>申诉结果通知</p>
+                    </div>
                     <div class="bar bar-input" v-if="changePhoneType">
                         <span class="label-input">结果通知：</span>
                         <span>{{originPhone}}</span>
@@ -326,12 +323,20 @@ export default {
             }
             .content-form {
                 margin-top: 40px;
-                &.used-phone-data {
-                    margin-top: 100px;
-                }
                 .section {
                     width: 100%;
                     text-align: left;
+                    .section-title {
+                        font-size: 12px;
+                        background-color: #f2f2f2;
+                        height: px2vw(108);
+                        line-height: px2vw(108);
+                        padding: 0 px2vw(48);
+                        text-align: left;
+                        p {
+                            opacity: 0.4;
+                        }
+                    }
                     .success-container {
                         text-align: center;
                         img {
@@ -350,42 +355,6 @@ export default {
                             color: #000000;
                             letter-spacing: 0;
                         }
-                    }
-                    .section-sub-title {
-                        font-family: MicrosoftYaHei;
-                        font-size: 20px;
-                        color: #000000;
-                        letter-spacing: 0;
-                        width: 450px;
-                        margin: 0 auto;
-                        margin-bottom: 6px;
-                    }
-                    .section-tips {
-                        width: 450px;
-                        margin: 0 auto;
-                        opacity: 0.4;
-                        font-family: MicrosoftYaHei;
-                        font-size: 14px;
-                        color: #000000;
-                    }
-                    .phone-type-tips {
-                        width: 268px;
-                        margin-left: 195px;
-                        margin-top: 8px;
-                        p {
-                            opacity: 0.4;
-                            font-family: MicrosoftYaHei;
-                            font-size: 14px;
-                            color: #000000;
-                            letter-spacing: 0;
-                            line-height: 24px;
-                        }
-                    }
-                    .forgoten-content {
-                        margin-left: 185px;
-                        font-size: 14px;
-                        opacity: 0.4;
-                        margin-top: 8px;
                     }
                     .bar-input {
                         width: 576px;
@@ -406,49 +375,15 @@ export default {
                             line-height: 36px;
                         }
                     }
-                    .selection {
-                        font-size: 0px;
-                        cursor: pointer;
-                        
-                        .select-label {
-                            vertical-align: middle;
-                            display: inline-block;
-                            font-size: 16px;
-                        }
-                        .select-content {
-                            font-size: 14px;
-                            line-height: 36px;
-                            background: #FFFFFF;
-                            border: 1px solid rgba(0,0,0,0.15);
-                            border-radius: 4px;
-                            display: inline-block;
-                            width: 290px;
-                            vertical-align: middle;
-                            height: 34px;
-                            .selected-value {
-                                margin-left: 10px;
-                            }
-                            .arrow {
-                                width: 10px;
-                                height: 6px;
-                                float: right;
-                                margin-right: 16px;
-                                margin-top: 16px;
-                            }
-                        }
-                    } 
                 }
             }
         }
         .content-btn {
             margin-top: 99px;
-            .btn-back,.btn-next {
+            .btn-next {
                 display: inline-block;
                 width: 140px;
                 margin-top: 0;  
-            }
-            .btn-back {
-                margin-right: 12px;
             }
         }
 </style>
