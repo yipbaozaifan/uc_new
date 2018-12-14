@@ -419,7 +419,9 @@ export default {
                 }
             }
         }
-        
+        .footer {
+            z-index: 501;
+        }
         .content-form {
             &.reset-phone {
                 margin-top: 34px;

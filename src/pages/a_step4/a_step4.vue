@@ -18,7 +18,7 @@
                             <div class="outer-input" :class="{
                                 'error': nicknameTips[index] != ''
                             }">
-                                <input type="text" placeholder="请输入曾经用过的昵称" v-model="nicknames[index]" :disabled="forgotNickname" @input="handleInput('nickname')">
+                                <input type="text" placeholder="请输入曾经用过的昵称" v-model="nicknames[index]" :disabled="forgotNickname" @input="handleInput('nickname', index)">
                             </div>
                             <div class="operations">
                                 <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index] && nicknames.length < 5">&#xe648;</span>
@@ -2217,7 +2217,12 @@ export default {
             if (!this.step3Ok[0] || !this.step3Ok[1] || !this.step3Ok[2] || !this.step3Ok[3]) {
                 return;
             }
-            const usedPwd = this.contactInput(this.usedPassword);
+            let usedPwd = '';
+            for(let i = 0;i < this.usedPassword.length; i++) {
+                if (this.usedPassword[i] != "") {
+                    usedPwd = usedPwd + encodeURIComponent(this.usedPassword[i])+',';
+                }
+            }
             const useNickName = this.contactInput(this.nicknames);
             const usedEmails = this.contactInput(this.emails);
             const usedPhones = this.contactInput(this.phones);
@@ -2458,7 +2463,7 @@ export default {
     handleInput(type, index) {
         switch(type) {
             case 'nickname': {
-                this.nicknameTips[0] = "";
+                this.nicknameTips[index] = "";
                 break;
             }
             case 'email': {
@@ -2581,6 +2586,7 @@ export default {
                                 line-height: 40px;
                                 font-size: 22px;
                                 color: #387AFF;
+                                cursor: pointer;
                                 &.add {
                                     margin-right: 6px;
                                 }
@@ -2615,6 +2621,7 @@ export default {
                                 line-height: 26px;
                                 font-size: 22px;
                                 color: #387AFF;
+                                cursor: pointer;
                                 &.add {
                                     margin-right: 6px;
                                 }
@@ -2683,6 +2690,7 @@ export default {
                                     line-height: 26px;
                                     font-size: 22px;
                                     color: #387AFF;
+                                    cursor: pointer;
                                     &.add {
                                         margin-right: 6px;
                                     }

@@ -135,7 +135,6 @@ export default {
   },
   methods: {
     next() {
-        
         const phoneReg = /^[0-9]*$/;
         const pwdReg = /^((?=.*?\d)(?=.*?[A-Za-z])|(?=.*?\d)(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-])|(?=.*?[A-Za-z])(?=.*?[!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]))[\dA-Za-z!@#$%^&*/().,\]\[_+{}|:;<>?'"`~-]+$/;
         if (this.wrong) {
@@ -318,6 +317,9 @@ export default {
     @import '../../assets/base.scss';
         .title {
             text-align: center;
+        }
+        .footer {
+            z-index: 501;
         }
         .main {
             width: 660px;
