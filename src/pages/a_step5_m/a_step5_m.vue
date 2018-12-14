@@ -31,11 +31,12 @@
                         <mzinput placeholder="请输入接收手机号" label="结果通知：" v-model="phone" ref="phoneInput" type="account" @finished="handleBlur" @changeinp="handleChange" :maxlen="11"></mzinput>
                     </div>
                 </div>
-                <div class="section" v-if="!changePhoneType">
+                <div class="section" v-if="!changePhoneType" style="margin:0;">
                     <div class="bar bar-input">
                         <mzinput placeholder="请输入验证码" label="验证码：" v-model="varCode" ref="varInput" :type="'phoneCode'" @send="handleSend" :maxlen="6"></mzinput>
                     </div>
                 </div>
+                <p class="content-tips">申诉在3个工作日内完成，并将结果发送到该手机</p>
             </div>
         </div>
         <div class="main" v-show="complaintSuccess">
@@ -205,7 +206,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.origin + '/appeal/step1';
+                        location.href = location.origin + '/complaint/step1';
                     }, 2000);
                 }
             } else if (err == 1) { // 已经处理的错误
@@ -308,7 +309,7 @@ export default {
             text-align: center;
         }
         .main {
-            width: 660px;
+            width: 100%;
             margin: 0 auto;
             .tips-bar{
                 margin-left: 50px;
@@ -322,7 +323,6 @@ export default {
                 }
             }
             .content-form {
-                margin-top: 40px;
                 .section {
                     width: 100%;
                     text-align: left;
@@ -357,8 +357,14 @@ export default {
                         }
                     }
                     .bar-input {
-                        width: 576px;
+                        width: 100%;
                         margin: 0 auto;
+                        display: inline-block;  
+                        vertical-align: middle;
+                        height: px2vw(156);
+                        padding: 0 px2vw(48);
+                        padding-top: px2vw(72);
+                        box-sizing: border-box;
                         .label-input {
                             text-align: right;
                             display: inline-block;
@@ -375,6 +381,14 @@ export default {
                             line-height: 36px;
                         }
                     }
+                }
+                .content-tips{
+                    opacity: 0.6;
+                    font-size: 12px;
+                    color: #000000;
+                    letter-spacing: 0;
+                    line-height: px2vw(54);
+                    padding: 0 px2vw(48);
                 }
             }
         }

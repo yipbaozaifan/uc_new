@@ -1,23 +1,13 @@
 <template>
     <div id="app" class="complaint_select_type">
-        <h1 class="title">账号申诉</h1>
-        <mzprogress :steps="steps" :actived="2" size="96" line-length="600"></mzprogress>
+        <div class="steps-warp">
+            <mzprogress :steps="steps" :actived="2" size="58" line-length="188"></mzprogress>
+        </div>
+        <h1 class="title">信息验证</h1>
         <div class="main">
             <div class="tips-bar">
                 <p class="complaint-text">请填写账号主人的实名信息，全部资料仅用于账号的身份验证</p>
                 <p class="complaint-text">不真实的资料同样会导致申诉不过，请您认真填写</p>
-            </div>
-            <div class="photo-example">
-                <h3 class="example-title">照片实例:</h3>
-                <div class="example-photo">
-                    <img src="" alt="">
-                </div>
-                <ul class="example-tips">
-                    <li class="example-tips-item">1.本人手持自己的证件照</li>
-                    <li class="example-tips-item">2.请确保人物面部清晰</li>
-                    <li class="example-tips-item">3.请确保证件信息清晰可识别，不可遮挡或加模糊</li>
-                    <li class="example-tips-item">4.格式为jpg、jpeg、png或bmp，大小不超过10M</li>
-                </ul>
             </div>
             <div class="content content-form">
                 <div class="section">
@@ -26,24 +16,14 @@
                     </div>
                 </div>
                 <div class="section">
-                    <div class="bar bar-input">
-                        <div class="selection">
-                            <span class="select-label">证件类型：</span>
-                            <div class="select-content" :class="{
-                                'error': typeTips,
-                            }">
-                                <el-select v-model="choosenType" placeholder="请选择证件类型" @change="typeTips = ''">
-                                    <el-option
-                                        v-for="item in idCardTypes"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </div>
+                    <div class="selection">
+                        <div class="select-content" :class="{
+                            'error': typeTips,
+                        }" @click="openSelector">
+                            <span class="label select-label">证件类型</span>
                         </div>
-                        <p class="tips tips-type" v-show="typeTips">{{typeTips}}</p>
                     </div>
+                    <p class="tips tips-type" v-show="typeTips">{{typeTips}}</p>
                 </div>
                 <div class="section">
                     <div class="bar bar-input">
@@ -52,8 +32,8 @@
                 </div>
                 <div class="section">
                     <div class="upload-pic">
-                        <span class="upload-label">证件照片：</span>
                         <div class="upload-bar">
+                            <span class="label upload-label">证件照片</span>
                             <el-upload
                                 class="upload-btn"
                                 :class="{
@@ -64,13 +44,28 @@
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
-                                <img v-if="choosenPic" :src="choosenPic" class="avatar">
-                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                <span>上传</span>
                             </el-upload>
                         </div>
                         <p class="tips upload-tips" v-show="uploadTips">{{uploadTips}}</p>
                     </div>
 
+                </div>
+                <div class="photo-example">
+                    <p class="example-tips">
+                        请上传手持本人证证件的彩色照片一张，格式 jpg 或 png，大小 不超过 10MB，请确保人物面部和证件信息清晰无遮挡
+                    </p>
+                    <div class="example-photo">
+                        <h3 class="photo-title">照片实例</h3>
+                        <img src="" alt="">
+                    </div>
+                    <div class="preview-photo">
+                        <h3 class="photo-title">缩略图片</h3>
+                        <div class="show-pic">
+                            <img v-if="choosenPic" :src="choosenPic" class="avatar">
+                            <i v-else class="avatar-uploader-icon">暂未上传</i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,19 +74,29 @@
                 <btn :type="'blue'" :text="'下一步'" @clicked="next"></btn>
             </span>
         </div>
-        <div class="mask" v-show="showModal">
+        <div class="mask" v-show="showModal" @clicked="closeSelector">
         </div>
         <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
-            <div class="modal-main" v-show="!overTime">
+            <div class="modal-main" v-show="!overTime && !showSelector">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <a @click="closeModal">确定</a>
                     </div>
                 </div>
             </div>
             <div class="modal-main" v-show="overTime">
                 <p class="modal-tips modal-tips-ot">此页面已超时</p>
+            </div>
+            <div class="modal-main selector" v-show="showSelector">
+                <h3 class="selector-head">请选择证件类型</h3>
+                <div class="selector-list">
+                    <div class="selector-item" v-for="(item, index) in idCardTypes" :key="index" @click="handleSelect(item.value)">
+                        <div class="item-name">
+                            {{item.label}}
+                        </div>
+                    </div>
+                </div>
             </div>
         </mz-modal>
     </div>
@@ -117,13 +122,13 @@ export default {
     return {
       steps: [
         {
-          name: '选择申诉类型',
+          name: '申诉类型',
         },
         {
           name: '身份信息',
         },
         {
-          name: '填写申诉材料',
+          name: '申诉材料',
         },
         {
           name: '重置密码',
@@ -161,6 +166,7 @@ export default {
       overTime: false,
       typeTips: '',
       uploadTips: '',
+      showSelector: false,
     }
   },
   methods: {
@@ -195,10 +201,13 @@ export default {
         }
         axios.post('/uc/system/webjsp/resetpwd/addIdentifyInfo', data).then((res) => {
             if (res.data.code == 200) {
-                location.replace(`/appeal/step4?account=${this.account}&resetId=${res.data.value.resetId}`)
+                location.replace(`/complaint/step4?account=${this.account}&resetId=${res.data.value.resetId}`)
             } else {
                 if (res.data.message == "非法操作") {
                     return Promise.reject(0);
+                } else if (res.data.code == 200016) {
+                    this.$refs.idInput.showInputTips('身份信息不符');
+                    return Promise.reject(1);
                 } else {
                     this.message = res.data.message || "未知错误，请重试";
                     this.showModal = true;
@@ -211,7 +220,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.origin + '/appeal/step1';
+                        location.href = location.origin + '/complaint/step1';
                     }, 2000);
                 }
             } else if (err == 1) { // 已经处理的错误
@@ -226,6 +235,12 @@ export default {
         this.showModal = false;
         this.message = "";
     },
+    closeSelector() {
+        if (this.showSelector) {
+            this.showModal = false;
+            this.showSelector = false;
+        }
+    },
     handleAvatarSuccess(res, file) {
         if( res.code == 200 ) {
             this.choosenPic = URL.createObjectURL(file.raw);
@@ -235,6 +250,14 @@ export default {
             this.uploadTips = "上传失败";
         }
         
+    },
+    openSelector() {
+        this.showModal = true;
+        this.showSelector = true;
+    },
+    handleSelect(item) {
+        this.choosenType = item;
+        this.closeSelector();
     },
     beforeAvatarUpload(file) {
         const isPic = /(jpg|jpeg|png|bmp)$/.test(file.type)
@@ -255,7 +278,7 @@ export default {
       this.account = getParams('account') || "";
       this.resetId = getParams('resetId') || "";
       if (!this.resetId || !this.account) {
-          location.replace('/appeal')
+          location.replace('/complaint')
       }
   }
 }
@@ -267,117 +290,79 @@ export default {
         .title {
             text-align: center;
         }
-        .tips-input {
-            margin-left: 80px !important; 
-        }
         .main {
-            width: 660px;
             margin: 0 auto;
             .tips-bar{
-                margin-left: 50px;
-                margin-top: 60px;
+                padding: px2vw(48);
+                box-sizing: border-box;
                 p {
-                    font-size: 16px;
+                    opacity: 0.6;
+                    font-size: 12px;
                     color: #000000;
                     letter-spacing: 0;
-                    line-height: 24px;
+                    line-height: px2vw(54);
                 }
             }
             .content-form {
-                margin-top: 40px;
-                width: 70%;
-                min-height: 266px;
                 .section {
                     width: 100%;
                     text-align: left;
-                    margin-left: 50px;
+                    .bar-input {
+                        height: px2vw(156);
+                        padding: 0 px2vw(48);
+                        padding-top: px2vw(72);
+                        box-sizing: border-box;
+                    }
                     .tips {
                         font-size: 12px;
                         color: #DE3131;
                         margin-top: 10px;
                         text-align: left;
-                        margin-left: 90px;
                     }
                     .selection {
                         font-size: 0px;
                         cursor: pointer;
+                        padding: 0 px2vw(48);
+                        box-sizing: border-box;
+                        height: px2vw(156);
+                        .select-content {
+                            height: 100%;
+                            line-height: px2vw(156);
+                            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                        }
                         .select-label {
                             display: inline-block;
                             font-size: 16px;
-                        }
-                        .select-content {
-                            width: 290px;
-                            display: inline-block;
-                            .el-select {
-                                width: 290px;
-                                &:hover {
-                                    .el-input__inner {
-                                        border-color: #cccccc;
-                                    }
-                                }
-                                .el-input__inner {
-                                    height: 36px;
-                                    color: #000000;
-                                    border-color: #cccccc;
-                                    &::placeholder {
-                                        color: #000000;
-                                    }
-                                    &:focus {
-                                        border-color: #cccccc;
-                                    }
-                                }
-                            }
-                            &.error {
-                                .el-select{
-                                    .el-input__inner {
-                                        border-color: #DE3131;
-                                    }
-                                }   
-                            }
+                            opacity: 0.4;
                         }
                     } 
                     .label-input {
                         width: auto;
                     }
                     .upload-pic {
+                        height: px2vw(156);
+                        line-height: px2vw(156);
+                        padding: 0 px2vw(48);
                         .upload-label {
                             display: inline-block;
                             vertical-align: top;
                         }
                         .upload-bar {
-                            display: inline-block;
-                            .re-upload {
-                                display: inline-block;
-                                margin-top: 8px;
-                                color: #387AFF;
-                                font-size: 16px;
-                                cursor: pointer;
-                            }
+                            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
                             .upload-btn {
-                                display: block;
-                                vertical-align: top;
-                                width: 132px;
-                                height: 132px;
-                                background: #FFFFFF;
-                                border: 1px solid rgba(0,0,0,0.15);
-                                border-radius: 4px;
-                                position: relative;
+                                float: right;
+                                margin-top: px2vw(36);
+                                display: inline-block;
+                                background: #198DED;
+                                width: px2vw(144);
+                                height: px2vw(72);
+                                font-size: 12px;
+                                border-radius: px2vw(72);
                                 cursor: pointer;
-                                &.error {
-                                    border-color: #DE3131;
-                                }
-                                .avatar-uploader-icon {
-                                    display: inline-block;
-                                    font-size: 34px;
-                                    color: #d8d8d8;
-                                    width: 132px;
-                                    height: 132px;
-                                    line-height: 132px;
-                                }
-                                .avatar{
-                                    width: 132px;
-                                    height: 132px;
-                                    border-radius: 4px;
+                                text-align: center;
+                                line-height: px2vw(72);
+                                span {
+                                    color: #fff;
                                 }
                             }
                         }
@@ -388,33 +373,60 @@ export default {
                 }
             }
             .photo-example {
-                width: 30%;
-                float: right;
-                margin-top: 40px;
-                .example-photo {
-                    margin-bottom: 22px;
-                    width: 132px;
-                    height: 132px;
+                padding: 0 px2vw(48);
+                .example-photo{
+                    display: inline-block;
+                    vertical-align: top;
                     img {
                         display: inline-block;
-                        width: 100%;
-                        height: 100%;
+                        width: px2vw(468);
+                        height: px2vw(468);
+                    }
+                }
+                .photo-title {
+                    font-size: 12px;
+                    margin-bottom: px2vw(21);
+                }
+                .preview-photo {
+                    display: inline-block;
+                    vertical-align: top;
+                    float: right;
+                    .show-pic {
+                        width: px2vw(468);
+                        height: px2vw(468);
+                        border: 1px solid rgba(0,0,0,0.15);
+                        position: relative;
+                        text-align: center;
+                        background: rgba(0,0,0,0.03);
+                        cursor: pointer;
+                        .avatar-uploader-icon {
+                            display: inline-block;
+                            font-size: 34px;
+                            opacity: 0.2;
+                            font-size: 12px;
+                            color: #000000;
+                            width: px2vw(468);
+                            height: px2vw(468);
+                            line-height: px2vw(468);
+                        }
+                        .avatar{
+                            width: px2vw(468);
+                            height: px2vw(468);
+                        }
                     }
                 }
                 .example-tips {
-                    li {
-                        white-space: nowrap;
-                        margin-bottom: 10px;
-                        opacity: 0.4;
-                        font-size: 14px;
-                        color: #000000;
-                        letter-spacing: 0;
-                    }
+                    opacity: 0.4;
+                    font-size: 12px;
+                    color: #000000;
+                    letter-spacing: 0;
+                    margin-bottom: px2vw(39);
+                    line-height: px2vw(46);
                 }
             }
         }
         .content-btn {
-            margin-top: 99px;
+            margin-top: px2vw(39);
             .btn-back,.btn-next {
                 display: inline-block;
                 width: 140px;
@@ -422,6 +434,25 @@ export default {
             }
             .btn-back {
                 margin-right: 12px;
+            }
+        }
+        .modal {
+            position: fixed !important;
+        }
+        .mask {
+            position: fixed;
+            .selector {
+                padding: px2vw(48);
+                .selector-head {
+                    opacity: 0.4;
+                    font-size: 14px;
+                }
+                .selector-item {
+                    height: px2vw(168);
+                    line-height: px2vw(168);
+                    font-size: 16px;
+                    border-bottom: 1px solid rgba(0,0,0,0.10);
+                }
             }
         }
     }
