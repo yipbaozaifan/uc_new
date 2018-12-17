@@ -7,13 +7,11 @@
                 <div class="bar bar-input">
                     <mzinput :placeholder="'请输入手机号/用户名'" :type="'account'" v-model="account" ref="accountInput"></mzinput>
                 </div>
-                <a class="link"></a>
             </div>
             <div class="section">
                 <div class="bar bar-input">
                     <mzinput :placeholder="'请输入验证码'" :type="'imgCode'" v-model="varCode" ref="kapkeyInput" :maxlen="6"></mzinput>
                 </div>
-                <a class="link"></a>
             </div>
         </div>
         <div class="content content-btn">

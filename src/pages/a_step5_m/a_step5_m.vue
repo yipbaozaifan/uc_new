@@ -195,6 +195,9 @@ export default {
                 return
             } else if(res.data.message == "非法操作") {
                 return Promise.reject(0);
+            } else if (res.data.code == 200000) {
+                this.$refs.varInput.showInputTips('验证码错误');
+                return Promise.reject(1);
             } else {
                 this.message = res.data.message || "未知错误，请重试";
                 this.showModal = true;
@@ -294,7 +297,7 @@ export default {
       this.resetId = getParams('resetId') || "";
       this.cycode = getParams('cycode') || "";
       if (!this.resetId || !this.account) {
-          location.replace('/appeal');
+          location.replace('/complaint');
       }
       if (this.originPhone) {
           this.changePhoneType = true;
@@ -393,7 +396,7 @@ export default {
             }
         }
         .content-btn {
-            margin-top: 99px;
+            margin-top: px2vw(26);
             .btn-next {
                 display: inline-block;
                 width: 140px;

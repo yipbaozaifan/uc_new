@@ -210,7 +210,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/appeal';
+                            location.href = location.origin + '/complaint';
                         }, 2000);
                     }
                 } else if (err == 1) { // 已经处理的错误
@@ -247,7 +247,7 @@ export default {
                         this.showModal = true;
                         this.overTime = true;
                         setTimeout(() => {
-                            location.href = location.origin + '/appeal';
+                            location.href = location.origin + '/complaint';
                         }, 2000);
                         return;
                     }
@@ -301,7 +301,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.origin + '/appeal';
+                        location.href = location.origin + '/complaint';
                     }, 2000);
                 }
             } else if (err == 1) { // 已经处理的错误
@@ -372,7 +372,7 @@ export default {
   mounted() {
       this.account = getParams('account') || "";
       if (!this.account) {
-          location.replace('/appeal')
+          location.replace('/complaint')
       }
   }
 }

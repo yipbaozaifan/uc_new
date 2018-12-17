@@ -22,7 +22,7 @@
             <div class="btn-next" @click="handleSubmit">
                 <btn :type="choosenName.length == 3?'blue':'gray'" :text="useLang.btn"></btn>
             </div>
-            <a href="https://i.flyme.cn/appeal" class="link" target="_Blank" v-if="lang!=='en_US'">{{useLang.complaintLink}}</a>
+            <a href="https://i.flyme.cn/complaint" class="link" target="_Blank" v-if="lang!=='en_US'">{{useLang.complaintLink}}</a>
         </div> 
         <div class="mask" v-show="showModal">
         </div>

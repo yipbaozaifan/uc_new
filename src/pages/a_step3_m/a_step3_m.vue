@@ -20,7 +20,8 @@
                         <div class="select-content" :class="{
                             'error': typeTips,
                         }" @click="openSelector">
-                            <span class="label select-label">证件类型</span>
+                            <span class="label select-label" v-show="!choosenType">证件类型</span>
+                            <span class="label select-label choosen" v-show="choosenType">{{choosenTypeName}}</span>
                         </div>
                     </div>
                     <p class="tips tips-type" v-show="typeTips">{{typeTips}}</p>
@@ -91,7 +92,9 @@
             <div class="modal-main selector" v-show="showSelector">
                 <h3 class="selector-head">请选择证件类型</h3>
                 <div class="selector-list">
-                    <div class="selector-item" v-for="(item, index) in idCardTypes" :key="index" @click="handleSelect(item.value)">
+                    <div class="selector-item" v-for="(item, index) in idCardTypes" :key="index" @click="handleSelect(item)" :class="{
+                        'last': index == (idCardTypes.length-1)
+                    }">
                         <div class="item-name">
                             {{item.label}}
                         </div>
@@ -142,6 +145,7 @@ export default {
       message: '',
       showValue: '请选择证件类型',
       choosenType: '',
+      choosenTypeName: '',
       idCardTypes: [
           {
               value: 'id',
@@ -256,7 +260,8 @@ export default {
         this.showSelector = true;
     },
     handleSelect(item) {
-        this.choosenType = item;
+        this.choosenType = item.value;
+        this.choosenTypeName = item.label;
         this.closeSelector();
     },
     beforeAvatarUpload(file) {
@@ -334,6 +339,9 @@ export default {
                             display: inline-block;
                             font-size: 16px;
                             opacity: 0.4;
+                            &.choosen {
+                                opacity: 1;
+                            }
                         }
                     } 
                     .label-input {
@@ -441,17 +449,20 @@ export default {
         }
         .mask {
             position: fixed;
-            .selector {
-                padding: px2vw(48);
-                .selector-head {
-                    opacity: 0.4;
-                    font-size: 14px;
-                }
-                .selector-item {
-                    height: px2vw(168);
-                    line-height: px2vw(168);
-                    font-size: 16px;
-                    border-bottom: 1px solid rgba(0,0,0,0.10);
+        }
+        .selector {
+            padding: px2vw(48);
+            .selector-head {
+                opacity: 0.4;
+                font-size: 14px;
+            }
+            .selector-item {
+                height: px2vw(168);
+                line-height: px2vw(168);
+                font-size: 16px;
+                border-bottom: 1px solid rgba(0,0,0,0.10);
+                &.last {
+                    border: none;
                 }
             }
         }

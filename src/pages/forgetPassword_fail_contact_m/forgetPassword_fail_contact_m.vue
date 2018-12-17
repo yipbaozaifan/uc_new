@@ -46,7 +46,7 @@ export default {
   methods: {
     next() {
         console.log('complaint');
-        location.href = 'https://i.flyme.cn/appeal';
+        location.href = 'https://i.flyme.cn/complaint';
     },
   },
   mounted() {
