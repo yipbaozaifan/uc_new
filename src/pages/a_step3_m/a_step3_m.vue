@@ -454,6 +454,8 @@ export default {
         }
         .modal {
             position: fixed !important;
+            margin-top: 0;
+            transform: translateY(-50%)
         }
         .mask {
             position: fixed;
