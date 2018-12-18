@@ -64,7 +64,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <a @clicked="closeModal">确定</a>
+                        <a @click="closeModal">确定</a>
                     </div>
                 </div>
             </div>
@@ -315,6 +315,12 @@ export default {
     @import '../../assets/base_m.scss';
         .title {
             text-align: center;
+        }
+        .modal {
+            position: fixed !important;
+        }
+        .mask {
+            position: fixed;
         }
         .main {
             width: 100%;

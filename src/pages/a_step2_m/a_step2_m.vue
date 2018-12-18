@@ -383,6 +383,12 @@ export default {
     .footer {
         z-index: 2;
     }
+    .modal {
+        position: fixed !important;
+    }
+    .mask {
+        position: fixed;
+    }
     .complaint_select_type {
         .mz_checkbox {
             vertical-align: middle;

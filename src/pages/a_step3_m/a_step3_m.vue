@@ -56,7 +56,7 @@
                     </p>
                     <div class="example-photo">
                         <h3 class="photo-title">照片实例</h3>
-                        <img src="" alt="">
+                        <img src="./assets/example.png" alt="">
                     </div>
                     <div class="preview-photo">
                         <h3 class="photo-title">缩略图片</h3>

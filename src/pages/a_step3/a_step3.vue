@@ -11,7 +11,7 @@
             <div class="photo-example">
                 <h3 class="example-title">照片实例:</h3>
                 <div class="example-photo">
-                    <img src="" alt="">
+                    <img src="./assets/example.png" alt="">
                 </div>
                 <ul class="example-tips">
                     <li class="example-tips-item">1.本人手持自己的证件照</li>
