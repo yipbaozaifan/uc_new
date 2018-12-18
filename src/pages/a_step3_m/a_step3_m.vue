@@ -73,9 +73,9 @@
                 <btn :type="'blue'" :text="'下一步'" @clicked="next"></btn>
             </span>
         </div>
-        <div class="mask" v-show="showModal" @clicked="closeSelector">
+        <div class="mask" v-show="showModal" @clicked="closeSelector" @touchmove.prevent.stop>
         </div>
-        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
+        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal" @touchmove.prevent.stop>
             <div class="modal-main" v-show="!overTime && !showSelector">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">

@@ -596,7 +596,7 @@ export default {
                 this.phoneTypeOk = true;
             }
         }
-        if (this.showRegTimeTips || this.showRegLandTips || this.showUsedLandTips || !this.passwordOk || !this.nickOk || !this.emailOk || !this.phonesOk || !this.phonesOk) {
+        if (this.showRegTimeTips || this.showRegLandTips || this.showUsedLandTips || !this.passwordOk || !this.nickOk || !this.emailOk || !this.phonesOk || !this.phonesOk || !this.phoneTypeOk) {
             return 
         }
         let usedPwd = '';
@@ -1133,7 +1133,7 @@ export default {
                                 margin-bottom: 0;
                             }
                             .outer-input {
-                                width: px2vw(680);
+                                width: px2vw(660);
                                 vertical-align: middle;
                                 display: inline-block;
                                 &.error {
