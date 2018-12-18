@@ -33,13 +33,12 @@
                 </div>
                 <div class="section">
                     <div class="upload-pic">
-                        <div class="upload-bar">
+                        <div class="upload-bar" :class="{
+                            'error': uploadTips
+                        }">
                             <span class="label upload-label">证件照片</span>
                             <el-upload
                                 class="upload-btn"
-                                :class="{
-                                    'error': uploadTips
-                                }"
                                 action="https://i.flyme.cn/uc/system/webjsp/resetpwd/uploadIdentifyPhoto"
                                 name="file"
                                 :show-file-list="false"
@@ -48,9 +47,8 @@
                                 <span>上传</span>
                             </el-upload>
                         </div>
-                        <p class="tips upload-tips" v-show="uploadTips">{{uploadTips}}</p>
                     </div>
-
+                    <p class="tips upload-tips" v-show="uploadTips">{{uploadTips}}</p>
                 </div>
                 <div class="photo-example">
                     <p class="example-tips">
@@ -262,6 +260,7 @@ export default {
     handleSelect(item) {
         this.choosenType = item.value;
         this.choosenTypeName = item.label;
+        this.typeTips = '';
         this.closeSelector();
     },
     beforeAvatarUpload(file) {
@@ -321,8 +320,11 @@ export default {
                     .tips {
                         font-size: 12px;
                         color: #DE3131;
-                        margin-top: 10px;
                         text-align: left;
+                        &.tips-type, &.upload-tips {
+                            margin-top: 6px;
+                            padding: 0 px2vw(48);
+                        }
                     }
                     .selection {
                         font-size: 0px;
@@ -334,6 +336,9 @@ export default {
                             height: 100%;
                             line-height: px2vw(156);
                             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                            &.error {
+                                border-color: #DE3131;
+                            }
                         }
                         .select-label {
                             display: inline-block;
@@ -372,6 +377,9 @@ export default {
                                 span {
                                     color: #fff;
                                 }
+                            }
+                            &.error {
+                                border-color: #DE3131;
                             }
                         }
                         .upload-original {

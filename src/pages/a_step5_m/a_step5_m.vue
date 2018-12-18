@@ -3,7 +3,7 @@
         <div class="steps-warp">
             <mzprogress :steps="steps" :actived="4" size="58" line-length="188"></mzprogress>
         </div>
-        <h1 class="title">重置账号和密码</h1>
+        <h1 class="title" v-show="!complaintSuccess">重置账号和密码</h1>
         <div class="main" v-show="!complaintSuccess">
             <div class="content content-form">
                 <div class="section">
@@ -31,9 +31,11 @@
                         <mzinput placeholder="请输入接收手机号" label="结果通知：" v-model="phone" ref="phoneInput" type="account" @finished="handleBlur" @changeinp="handleChange" :maxlen="11"></mzinput>
                     </div>
                 </div>
-                <div class="section" v-if="!changePhoneType" style="margin:0;">
+                <div class="section" v-if="!changePhoneType" :style="{
+                    marginBottom: showError ? '16px' : '0px'
+                }">
                     <div class="bar bar-input">
-                        <mzinput placeholder="请输入验证码" label="验证码：" v-model="varCode" ref="varInput" :type="'phoneCode'" @send="handleSend" :maxlen="6"></mzinput>
+                        <mzinput placeholder="请输入验证码" label="验证码：" v-model="varCode" ref="varInput" :type="'phoneCode'" @send="handleSend" :maxlen="6" @changeinp="showError = false"></mzinput>
                     </div>
                 </div>
                 <p class="content-tips">申诉在3个工作日内完成，并将结果发送到该手机</p>
@@ -62,7 +64,7 @@
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
                     <div class="modal-btn">
-                        <btn :type="'blue'" :text="'确定'" @clicked="closeModal"></btn>
+                        <a @clicked="closeModal">确定</a>
                     </div>
                 </div>
             </div>
@@ -96,13 +98,13 @@ export default {
     return {
       steps: [
         {
-          name: '选择申诉类型',
+          name: '申诉类型',
         },
         {
           name: '身份信息',
         },
         {
-          name: '填写申诉材料',
+          name: '申诉材料',
         },
         {
           name: '重置密码',
@@ -123,6 +125,7 @@ export default {
       canSubmit: false,
       overTime: false,
       complaintSuccess: false,
+      showError: false,
       //pwdWrong: false,
     }
   },
@@ -176,6 +179,7 @@ export default {
             }
             if (this.varCode == "") {
                 this.$refs.varInput.showInputTips('请输入验证码');
+                this.showError = true;
                 return;
             }
         }
@@ -197,6 +201,7 @@ export default {
                 return Promise.reject(0);
             } else if (res.data.code == 200000) {
                 this.$refs.varInput.showInputTips('验证码错误');
+                this.showError = true;
                 return Promise.reject(1);
             } else {
                 this.message = res.data.message || "未知错误，请重试";
@@ -265,7 +270,7 @@ export default {
                 return;
             }
             if (res.data.code === "200") {
-                this.$refs.varinput.changeState();
+                this.$refs.varInput.changeState();
             } else {
                 this.message = res.data.message;
                 this.showModal = true;
@@ -371,7 +376,6 @@ export default {
                         .label-input {
                             text-align: right;
                             display: inline-block;
-                            width: 143px;
                             height: 36px;
                             line-height: 36px;
                             font-size: 16px;

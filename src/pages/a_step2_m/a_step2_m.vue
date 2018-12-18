@@ -49,7 +49,7 @@
                     <p>其他原因</p>
                 </div>
                 <div class="extra">
-                    <input type="text" v-model="reason" placeholder="如账号被盗，密保信息被修改" :disabled="!otherReason" @input="handleInput">
+                    <input type="text" v-model="reason" placeholder="如账号被盗，密保信息被修改" @input="handleInput">
                     <!--<span v-show="showExtraTips" class="extra-tips">{{extraTips}}</span>-->                    
                 </div>
             </div>

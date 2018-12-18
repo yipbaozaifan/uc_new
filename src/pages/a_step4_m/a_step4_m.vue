@@ -59,14 +59,18 @@
                         </div>
                         <p class="tips tips-selection" v-show="showRegLandTips">{{regLandTips}}</p>
                     </div>
-                    <div class="content select-content" v-for="(item, index) in usedLand" :key="index" @click="showPickLand(index)">
+                    <div class="content select-content" v-for="(item, index) in usedLand" :key="index">
                         <div class="picker-opener" :class="{
                             'error': showUsedLandTips
                         }">
-                            <div>
+                            <div @click="showPickLand(index)">
                                 <p class="opener-name">常用地</p>
-                                <p class="opener-desc" v-show="choosenUsedLand[index] == ''">必填</p>
+                                <p class="opener-desc" v-show="choosenUsedLand[index] == '' && index == 0">必填</p>
                                 <p class="opener-desc" v-show="choosenUsedLand[index]">{{item.p + ' - ' + item.c}}</p>
+                            </div>
+                            <div class="operations">
+                                <span class="op add" @click="handleAdd('usedLand')" v-show="index == 0 && choosenUsedLand[index] && choosenUsedLand.length < 5">&#xe648;</span>
+                                <span class="op sub" @click="handleSub(index, 'usedLand')" v-show="index > 0">&#xe60b;</span>
                             </div>
                         </div>
                         <p class="tips tips-selection" v-show="showUsedLandTips">{{usedLandTips}}</p>
@@ -105,7 +109,7 @@
                                     忘记密码
                                 </div>
                                 <div class="operations">
-                                    <span class="op add" @click="handleAdd('password')" v-show="index == 0 && usedPassword[index]">&#xe648;</span>
+                                    <span class="op add" @click="handleAdd('password')" v-show="index == 0 && usedPassword[index] && usedPassword.length < 5">&#xe648;</span>
                                     <span class="op sub" @click="handleSub(index, 'password')" v-show="index > 0">&#xe60b;</span>
                                 </div>
                             </div>
@@ -133,7 +137,7 @@
                                     忘记昵称
                                 </div>
                                 <div class="operations">
-                                    <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index]">&#xe648;</span>
+                                    <span class="op add" @click="handleAdd('nickname')" v-show="index == 0 && nicknames[index] && nicknames.length < 5">&#xe648;</span>
                                     <span class="op sub" @click="handleSub(index, 'nickname')" v-show="index > 0">&#xe60b;</span>
                                 </div>
                             </div>
@@ -155,7 +159,7 @@
                                     <input type="text" placeholder="请输入曾用邮箱" v-model="emails[index]" :disabled="forgotMail" @input="handleInput('email', index)" @focus="handleFocus(showEmailLabel, index)" @blur="handleBlur(showEmailLabel, index)">
                                 </div>
                                 <div class="operations">
-                                    <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index]">&#xe648;</span>
+                                    <span class="op add" @click="handleAdd('email')" v-show="index == 0 && emails[index] && emails.length < 5">&#xe648;</span>
                                     <span class="op sub" @click="handleSub(index, 'email')" v-show="index > 0">&#xe60b;</span>
                                 </div>
                                 <a class="forgot-btn" v-show="index == 0 && emails[index] == '' && !forgotMail" @click="forgotMail = true">
@@ -183,7 +187,7 @@
                                     <input type="text" placeholder="请输入曾用手机号" v-model="phones[index]" @input="handleInput('phones', index)" @focus="handleFocus(showPhoneLabel, index)" @blur="handleBlur(showPhoneLabel, index)">
                                 </div>
                                 <div class="operations">
-                                    <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index]">&#xe648;</span>
+                                    <span class="op add" @click="handleAdd('phones')" v-show="index == 0 && phones[index] && phones.length < 5">&#xe648;</span>
                                     <span class="op sub" @click="handleSub(index, 'phones')" v-show="index > 0">&#xe60b;</span>
                                 </div>
                                 <a class="forgot-btn" v-show="index == 0 && phones[index] == '' && !forgotPhone" @click="forgotPhone = true">
@@ -210,7 +214,7 @@
                                     <input type="text" placeholder="请输入曾用手机型号" v-model="item.phoneType" @input="item.phoneTypeTips = '';item.phoneIdTips = ''" @focus="item.showPhoneTypeLabel = true" @blur="item.showPhoneTypeLabel = false">
                                 </div>
                                 <div class="operations">
-                                    <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && item.phoneType">&#xe648;</span>
+                                    <span class="op add" @click="handleAdd('phoneType')" v-show="index == 0 && item.phoneType && usedPhoneType.length < 5">&#xe648;</span>
                                     <span class="op sub" @click="handleSub(index, 'phoneType')" v-show="index > 0">&#xe60b;</span>
                                 </div>
                                 <a class="forgot-btn" v-show="index == 0 && item.phoneType == '' && !noLoginPhone" @click="noLoginPhone = true">
@@ -342,6 +346,7 @@ export default {
                     phoneIdTips: ''
                   }
               ];
+              this.phoneTypeOk = true;
           }
       },
       forgotNickname(newValue, oldValue) {
@@ -349,6 +354,7 @@ export default {
               this.nicknames = [''];
               this.nicknameTips = [''];
               this.showNickLabel = [false];
+              this.nickOk = true;
           }
       },
       forgotPwd(newValue, oldValue) {
@@ -356,6 +362,7 @@ export default {
               this.usedPassword = [''];
               this.passwordTips = [''];
               this.showPwdLabel = [false];
+              this.passwordOk = true;
           }
       },
       forgotMail(newValue, oldValue) {
@@ -363,6 +370,7 @@ export default {
               this.emails = [''];
               this.emailsTips = [''];
               this.showEmailLabel = [false];
+              this.emailOk = true;
           }
       },
       forgotPhone(newValue, oldValue) {
@@ -370,6 +378,7 @@ export default {
               this.phones = [''];
               this.phonesTips = [''];
               this.showPhoneLabel = [false];
+              this.phonesOk = true;
           }
       }
   },
@@ -489,8 +498,17 @@ export default {
             this.regLandTips = '请选择注册地点';
             this.showRegLandTips = true;
         }
-        if (!this.usedLand[0].p || !this.usedLand[0].c) {
-            this.usedLandTips = '请选择常用地点';
+        let usedLandFlag = false;
+        let usedLand = '';
+        for (let i = 0;i < this.usedLand.length; i++) {
+            if (this.usedLand[i].p !== "" && this.usedLand[i].c !== "") {
+                usedLandFlag = true;
+                let tempLand = `${this.usedLand[i].p}-${this.usedLand[i].c}`;
+                usedLand += tempLand+',';
+            }
+        }
+        if (!usedLandFlag) {
+            this.usedLandTips = "至少填写一个常用地";
             this.showUsedLandTips = true;
         }
         if (!this.forgotPwd) {
@@ -581,19 +599,23 @@ export default {
         if (this.showRegTimeTips || this.showRegLandTips || this.showUsedLandTips || !this.passwordOk || !this.nickOk || !this.emailOk || !this.phonesOk || !this.phonesOk) {
             return 
         }
-        const usedPwd = this.contactInput(this.usedPassword);
+        let usedPwd = '';
+        for(let i = 0;i < this.usedPassword.length; i++) {
+            if (this.usedPassword[i] != "") {
+                usedPwd = usedPwd + encodeURIComponent(this.usedPassword[i])+',';
+            }
+        }
         const useNickName = this.contactInput(this.nicknames);
         const usedEmails = this.contactInput(this.emails);
         const usedPhones = this.contactInput(this.phones);
         const regLand = this.regLand[0] + '-' + this.regLand[1];
-        let usedLand = '';
+        /*let usedLand = '';
         for (let i = 0;i < this.usedLand.length; i++) {
             if (this.usedLand[i].p !== "" && this.usedLand[i].c !== "") {
                 let tempLand = `${this.usedLand[i].p}-${this.usedLand[i].c}`;
                 usedLand += tempLand+',';
             }
-        }
-        console.log(usedLand);
+        }*/
         let usedPhoneTypes = "";
         let usedPhoneIds = ""
         for (let i = 0;i < this.usedPhoneType.length; i++) {
@@ -620,9 +642,9 @@ export default {
             if (res.data.code == 200) {
                 let gotoUrl = '';
                 if (res.data.value.phone) {
-                    location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}&vcode=${res.data.value.areacode}&phone=${res.data.value.phone}`);
+                    location.replace(`/complaint/step5?account=${this.account}&resetId=${res.data.value.resetId}&vcode=${res.data.value.areacode}&phone=${res.data.value.phone}`);
                 } else {
-                    location.replace(`/appeal/step5?account=${this.account}&resetId=${res.data.value.resetId}`);
+                    location.replace(`/complaint/step5?account=${this.account}&resetId=${res.data.value.resetId}`);
                 }
             } else if (res.data.code == 200014) {
                 this.message = "已经提交过了，请重新填写账号申诉";
@@ -643,7 +665,7 @@ export default {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
-                        location.href = location.origin + '/appeal/step1';
+                        location.href = location.origin + '/complaint/step1';
                     }, 2000);
                 }
             } else if (err == 1) { // 已经处理的错误
@@ -732,7 +754,6 @@ export default {
     },
     handleChangeDate() {
         this.showRegTimeTips = false;
-        this.step3Ok = true;
     },
     addUsedPwd() {
         this.usedPassword.push('');
@@ -743,46 +764,59 @@ export default {
     handleAdd(type) {
         switch(type) {
             case 'nickname': {
-                this.nicknames.push('');
-                this.nicknameTips.push('');
-                this.showNickLabel.push(false);
+                if (this.nicknames.length < 5) {
+                    this.nicknames.push('');
+                    this.nicknameTips.push('');
+                    this.showNickLabel.push(false);
+                }
                 break;
             }
             case 'email': {
-                this.emails.push('');
-                this.emailsTips.push('');
-                this.showEmailLabel.push(false);
+                if (this.emails.length < 5) {
+                    this.emails.push('');
+                    this.emailsTips.push('');
+                    this.showEmailLabel.push(false);
+                }
                 break;
             }
             case 'phones': {
-                this.phones.push('');
-                this.phonesTips.push('');
-                this.showPhoneLabel.push(false);
+                if (this.phones.length < 5) {
+                    this.phones.push('');
+                    this.phonesTips.push('');
+                    this.showPhoneLabel.push(false);
+                }
                 break;
             }
             case 'phoneType': {
-                this.usedPhoneType.push({
-                    phoneType: '',
-                    phoneId: '',
-                    noPhoneId: false,
-                    showPhoneTypeLabel: false,
-                    showPhoneIdLabel: false,
-                    phoneTypeTips: '',
-                    phoneIdTips: ''
-                });
+                if (this.usedPhoneType.length < 5) {
+                    this.usedPhoneType.push({
+                        phoneType: '',
+                        phoneId: '',
+                        noPhoneId: false,
+                        showPhoneTypeLabel: false,
+                        showPhoneIdLabel: false,
+                        phoneTypeTips: '',
+                        phoneIdTips: ''
+                    });
+                }
                 break;
             }
             case 'usedLand': {
-                this.UsedLand.push({
-                    p: '',
-                    c: ''
-                });
+                if (this.usedLand.length < 5) {
+                    this.usedLand.push({
+                        p: '',
+                        c: ''
+                    });
+                    this.choosenUsedLand.push(false);
+                }
                 break;
             }
             case 'password': {
-                this.usedPassword.push('');
-                this.passwordTips.push('');
-                this.showPwdLabel.push(false);
+                if (this.usedPassword.length < 5) {
+                    this.usedPassword.push('');
+                    this.passwordTips.push('');
+                    this.showPwdLabel.push(false);
+                }
                 break;
             }
         }
@@ -818,7 +852,8 @@ export default {
                 break;
             }
             case 'usedLand': {
-                this.UsedLand.splice(index, 1);
+                this.usedLand.splice(index, 1);
+                this.choosenUsedLand.splice(index, 1);
                 break;
             }
         }
@@ -923,6 +958,7 @@ export default {
         }
         .tips-bar{
             margin-top: px2vw(21);
+            padding: 0 px2vw(48);
             p {
                 font-size: 12px;
                 color: #000000;
@@ -1050,8 +1086,24 @@ export default {
                             padding: px2vw(39) 0;
                             box-sizing: border-box;
                             height: px2vw(186);
+                            position: relative;
                             &.error {
                                 border-color: #DE3131;
+                            }
+                            .operations {
+                                display: inline-block;
+                                position: absolute;
+                                top: px2vw(72);
+                                right: 0;
+                                .op {
+                                    display: inline-block;
+                                    width: px2vw(60);
+                                    height: px2vw(60);
+                                    font-family: 'operations';
+                                    line-height: px2vw(60);
+                                    font-size: 22px;
+                                    color: #387AFF;
+                                }
                             }
                         }
                         .opener-name {
