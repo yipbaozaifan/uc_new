@@ -202,11 +202,14 @@ export default {
             margin: 0 auto;
             margin-bottom: 20px;
             .tips {
-                font-size: 14px;
+                font-size: 12px;
+                color: #000000;
+                opacity: 0.2;
             }
             .replace-container {
                 width: 100%;
                 margin: 0 auto;
+                margin-top: px2vw(90);
                 .replace {
                     cursor: pointer;
                     color: #198DED;
@@ -228,7 +231,7 @@ export default {
                     line-height: 36px;
                     border-radius: px2vw(108);
                     margin: 0 11px;
-                    margin-bottom: px2vw(57);
+                    margin-bottom: px2vw(50);
                     border: 1px #198DED solid;
                     cursor: pointer;
                     white-space: nowrap;

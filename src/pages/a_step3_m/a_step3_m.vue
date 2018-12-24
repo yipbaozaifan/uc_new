@@ -395,6 +395,7 @@ export default {
                     vertical-align: top;
                     img {
                         display: inline-block;
+                        border: 1px solid rgba(0,0,0,0.15);
                         width: px2vw(468);
                         height: px2vw(468);
                     }
@@ -445,7 +446,7 @@ export default {
             margin-top: px2vw(39);
             .btn-back,.btn-next {
                 display: inline-block;
-                width: 140px;
+                width: px2vw(720);
                 margin-top: 0;  
             }
             .btn-back {

@@ -1159,7 +1159,7 @@ export default {
             margin-top: 80px;
             .btn-next {
                 display: inline-block;
-                width: 140px;
+                width: px2vw(720);
                 margin-top: 0;  
             }
         }

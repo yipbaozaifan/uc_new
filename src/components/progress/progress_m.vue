@@ -69,7 +69,7 @@ export default {
       line-height: 18px;
       border-radius: 18px;
       &.actived-step {
-        background-color: #387AFF;
+        background-color: #198DED;
       }
     }
     .step-name {
@@ -86,7 +86,7 @@ export default {
     margin-top: 6px;
     float: right;
     &.actived-step {
-      border-top: 5px solid #387AFF;
+      border-top: 5px solid #198DED;
     }
   }
 }

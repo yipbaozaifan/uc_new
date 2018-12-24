@@ -60,7 +60,7 @@
             <span class="btn-back" v-if="changePhone">
                 <btn :type="'white'" :text="'上一步'" @clicked="back"></btn>
             </span>
-            <span class="btn-next">
+            <span class="btn-next" :class="{'long-btn': !changePhone}">
                 <btn :type="'blue'" :text="'下一步'" @clicked="next"></btn>
             </span>
         </div>
@@ -429,7 +429,7 @@ export default {
                         margin-top: px2vw(9);
                     }
                     .option-name {
-                        font-weight: 600;
+                        font-weight: 500;
                         font-size: 16px;
                     }
                 }
@@ -497,6 +497,11 @@ export default {
                 display: inline-block;
                 width: px2vw(396);
                 margin-top: 0;  
+            }
+            .btn-next {
+                &.long-btn {
+                    width: px2vw(720);
+                }
             }
             .btn-back {
                 margin-right: 12px;

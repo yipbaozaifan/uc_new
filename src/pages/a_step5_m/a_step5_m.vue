@@ -354,10 +354,10 @@ export default {
                     .success-container {
                         text-align: center;
                         img {
-                            width: 337px;
+                            width: px2vw(618);
                         }
                         .success-title {
-                            font-size: 20px;
+                            font-size: 16px;
                             color: #000000;
                             margin-top: 21px;
                             margin-bottom: 6px;
@@ -365,7 +365,7 @@ export default {
                         }
                         .success-text {
                             opacity: 0.4;
-                            font-size: 14px;
+                            font-size: 12px;
                             color: #000000;
                             letter-spacing: 0;
                         }
@@ -409,7 +409,7 @@ export default {
             margin-top: px2vw(26);
             .btn-next {
                 display: inline-block;
-                width: 140px;
+                width: px2vw(720);
                 margin-top: 0;  
             }
         }

@@ -18,22 +18,22 @@ export default {
 <style lang="scss">
 .btn {
   display: inline-block;
-  font-size: 14px; 
+  font-size: 16px; 
   width: 100%;
   text-align: center;
   height: 36px;
   line-height: 36px;
-  border: 1px solid #387AFF;
+  border: 1px solid #198DED;
   border-radius: 36px;
   cursor: pointer;
 }
 .blue {
-  background-color: #387AFF;
+  background-color: #198DED;
   color: #ffffff;
 }
 .white {
   background-color: #fff;
-  color: #387AFF;
+  color: #198DED;
 }
 .gray {
   background-color: #cccccc;
