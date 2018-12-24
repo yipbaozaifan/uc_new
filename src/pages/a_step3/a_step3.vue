@@ -9,7 +9,7 @@
                 <p class="complaint-text">不真实的资料同样会导致申诉不过，请您认真填写</p>
             </div>
             <div class="photo-example">
-                <h3 class="example-title">照片实例:</h3>
+                <h3 class="example-title">照片示例:</h3>
                 <div class="example-photo">
                     <img src="./assets/example.png" alt="">
                 </div>
@@ -398,6 +398,9 @@ export default {
                 width: 30%;
                 float: right;
                 margin-top: 40px;
+                .example-title {
+                    margin-bottom: 6px;
+                }
                 .example-photo {
                     margin-bottom: 22px;
                     width: 132px;
@@ -406,6 +409,8 @@ export default {
                         display: inline-block;
                         width: 100%;
                         height: 100%;
+                        border: 1px solid rgba(0,0,0,0.15);
+                    border-radius: 4px;
                     }
                 }
                 .example-tips {
@@ -424,7 +429,7 @@ export default {
             margin-top: 99px;
             .btn-back,.btn-next {
                 display: inline-block;
-                width: 140px;
+                width: 290px;
                 margin-top: 0;  
             }
             .btn-back {

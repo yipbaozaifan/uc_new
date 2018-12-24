@@ -1629,6 +1629,7 @@ export default {
             vertical-align: middle;
             display: inline-block;
             margin-left: 10px;
+            float: right;
             &::before {
                 content: '';
                 display: inline-block;

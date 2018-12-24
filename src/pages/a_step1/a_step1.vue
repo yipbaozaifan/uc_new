@@ -119,7 +119,7 @@ export default {
             font-size: 16px;
             color: #000000;
             letter-spacing: 0;
-            line-height: 28px;
+            line-height: 24px;
             width: 518px;
             margin: 0 auto;
             font-weight: 600;
@@ -128,7 +128,7 @@ export default {
                 color: #999999;
                 width: 518px;
                 margin: 0 auto;
-                margin-top: 2px;
+                margin-top: 8px;
             }
         }
     .content-form {

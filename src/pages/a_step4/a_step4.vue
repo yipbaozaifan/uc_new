@@ -179,7 +179,7 @@
                     <span class="select-label">常用地：</span>
                     <div class="selections-warp">
                         <div class="bar selection-bar" v-for="(item, index) in UsedLand" :key="index" :class="{
-                            'mt30': index > 0
+                            'mt20': index > 0
                         }">
                             <div class="select-content">
                                 <el-select v-model="item.p" placeholder="请选择省份" @change="item.c = ''; showUsedLandTips = false;step3Ok[2] = true;">
@@ -230,7 +230,7 @@
             <span class="btn-back" v-show="nowStep != 1">
                 <btn :type="'white'" :text="'上一步'" @clicked="back(nowStep)"></btn>
             </span>
-            <span class="btn-next">
+            <span class="btn-next" :class="{'long-btn': nowStep == 1}">
                 <btn :type="'blue'" :text="'下一步'" @clicked="next(nowStep)"></btn>
             </span>
         </div>
@@ -2519,8 +2519,8 @@ export default {
     .footer {
         z-index: 2;
     }
-        .mt30 {
-            margin-top: 30px;
+        .mt20 {
+            margin-top: 20px;
         }
         .title {
             text-align: center;
@@ -2542,6 +2542,7 @@ export default {
                 .content-form {
                     margin-top: 40px;
                     .section {
+                        margin-bottom: 20px;
                         .input-content{
                             .bar-input {
                                 .tips-input {
@@ -2552,6 +2553,11 @@ export default {
                             }
                         }
                     }
+                }
+            }
+            &.step3 {
+                .section {
+                    margin-bottom: 20px;
                 }
             }
             .content-form {
@@ -2758,6 +2764,11 @@ export default {
                 display: inline-block;
                 width: 140px;
                 margin-top: 0;  
+            }
+            .btn-next {
+                &.long-btn {
+                    width: 288px;
+                }
             }
             .btn-back {
                 margin-right: 12px;

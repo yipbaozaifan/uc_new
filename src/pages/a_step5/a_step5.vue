@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="main" v-show="complaintSuccess">
+        <div class="main" v-show="complaintSuccess" style="margin-top:104px">
             <div class="content content-form">
                 <div class="section">
                     <div class="success-container">
@@ -455,7 +455,7 @@ export default {
             margin-top: 99px;
             .btn-back,.btn-next {
                 display: inline-block;
-                width: 140px;
+                width: 288px;
                 margin-top: 0;  
             }
             .btn-back {

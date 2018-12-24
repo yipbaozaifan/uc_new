@@ -18,7 +18,7 @@ export default {
 <style lang="scss">
 .btn {
   display: inline-block;
-  font-size: 14px; 
+  font-size: 16px; 
   width: 100%;
   text-align: center;
   height: 36px;

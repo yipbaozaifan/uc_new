@@ -4,7 +4,7 @@
         <h1 class="title">{{useLang.title}}</h1>
         <mzprogress :steps="useStep" :actived="2" size="126"></mzprogress>
         <div class="content content-form">
-            <div class="section">
+            <div class="section tips-section">
                 <p class="tips">{{useLang.contactTips}}</p>
             </div>
             <div class="section">
@@ -205,6 +205,9 @@ export default {
             text-align: center;
             margin: 0 auto;
             margin-bottom: 20px;
+            &.tips-section {
+                margin-bottom: 40px;
+            }
             .tips {
                 font-size: 14px;
             }

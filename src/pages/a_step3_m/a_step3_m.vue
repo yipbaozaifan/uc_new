@@ -55,7 +55,7 @@
                         请上传手持本人证证件的彩色照片一张，格式 jpg 或 png，大小 不超过 10MB，请确保人物面部和证件信息清晰无遮挡
                     </p>
                     <div class="example-photo">
-                        <h3 class="photo-title">照片实例</h3>
+                        <h3 class="photo-title">照片示例</h3>
                         <img src="./assets/example.png" alt="">
                     </div>
                     <div class="preview-photo">
@@ -75,7 +75,7 @@
         </div>
         <div class="mask" v-show="showModal" @clicked="closeSelector" @touchmove.prevent.stop>
         </div>
-        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal" @touchmove.prevent.stop>
+        <mz-modal :title="'提示'" v-show="showModal" @close="closeModal">
             <div class="modal-main" v-show="!overTime && !showSelector">
                 <p class="modal-tips">{{message}}</p>
                 <div class="modal-btn-container">
@@ -87,7 +87,7 @@
             <div class="modal-main" v-show="overTime">
                 <p class="modal-tips modal-tips-ot">此页面已超时</p>
             </div>
-            <div class="modal-main selector" v-show="showSelector">
+            <div class="modal-main selector" v-show="showSelector" @touchmove.prevent.stop>
                 <h3 class="selector-head">请选择证件类型</h3>
                 <div class="selector-list">
                     <div class="selector-item" v-for="(item, index) in idCardTypes" :key="index" @click="handleSelect(item)" :class="{
