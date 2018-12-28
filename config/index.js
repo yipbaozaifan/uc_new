@@ -110,7 +110,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: 'static/forgetPassword',
     assetsPublicPath: '//uc-res.mzres.com/resources/uc/web/member/',
 
     /**

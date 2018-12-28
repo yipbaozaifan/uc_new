@@ -113,41 +113,21 @@ export default {
             this.$refs.varinput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
-        this.varPhone().then((res) => {
-            if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000);
-                return;
-            }
-            if (res.data.code === "200") {
-                if (!res.data.value) {
-                    this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
-                    this.wrong = true;
-                    return Promise.reject(this.useLang.wrongPhone);
-                } else {
-                    return axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
-                        account: this.account,
-                        hasEmail: this.hasEmail,
-                        phone: phone,
-                        vcode: this.varCode,
-                        vCodeTypeValue: 9
-                    })
-                }
-            } else {
-                this.$refs.phoneInput.showInputTips(res.data.message);
-                this.wrong = true;
-                return Promise.reject('server error');
-            }
+        axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
+            account: this.account,
+            hasEmail: this.hasEmail,
+            phone: phone,
+            vcode: this.varCode,
+            vCodeTypeValue: 9
         }).then((res) => {
             if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000)
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/forgetpwd';
+                    }, 2000)
+                }
                 return;
             }
             if (res.data.code !== "200") {
@@ -161,53 +141,52 @@ export default {
                 location.href = res.data.value.url;
             }
         }, (err) => {
-            console.log(err);
-        }).catch((err) => {
             this.message = this.useLang.errorTips;
             this.showModal = true;
-        });
+        })
     },
     closeModal() {
         this.showModal = false;
     },
     handleBlur() {
         const phoneReg = /^[0-9]*$/;
-        setTimeout(() => {
-            if (this.wrong) {
-                return;
-            }
-            if (this.inputedPhone === '') {
-                return;
-            }
-            if (!phoneReg.test(this.inputedPhone)) {
-                this.$refs.phoneInput.showInputTips(this.useLang.notNumber);
-                this.wrong = true;
-                return;
-            }
-            this.varPhone().then((res) => {
-                if(!res.data) {
+        if (this.wrong) {
+            return;
+        }
+        if (this.inputedPhone === '') {
+            return;
+        }
+        if (!phoneReg.test(this.inputedPhone)) {
+            this.$refs.phoneInput.showInputTips(this.useLang.notNumber);
+            this.wrong = true;
+            return;
+        }
+        this.varPhone().then((res) => {
+            if(!res.data) {
+                if (!this.overTime) {
                     this.showModal = true;
                     this.overTime = true;
                     setTimeout(() => {
                         location.href = location.origin + '/forgetpwd';
-                    }, 2000);
-                    return;
+                    }, 2000); 
                 }
-                if (res.data.code === "200") {
-                    if (!res.data.value) {
-                        this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
-                        this.wrong = true;
-                    } else {
-                        this.$refs.varinput.allowSend();
-                    }
-                } else {
-                    this.$refs.phoneInput.showInputTips(res.data.message);
+                return;
+            }
+            if (res.data.code === "200") {
+                if (!res.data.value) {
+                    this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
                     this.wrong = true;
+                } else {
+                    this.$refs.varinput.allowSend();
                 }
-            }, (err) => {
-                console.log(err);
-            })
-        }, 100);
+            } else {
+                this.$refs.phoneInput.showInputTips(res.data.message);
+                this.wrong = true;
+            }
+        }, (err) => {
+            this.message = this.useLang.errorTips;
+            this.showModal = true;
+        })
     },
     changeWay() {
         if(this.inputedPhone) {
@@ -223,10 +202,15 @@ export default {
     handleChange(varPhone) {
         if (this.wrong) {
             this.wrong = false;
+            this.$refs.varinput.invalid = true;
             if (varPhone) {
                 this.handleBlur()
             }
         } else {
+            this.$refs.varinput.invalid = true;
+            if (varPhone) {
+                this.handleBlur()
+            }
             return
         }
     },
@@ -248,29 +232,7 @@ export default {
             phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.inputedPhone,
             account: this.account
         }
-        this.varPhone().then((res) => {
-            if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000);
-                return;
-            }
-            if (res.data.code === "200") {
-                if (!res.data.value) {
-                    this.$refs.phoneInput.showInputTips(this.useLang.wrongPhone);
-                    this.wrong = true;
-                } else {
-                    return axios.post('/uc/system/vcode/action/sendSmsVCode', data)
-                }
-                
-            } else {
-                this.$refs.phoneInput.showInputTips(res.data.message);
-                this.wrong = true;
-                return Promise.reject(res.data.message);
-            }   
-        }).then((res) => {
+        axios.post('/uc/system/vcode/action/sendSmsVCode', data).then((res) => {
             if(!res.data) {
                 this.showModal = true;
                 this.overTime = true;
@@ -287,9 +249,8 @@ export default {
                 this.showModal = true;
             }
         }, (err) => {
-            console.log(err);
-        }).catch((err) => {
-            console.log(err);
+            this.message = this.useLang.errorTips;
+            this.showModal = true;
         });
         //this.$refs.varinput.changeState();
     },

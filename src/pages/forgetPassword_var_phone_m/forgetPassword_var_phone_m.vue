@@ -109,41 +109,21 @@ export default {
             this.$refs.varinput.showInputTips(this.useLang.CodeEmptyTips);
             return;
         }
-        this.varPhone().then((res) => {
-            if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000);
-                return;
-            }
-            if (res.data.code === "200") {
-                if (!res.data.value) {
-                    this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
-                    this.wrong = true;
-                    return Promise.reject('输入手机号与绑定手机号不一致');
-                } else {
-                    return axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
-                        account: this.account,
-                        hasEmail: this.hasEmail,
-                        phone: phone,
-                        vcode: this.varCode,
-                        vCodeTypeValue: 9
-                    })
-                }
-            } else {
-                this.$refs.phoneInput.showInputTips(res.data.message);
-                this.wrong = true;
-                return Promise.reject('server error');
-            }
+        axios.post('/uc/system/webjsp/forgetpwd/isValidSmsVCode', {
+            account: this.account,
+            hasEmail: this.hasEmail,
+            phone: phone,
+            vcode: this.varCode,
+            vCodeTypeValue: 9
         }).then((res) => {
             if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000)
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/forgetpwd';
+                    }, 2000)  
+                }
                 return;
             }
             if (res.data.code !== "200") {
@@ -157,9 +137,7 @@ export default {
                 location.href = res.data.value.url;
             }
         }, (err) => {
-            console.log(err);
-        }).catch((err) => {
-            this.message = "网络错误，请稍后再试";
+            this.message = this.useLang.errorTips;
             this.showModal = true;
         });
     },
@@ -168,7 +146,6 @@ export default {
     },
     handleBlur() {
         const phoneReg = /^[0-9]*$/;
-        setTimeout(() => {
             if (this.wrong) {
                 return;
             }
@@ -182,11 +159,14 @@ export default {
             }
             this.varPhone().then((res) => {
                 if(!res.data) {
-                    this.showModal = true;
-                    this.overTime = true;
-                    setTimeout(() => {
-                        location.href = location.origin + '/forgetpwd';
-                    }, 2000);
+                    if (!this.overTime) {
+                        this.showModal = true;
+                        this.overTime = true;
+                        setTimeout(() => {
+                            location.href = location.origin + '/forgetpwd';
+                        }, 2000);
+                    }
+                    
                     return;
                 }
                 if (res.data.code === "200") {
@@ -201,9 +181,9 @@ export default {
                     this.wrong = true;
                 }
             }, (err) => {
-                console.log(err);
+                this.message = this.useLang.errorTips;
+                this.showModal = true;
             })
-        }, 100);
     },
     changeWay() {
         if(this.inputedPhone) {
@@ -219,10 +199,15 @@ export default {
     handleChange(varPhone) {
         if (this.wrong) {
             this.wrong = false;
+            this.$refs.varinput.invalid = true;
             if (varPhone) {
                 this.handleBlur()
             }
         } else {
+            this.$refs.varinput.invalid = true;
+            if (varPhone) {
+                this.handleBlur()
+            }
             return
         }
     },
@@ -243,34 +228,15 @@ export default {
             phone: '00' + this.$refs.phoneInput.countryCode.code + ':' + this.inputedPhone,
             account: this.account
         }
-        this.varPhone().then((res) => {
+        axios.post('/uc/system/vcode/action/sendSmsVCode', data).then((res) => {
             if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000);
-                return;
-            }
-            if (res.data.code === "200") {
-                if (!res.data.value) {
-                    this.$refs.phoneInput.showInputTips('输入手机号与绑定手机号不一致');
-                    this.wrong = true;
-                } else {
-                    return axios.post('/uc/system/vcode/action/sendSmsVCode', data)
+                if (!this.overTime) {
+                    this.showModal = true;
+                    this.overTime = true;
+                    setTimeout(() => {
+                        location.href = location.origin + '/forgetpwd';
+                    }, 2000); 
                 }
-            } else {
-                this.$refs.phoneInput.showInputTips(res.data.message);
-                this.wrong = true;
-                return Promise.reject(res.data.message);
-            }   
-        }).then((res) => {
-            if(!res.data) {
-                this.showModal = true;
-                this.overTime = true;
-                setTimeout(() => {
-                    location.href = location.origin + '/forgetpwd';
-                }, 2000);
                 return;
             }
             if (res.data.code === "200") {
@@ -281,10 +247,9 @@ export default {
                 this.showModal = true;
             }
         }, (err) => {
-            console.log(err);
-        }).catch((err) => {
-            console.log(err);
-        });
+            this.message = this.useLang.errorTips;
+            this.showModal = true;
+        })
         //this.$refs.varinput.changeState();
     },
     handleResend() {

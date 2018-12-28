@@ -1612,7 +1612,7 @@ export default {
                 vertical-align: middle;
                 text-align: center;
                 &.get, &.again {
-                    color: #387aff;
+                    color: #198DED;
                     cursor: pointer;
                     &.invalid {
                         color: #cccccc;

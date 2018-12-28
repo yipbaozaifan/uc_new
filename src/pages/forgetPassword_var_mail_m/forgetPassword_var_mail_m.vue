@@ -108,7 +108,7 @@ export default {
         if (!this.canSubmit) {
             return
         }
-        if (this.inputedMail === "" || !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.inputedMail)) {
+        if (this.inputedMail === "" || !/^[\.a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.inputedMail)) {
             this.$refs.mailInput.showInputTips(this.useLang.mailEmpty);
             return;
         }
@@ -185,7 +185,7 @@ export default {
             if (this.wrong) {
                 return;
             }
-            if (this.inputedMail === "" || !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.inputedMail)) {
+            if (this.inputedMail === "" || !/^[\.a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.inputedMail)) {
                 this.$refs.mailInput.showInputTips(this.useLang.mailEmpty);
                 return;
             }
