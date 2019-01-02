@@ -1365,9 +1365,9 @@ export default {
         handleSelect(gindex,index) {
             if (this.countryCodeList[gindex].cycodes[index] != this.countryCode) {
                 this.hideTips();
+                this.countryCode = this.countryCodeList[gindex].cycodes[index];
                 this.$emit('changeinp', true);
             }
-            this.countryCode = this.countryCodeList[gindex].cycodes[index];
             this.changeCycode = false;
         },
         changeState(time) {

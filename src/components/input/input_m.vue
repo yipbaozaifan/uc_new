@@ -1642,7 +1642,7 @@ export default {
             }
             img {
                 display: inline-block;
-                height: 28px;
+                height: 27px;
                 width: 65px;
                 vertical-align: middle;
                 cursor: pointer;

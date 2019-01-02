@@ -313,6 +313,9 @@ export default {
   mounted() {
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      if (!(this.lang == 'zh_CN')) {
+          document.title = 'Retrieve password'
+      }
       this.hasPhone = getParams('hasPhone') || 'n';
 
       if (getParams('fromPhone')) {

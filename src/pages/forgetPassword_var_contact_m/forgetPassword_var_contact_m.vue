@@ -188,6 +188,9 @@ export default {
   mounted() {
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      if (!(this.lang == 'zh_CN')) {
+          document.title = 'Retrieve password'
+      }
       this.replaceList();
   }
 }
@@ -209,8 +212,9 @@ export default {
             .replace-container {
                 width: 100%;
                 margin: 0 auto;
-                margin-top: px2vw(90);
+                margin-top: px2vw(40);
                 .replace {
+                    font-size: 14px;
                     cursor: pointer;
                     color: #198DED;
                     &.forbid {
@@ -228,10 +232,11 @@ export default {
                     text-align: center;
                     width: px2vw(282);
                     height: px2vw(108);
-                    line-height: 36px;
+                    line-height: px2vw(108);
                     border-radius: px2vw(108);
                     margin: 0 11px;
                     margin-bottom: px2vw(50);
+                    box-sizing: border-box;
                     border: 1px #198DED solid;
                     cursor: pointer;
                     white-space: nowrap;

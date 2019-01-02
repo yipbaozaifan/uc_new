@@ -113,6 +113,9 @@ export default {
   mounted() {
       this.$refs.kapkeyInput.getImageKey();
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      if (!(this.lang == 'zh_CN')) {
+          document.title = 'Retrieve password'
+      }
   }
 }
 </script>

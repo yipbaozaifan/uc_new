@@ -268,6 +268,12 @@ export default {
       //this.$refs.varinput.changeState('get');
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      console.log(this.lang);
+      if (!(this.lang == 'zh_CN')) {
+          console.log('en');
+          document.title = 'Retrieve password'
+      }
+      console.log(document.title);
       this.hasEmail = getParams('hasEmail') || 'n';
 
       if (getParams('fromMail')) {

@@ -183,6 +183,9 @@ export default {
   mounted() {
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      if (!(this.lang == 'zh_CN')) {
+          document.title = 'Retrieve password'
+      }
       Axios.post('/security/resubmit/token/get').then((res) => {
         if(!res.data) {
             this.showModal = true;

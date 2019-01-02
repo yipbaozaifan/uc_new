@@ -149,6 +149,9 @@ export default {
       //this.$refs.varinput.changeState('get');
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      if (!(this.lang == 'zh_CN')) {
+          document.title = 'Retrieve password'
+      }
       let to = getParams('to');
       if(to == 'phone'){
     	  this.toUrl = '/uc/system/webjsp/forgetpwd/toPhone';

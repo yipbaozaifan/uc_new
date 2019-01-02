@@ -166,7 +166,6 @@ export default {
                             location.href = location.origin + '/forgetpwd';
                         }, 2000);
                     }
-                    
                     return;
                 }
                 if (res.data.code === "200") {
@@ -263,6 +262,9 @@ export default {
       //this.$refs.varinput.changeState('get');
       this.account = getParams('account');
       this.lang = getParams('lang') || this.getCookie('lang') || 'zh_CN';
+      if (!(this.lang == 'zh_CN')) {
+          document.title = 'Retrieve password'
+      }
       this.hasEmail = getParams('hasEmail') || 'n';
 
       if (getParams('fromMail')) {
